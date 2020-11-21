@@ -31,9 +31,17 @@ function Result(){
    },[])
    console.log(result,"haribol");
 
+   if(result.username===""){
+       return(<p>loading...</p>)
+   }
+
+
+   if(result.username!==""){
    return(<div>
        <h1>Hi {result.username} you got {result.marks} marks </h1>
    </div>)
+
+   }
 
 
 
