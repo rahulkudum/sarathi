@@ -29,7 +29,7 @@ function App() {
     <Route path="/create" exact>
       <CreateExcercise />
     </Route>
-    <Route path="/user" exact>
+    <Route path="/usercreate" exact>
       <CreateUser  />
     </Route>
 

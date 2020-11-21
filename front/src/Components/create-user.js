@@ -12,7 +12,7 @@ function onsubmit(e){
 e.preventDefault();
 console.log(username);
 
-axios.post("http://localhost:5000/user/add",{username:username})
+axios.post("/user/add",{username:username})
 .then(res=>console.log(res.data));
 
 setUsername("");

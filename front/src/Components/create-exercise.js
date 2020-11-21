@@ -16,7 +16,7 @@ const [exercise,setExersise]=useState({
 
 useEffect(() => {
 
-axios.get("http://localhost:5000/user/")
+axios.get("/user/")
 .then(res=>{
     if(res.data.length>0){
         setExersise(prev=>{
@@ -36,7 +36,7 @@ function onsubmit(e){
 e.preventDefault();
 console.log(exercise);
 
-axios.post("http://localhost:5000/exercises/add",exercise)
+axios.post("/exercises/add",exercise)
 .then(res=>console.log(res.data));
 
 
