@@ -18,10 +18,9 @@ connection.once("open",()=>{
     console.log("mongidb sucess");
 }) 
 
-const exercisesRouter=require("./routes/exercises");
 const usersRouter=require("./routes/users");
 
-app.use("/exercises",exercisesRouter);
+
 app.use("/user",usersRouter);
 
 if(process.env.NODE_ENV==="production"){
@@ -42,5 +41,5 @@ const port = process.env.PORT || 5000;
 
 
 app.listen(port,()=>{
-    console.log(`server is running on port: ${port} `);
+    console.log(`server is running on port `);
 });  
