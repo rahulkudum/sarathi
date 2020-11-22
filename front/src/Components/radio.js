@@ -83,7 +83,7 @@ const classes = useStyles();
         }
   
   
-        axios.post("http://localhost:5000/user/add/",{username:name,answers:answers,marks:tmarks})
+        axios.post("/user/add/",{username:name,answers:answers,marks:tmarks})
         .then(res=>{
           
           setBackdrop(false);

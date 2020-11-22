@@ -10,7 +10,7 @@ function Result(){
 
    useEffect(()=>{
 
-    axios.get("http://localhost:5000/user/")
+    axios.get("/user/")
     .then(res=>{
         for(let i in res.data){
            
