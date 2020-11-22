@@ -1,4 +1,4 @@
-import React,{useState,useContext} from "react"
+import React,{useState,useContext,useEffect} from "react"
 import {FormControl,FormLabel,RadioGroup,FormControlLabel,Radio,Button,TextField,Backdrop,CircularProgress} from "@material-ui/core"
 
 import axios from"axios"
@@ -8,10 +8,10 @@ import { makeStyles } from '@material-ui/core/styles';
 
 export default function Options() {
     const [name,setName]=useContext(UserName);
-    const [questions,Setquestions]=useState([1,2,3,4,5,6,7,8,9,10]);
-    const [answers, setAnswers] = useState(["none","none","none","none","none","none","none","none","none","none"]);
+    const [questions,setQuestions]=useState([]);
+    const [answers, setAnswers] = useState([]);
     let history =useHistory();
-    const [backdrop,setBackdrop]=useState(false);
+    const [backdrop,setBackdrop]=useState(true);
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -21,6 +21,36 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const classes = useStyles();
+
+useEffect(()=>{
+
+  axios.get("/exam/")
+  .then(res=>{
+    console.log(res);
+    let questionscount=res.data[res.data.length-1].questionscount;
+    setQuestions(prev=>{
+      return res.data[res.data.length-1].questions
+    })
+    for(let i=0; i<Number(questionscount);i++ ){
+      setAnswers(prev=>{
+        let dum=[...prev];
+        dum.push("none");
+        return dum;
+      })
+     
+    } 
+
+    setBackdrop(false);
+    console.log(questionscount,questions,answers);
+  })
+
+
+
+
+},[])
+
+
+
   
     return (
       <div>
@@ -38,7 +68,7 @@ const classes = useStyles();
           <div>
         
           <FormControl component="fieldset">
-        <FormLabel component="legend">{`${que} question`}</FormLabel>
+        <FormLabel component="legend">{`${i+1} question`}</FormLabel>
         <RadioGroup aria-label="gender" name="gender1" value={Number(answers[i])} onChange={(e)=>{
   
           setAnswers(prev=>{
@@ -64,20 +94,20 @@ const classes = useStyles();
   
       <Button variant="contained" color="primary" onClick={()=>{
         setBackdrop(true);
-        console.log(name);
+       
   
-        console.log(answers);
+        console.log(answers,questions);
         let tmarks=0;
   
         for(let i in answers ){
          if(!isNaN(Number(answers[i]))){
-          if(Number(answers[i])===1){
-            console.log("correct");
-            tmarks=tmarks+4;
+          if(Number(answers[i])===Number(questions[i].answer)){
+            console.log("correct",i);
+            tmarks=tmarks+Number(questions[i].correct);
           }
          else{
-            console.log("rong");
-           tmarks=tmarks-1;
+            console.log("wrong",i);
+           tmarks=tmarks+Number(questions[i].wrong);
           }
           }
         }

@@ -19,9 +19,12 @@ connection.once("open",()=>{
 }) 
 
 const usersRouter=require("./routes/users");
+const examsRouter=require("./routes/exam");
 
 
 app.use("/user",usersRouter);
+
+app.use("/exam",examsRouter);
 
 if(process.env.NODE_ENV==="production"){
 
