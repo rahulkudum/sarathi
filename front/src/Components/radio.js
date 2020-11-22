@@ -6,12 +6,15 @@ import { useHistory } from "react-router-dom";
 import { UserName } from "./storage";
 import { makeStyles } from '@material-ui/core/styles';
 
+
 export default function Options() {
     const [name,setName]=useContext(UserName);
     const [questions,setQuestions]=useState([]);
     const [answers, setAnswers] = useState([]);
     let history =useHistory();
-    const [backdrop,setBackdrop]=useState(true);
+    const [backdrop,setBackdrop]=useState(false);
+    const [show,setShow]=useState(false);
+    const[show2,setShow2]=useState(false);
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -24,6 +27,8 @@ const classes = useStyles();
 
 useEffect(()=>{
 
+if(show){
+  setBackdrop(true);
   axios.get("/exam/")
   .then(res=>{
     console.log(res);
@@ -44,10 +49,13 @@ useEffect(()=>{
     console.log(questionscount,questions,answers);
   })
 
+  
+}
+
+},[show])
 
 
 
-},[])
 
 
 
@@ -57,11 +65,13 @@ useEffect(()=>{
        <Backdrop className={classes.backdrop} open={backdrop} >
         <CircularProgress color="inherit" />
       </Backdrop>
-    <TextField id="standard-basic" label="Your Name" value={name} onChange={(e)=>{
-            setName(e.target.value)
-          }}  />
-          <br />
-          <br />
+
+{show ?
+<div>
+
+
+
+   
       {questions.map((que,i)=>{
   
         return(
@@ -141,6 +151,47 @@ useEffect(()=>{
       }} >
           Submit
         </Button>
+
+        </div>  :<div>
+
+        <TextField id="standard-basic" label="Your Name" value={name} onChange={(e)=>{
+          
+            setName(e.target.value)
+          }}  />
+       <Button variant="contained" color="primary" onClick={()=>{
+         setBackdrop(true);
+         axios.get("/user/")
+         .then(res=>{
+           let exsists=false;
+           setBackdrop(false);
+          
+           for(let i=0;i<res.data.length;i++){
+             
+             if(res.data[i].username===name){
+               console.log("working");              
+              exsists=true;
+              setShow2(true);
+             }
+           }
+
+           if(!exsists){
+             setShow(true);
+           }
+
+          
+         })
+       }} >
+         GO
+       </Button>
+
+       {show2 ? <p>Sorry, you have already written the exam</p> :null}
+
+
+
+
+
+
+        </div>}
   
       </div>
     );

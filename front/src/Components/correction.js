@@ -8,6 +8,9 @@ function Correction(){
 
     const [questionscount,setQuestionscount]=useState(0);
     const [show,setShow]=useState(false);
+    const[pasword,setPasword]=useState("");
+    const[show2,setShow2]=useState(false);
+    const [show3,setShow3]=useState(false);
     const [questions,setQuestions]=useState([]);
     let history=useHistory();
 
@@ -30,7 +33,8 @@ const classes = useStyles();
    
   {!show ?
   <div>
-  
+  {show2 ?
+  <div>
    <TextField
    id="filled-number"
    label="Number of Questions"
@@ -65,6 +69,37 @@ const classes = useStyles();
  }} >
     Next
   </Button>
+  
+  </div> :<div>
+  <TextField
+          id="standard-password-input"
+          label="Password"
+          type="password"
+          autoComplete="current-password"
+          value={pasword}
+          onChange={(e)=>setPasword(e.target.value)}
+        />
+        <br />
+        <br />
+
+<Button variant="contained" color="primary" onClick={()=>{
+
+    if(pasword==="sarathi"){
+        setShow2(true);
+    }else{
+        setShow3(true);
+    }
+}} >
+    Go
+</Button>
+{show3 ? <p>Wrong password try again</p>: null}
+
+
+
+
+
+
+  </div> }
 </div>  : <div>
 
 {questions.map((val,i)=>{
