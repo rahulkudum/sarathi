@@ -1,20 +1,32 @@
 import React,{useState,useContext} from "react"
-import {FormControl,FormLabel,RadioGroup,FormControlLabel,Radio,Button,TextField} from "@material-ui/core"
+import {FormControl,FormLabel,RadioGroup,FormControlLabel,Radio,Button,TextField,Backdrop,CircularProgress} from "@material-ui/core"
 
 import axios from"axios"
 import { useHistory } from "react-router-dom";
 import { UserName } from "./storage";
-
+import { makeStyles } from '@material-ui/core/styles';
 
 export default function Options() {
     const [name,setName]=useContext(UserName);
     const [questions,Setquestions]=useState([1,2,3,4,5,6,7,8,9,10]);
     const [answers, setAnswers] = useState(["none","none","none","none","none","none","none","none","none","none"]);
-   let history =useHistory();
+    let history =useHistory();
+    const [backdrop,setBackdrop]=useState(false);
   
+const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
+}));
+
+const classes = useStyles();
   
     return (
       <div>
+       <Backdrop className={classes.backdrop} open={backdrop} >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     <TextField id="standard-basic" label="Your Name" value={name} onChange={(e)=>{
             setName(e.target.value)
           }}  />
@@ -51,6 +63,7 @@ export default function Options() {
       })}
   
       <Button variant="contained" color="primary" onClick={()=>{
+        setBackdrop(true);
         console.log(name);
   
         console.log(answers);
@@ -70,13 +83,21 @@ export default function Options() {
         }
   
   
-        axios.post("/user/add/",{username:name,answers:answers,marks:tmarks})
-        .then(res=>console.log(res));
+        axios.post("http://localhost:5000/user/add/",{username:name,answers:answers,marks:tmarks})
+        .then(res=>{
+          
+          setBackdrop(false);
+          
+          console.log(res)
+        
+          history.push("/result");
+        
+        });
   
        
         
 
-        history.push("/result");
+       
   
   
        
