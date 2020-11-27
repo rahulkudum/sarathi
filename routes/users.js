@@ -10,37 +10,48 @@ router.route("/").get((req,res)=>{
 
 router.route("/add").post((req,res)=>{
 
-const username=req.body.username;
-const answers=req.body.answers;
-const marks=Number(req.body.marks);
+const name=req.body.name;
+const mail=req.body.mail;
+const exams=req.body.exams;
 
 
 const newUser=new User({
-    username,
-    answers,
-    marks
+    name,
+    mail,
+    exams
 });
 
 newUser.save()
 .then(()=>res.json("sucessfully submitted"))
 .catch(err=>console.log(err));
 
-
-
-
 });
 
+router.route("/updat").post((req,res)=>{
 
-router.route("/:id").get((req,res)=>{
-    User.findById(req.params.id)
-    .then(user=>res.json(user))
-    .catch(err=>console.log(err));
+   
+    const mail=req.body.mail;
+    const exams=req.body.exams;
+    
+   User.updateOne({mail:mail},{exams:exams},(err)=>{
+       if(!err) res.send("sucessfully updated");
+   })
+    
+    });
+    
+
+
+
+router.route("/delete").post((req,res)=>{
+   User.deleteOne({name:req.body.name,mail:req.body.mail},(err)=>{
+       if(!err) res.send("secessfully deleted");
+   })
 });
 
-router.route("/:id").delete((req,res)=>{
-    User.findByIdAndDelete(req.params.id)
-    .then(()=>res.json("submission deleted"))
-    .catch(err=>console.log(err));
-});
+router.route("/find").post((req,res)=>{
+    User.findOne({mail:req.body.mail},(err,file)=>{
+        res.json(file);
+    })
+ });
 
 module.exports=router;

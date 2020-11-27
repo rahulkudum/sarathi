@@ -2,6 +2,16 @@ const express = require ("express");
 const cors = require ("cors");
 const mongoose=require("mongoose");
 const path=require("path");
+const multer=require("multer");
+const GridFsStorage=require("multer-gridfs-storage");
+const Grid=require("gridfs-stream");
+const methodOverride=require("method-override");
+
+const crypto = require('crypto');
+
+
+
+
 require("dotenv").config();
 
 const app=express();
@@ -9,17 +19,132 @@ const app=express();
 
 app.use(cors());
 app.use(express.json());
+app.use(methodOverride("_method"));
 
-const uri=process.env.ATLAS_URI;
+const uri= "mongodb+srv://rahul:xz7bpTm8ILa2Vwdb@cluster0.zkzfs.mongodb.net/trial3?retryWrites=true&w=majority";
 
 mongoose.connect(uri,{useNewUrlParser:true,useCreateIndex:true,useUnifiedTopology:true});
 const connection=mongoose.connection;
+
+
+let gfs;
+
+
+
 connection.once("open",()=>{
+    gfs=Grid(connection.db,mongoose.mongo);
+    gfs.collection("uploads");
+    
     console.log("mongidb sucess");
 }) 
 
+
+const storage = new GridFsStorage({
+    url: uri,
+    file: (req, file) => {
+      return new Promise((resolve, reject) => {
+        crypto.randomBytes(16, (err, buf) => {
+          if (err) {
+            return reject(err);
+          }
+          const filename = buf.toString('hex') + path.extname(file.originalname);
+          const fileInfo = {
+            filename: filename,
+            bucketName: 'uploads'
+          };
+          resolve(fileInfo);
+        });
+      });
+    }
+  });
+  const upload = multer({ storage });
+
+
+
 const usersRouter=require("./routes/users");
 const examsRouter=require("./routes/exam");
+
+
+
+
+app.post("/upload",upload.single("file"),(req,res)=>{
+
+ res.json({file: req.file});
+
+});
+
+
+
+
+app.get("/files",(req,res)=>{
+
+gfs.files.find().toArray((err,files)=>{
+
+
+
+    return res.json(files);
+    
+})
+
+
+
+})
+
+
+
+  
+
+
+
+  
+app.get("/images/:filename",(req,res)=>{
+
+ 
+
+  gfs.files.findOne({filename:req.params.filename},(err,file)=>{
+  
+  const readstream=gfs.createReadStream(file.filename);
+  readstream.pipe(res);
+  
+     
+      
+  })
+
+
+  // gfs.files.find((err,file)=>{
+  //   console.log(file);
+
+  //   for(let i=file.length-1;i>=0;i--){
+  //     if(file[i].filename===req.params.filename){
+  //       const readstream=gfs.createReadStream(file[i].filename);
+  //       readstream.pipe(res);
+  //       break;
+  //     }
+  //   }
+  
+  
+  // })
+
+})
+
+
+  app.post("/images/delete",(req,res)=>{
+
+  
+    gfs.files.deleteOne({filename:req.body.filename},(err)=>{
+      if(!err) res.send(req.body.filename)
+    })
+    
+    
+
+
+  })
+
+
+
+
+
+
 
 
 app.use("/user",usersRouter);

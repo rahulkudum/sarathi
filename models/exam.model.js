@@ -3,8 +3,11 @@ const mongoose=require("mongoose");
 const Schema=mongoose.Schema;
 
 const examSchema=new Schema({
-questionscount:{
-    type:Number,required:true
+examname:{
+    type:String,required:true
+},
+examtype:{
+    type:String,required:true
 },
 questions:{
     type:Array,
@@ -12,7 +15,7 @@ questions:{
 
 },
 
-},{timestamps:true,}
+},{timestamps:true}
 );
 
 const Exam=mongoose.model("Exam",examSchema);
