@@ -1,20 +1,28 @@
 import { Button,TextField,Backdrop,CircularProgress } from "@material-ui/core";
-import React,{useState} from "react";
+import React,{useContext, useState,useEffect} from "react";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import { Route, useHistory,useRouteMatch,Switch } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
+import Question from "./question";
+import { ExamName, ExamType, Questions,Modify } from "./storage";
 
 function Correction(){
-
-    const [questionscount,setQuestionscount]=useState(0);
-    const [show,setShow]=useState(false);
+  let { path, url } = useRouteMatch();
+    
     const[pasword,setPasword]=useState("");
     const[show2,setShow2]=useState(false);
-    const [show3,setShow3]=useState(false);
-    const [questions,setQuestions]=useState([]);
+  
+    const [questions,setQuestions]=useContext(Questions);
     let history=useHistory();
 
     const [backdrop,setBackdrop]=useState(false);
+    let examtypes=["mains","neet","advanced"];
+    const[examName,setExamName]=useContext(ExamName);
+    const [examType,setExamType]=useContext(ExamType);
+  
+    const [examList,setExamList]=useState([]);
+    const [modify,setModify]=useContext(Modify);
+    const [resume,setResume]=useState(true);
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -24,51 +32,166 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const classes = useStyles();
+useEffect(()=>{
+  setBackdrop(true);
+
+  axios.get("/exam/")
+  .then(res=>{
+    setExamList(res.data);
+    setBackdrop(false);
+  })
+
+},[])
+  
+
 
    return( 
-   <div>
-    <Backdrop className={classes.backdrop} open={backdrop} >
-    <CircularProgress color="inherit" />
-    </Backdrop>
+
+    <Switch >
+
+<Route exact path={path} >
+
    
-  {!show ?
+   <div>
+    
+   
+  
   <div>
   {show2 ?
   <div>
+  <Backdrop className={classes.backdrop} open={backdrop} >
+    <CircularProgress color="inherit" />
+    </Backdrop>
    <TextField
    id="filled-number"
-   label="Number of Questions"
-   type="number"
+   label="Exam Name"
+   type="text"
    InputLabelProps={{
      shrink: true,
    }}
-   variant="filled"
-   value={questionscount}
-   onChange={(e)=>{setQuestionscount(e.target.value)}}
+  
+   value={examName}
+   onChange={(e)=>{setExamName(e.target.value);
+   setResume(false)}}
  />
  <br />
  <br />
+ <TextField
+          id="outlined-select-currency-native"
+          select
+          label="Exam Type"
+          value={examType}
+          onChange={(e)=>{setExamType(e.target.value);
+          setResume(false)}}
+          SelectProps={{
+            native: true,
+          }}
+          helperText="Please select the exam type"
+          variant="outlined"
+        >
+        {examtypes.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+          </TextField>
+          <br />
+          <br />
+
+
+
+          
  <Button variant="contained" color="primary" onClick={()=>{
-     for(let i=0;i<questionscount;i++ ){
+
+   if(examName){
+   if(resume){
+     history.push(`${url}/1`);
+   }else{
+
+  setQuestions([]);
+
+if(examType==="mains"){
+
+
+  
+     for(let i=0;i<5;i++ ){
 
          setQuestions(prev=>{
             let dum=[...prev];
-            dum.push({answer:"",correct:"",wrong:""});
+            dum.push({answer:"",correct:"4",wrong:"-1",image:null});
             return dum;
 
 
          })
          
               }
+
+              
+}
+console.log(questions);
+
+history.push(`${url}/1`)
      
      
-     setShow(true)
+   }    
  
- 
+   }else{
+     alert("please write the exam name");
+   }
  
  }} >
     Next
   </Button>
+
+
+  {examList ? <h2>Modify or Delete previous Exams</h2> :<h2>No Previous Exams Found</h2>}
+{examList.map((val)=>{
+  if( val ){
+return(
+  
+
+  <div>
+<p style={{display:"inline-block",width:"500px"}}>{val.examname}({val.examtype})</p>
+<Button variant="contained" color="primary" onClick={()=>{
+  setExamName(val.examname);
+  setExamType(val.examtype);
+  setQuestions(val.questions);
+  setModify(true);
+  history.push(`${url}/1`);
+}}>
+  Modify
+</Button>
+<Button style={{margin:"20px"}} variant="contained" color="secondary" onClick={()=>{
+  setBackdrop(true);
+  axios.post("/exam/delete",{examname:val.examname,examtype:val.examtype})
+  .then(res=>{
+    setExamList(prev=>{
+      let dum=[...prev];
+     dum= dum.map(item=>{
+       if (item.examname!==val.examname&&item.examtype!==val.examtype) return item });
+      console.log(dum);
+      return dum;
+    })
+
+    console.log(examList);
+    setBackdrop(false);
+  });
+
+}}>
+  Delete
+</Button>
+
+
+
+  </div> 
+  
+);
+  }
+
+
+})}
+
+
   
   </div> :<div>
   <TextField
@@ -87,12 +210,11 @@ const classes = useStyles();
     if(pasword==="sarathi"){
         setShow2(true);
     }else{
-        setShow3(true);
+       alert("wrong password, try again")
     }
 }} >
     Go
 </Button>
-{show3 ? <p>Wrong password try again</p>: null}
 
 
 
@@ -100,121 +222,20 @@ const classes = useStyles();
 
 
   </div> }
-</div>  : <div>
+</div>  
 
-{questions.map((val,i)=>{
-
-    return(
-        <div>
-
-<p>Question No {i+1} </p>
-
-
-    <TextField
-   id="filled-number"
-   label="Answer"
-   type="number"
-   InputLabelProps={{
-     shrink: true,
-   }}
-   variant="filled"
-   value={val.answer}
-   onChange={(e)=>{
-    setQuestions(prev=>{
-            let dum=[...prev];
-            dum[i].answer=e.target.value;
-            return dum;
-
-
-         })
-   }}
- />
-
-<TextField
-   id="filled-number"
-   label="Correct Marks"
-   type="number"
-   InputLabelProps={{
-     shrink: true,
-   }}
-   variant="filled"
-   value={val.correct}
-   onChange={(e)=>{
-    setQuestions(prev=>{
-            let dum=[...prev];
-            dum[i].correct=e.target.value;
-            return dum;
-
-
-         })
-   }}
- />
-
-
-<TextField
-   id="filled-number"
-   label="Wrong Marks"
-   type="number"
-   InputLabelProps={{
-     shrink: true,
-   }}
-   variant="filled"
-   value={val.wrong}
-   onChange={(e)=>{
-    setQuestions(prev=>{
-            let dum=[...prev];
-            dum[i].wrong=e.target.value;
-            return dum;
-
-
-         })
-   }}
- />
-
-<br />
-
- </div>
-
-    );
-
-
-
-
-
-})}
-<br />
-<Button variant="contained" color="primary" onClick={()=>{
-    console.log(questions);
-    axios.post("/exam/add",{questionscount:questionscount,questions:questions})
-    .then(res=>{
-        console.log(res);
-        setBackdrop(false);
-        history.push("/");
-    })
-    
-
-
-
-
-}} >
-    Submit
-</Button>
-
-
-
-
-</div>
-
-
-
-}
-
-
-
- 
 
    </div>
-   
+   </Route>
+<Route path={`${path}/:ind`}>
+
+<Question   />
+
+</Route>
+
+
+
+   </Switch>
    
     );
 
