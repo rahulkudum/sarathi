@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 const classes = useStyles();
 useEffect(()=>{
   setBackdrop(true);
+  setExamType("mains");
 
   axios.get("/exam/")
   .then(res=>{
