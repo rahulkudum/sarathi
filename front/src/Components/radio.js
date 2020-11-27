@@ -100,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
 
        setTime2(Date.now());
   
-     if(Date.now()-time>=10800000) {
+     if(Date.now()-time>=300000) {
        setBackdrop(true);
 
       let marks=0;

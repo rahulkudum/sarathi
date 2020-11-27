@@ -114,7 +114,8 @@ history.push(`${url}/paper/1`);
 }
 
             }else{
-               alert("Sorry You are not eligible to write the exam")
+                setBackdrop(false);
+               alert("Sorry You are not eligible to write the exam");
             }
         })
     }}
