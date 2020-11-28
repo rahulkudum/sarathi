@@ -73,7 +73,7 @@ useEffect(() => {
 <p>To write {examName} ({examType}) Please Login through your G-mail</p>
 <GoogleLogin
 
-    clientId="526565895378-md97pueiv8m2t3c682eamv293tt4gaa6.apps.googleusercontent.com"
+    clientId="526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com"
     buttonText="Login through Gmail"
     onSuccess={(res)=>{
         setBackdrop(true);
@@ -134,7 +134,7 @@ history.push(`${url}/paper/1`);
 
 <GoogleLogin
 
-    clientId="526565895378-md97pueiv8m2t3c682eamv293tt4gaa6.apps.googleusercontent.com"
+    clientId="526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com"
     buttonText="Login through Gmail"
     onSuccess={(res)=>{
         setBackdrop(true);
