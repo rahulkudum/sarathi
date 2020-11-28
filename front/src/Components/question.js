@@ -4,6 +4,7 @@ import axios from "axios";
 import { Route, useHistory,useParams } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import { ExamName, ExamType, Modify, Questions } from "./storage";
+import ScrollToTop from "./scroll";
 
 
 
@@ -69,6 +70,7 @@ useEffect(()=>{
  
     return(
         <div className={classes.root1}>
+        <ScrollToTop />
         <Backdrop className={classes.backdrop} open={backdrop} >
     <CircularProgress color="inherit" />
     </Backdrop>

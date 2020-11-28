@@ -4,6 +4,7 @@ import axios from "axios";
 import { Route, useHistory,useParams, useRouteMatch } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import { Answers, ExamName, ExamType, Marks,Time,Time2,UserName } from "./storage";
+import ScrollToTop from "./scroll";
 
 
 
@@ -35,7 +36,7 @@ let questionType;
  
 if(examType==="mains"){
 
-  if(nind==5||nind===6||nind===21 || nind===22 || nind===23 || nind===24 || nind===25 
+  if(  nind===21 || nind===22 || nind===23 || nind===24 || nind===25 
     || nind===46 || nind===47 || nind===48 || nind===49 || nind===50
     || nind===71 || nind===72 || nind===73 || nind===74 || nind===5
     
@@ -92,18 +93,27 @@ const useStyles = makeStyles((theme) => ({
  
     return(
         <div className={classes.root1}>
+        <ScrollToTop />
         <Backdrop className={classes.backdrop} open={backdrop} >
     <CircularProgress color="inherit" />
     </Backdrop>
         <Grid container >
-        <Grid item lg={12} >
-            <h1 style={{display:"inline-block"}}>Sarathi Online Exam </h1>
-            <h1 style={{display:"inline-block" ,marginLeft:"20px"}}> You got {marks.total} marks </h1>
+        <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+            <h3 style={{fontFamily:"cursive"}}>Sarathi Mains Exam</h3>
+            <Chip size="large"
+            label={`You got ${marks.total} marks`}
+            color="primary"
+           
+
+
+          />
+
+           
         
             
         </Grid>
         <Grid item  xl={8} lg={8}   md={12} sm={12} xs={12} >
-        <h2 style={{textAlign:"center"}}>Question {nind}</h2>
+        <h3 style={{textAlign:"center"}}>Question {nind}</h3>
       
         
         <div>

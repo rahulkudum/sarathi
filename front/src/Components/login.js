@@ -69,11 +69,11 @@ useEffect(() => {
     <CircularProgress color="inherit" />
     </Backdrop>
     <h1 style={{fontFamily:"cursive"}}>Sarthi Academy</h1>
-    <div style={{border: "1px solid blue"}}>
-<p>To write {examName} ({examType}) Please Login through your G-mail</p>
+    <div style={{border: "1px solid black"}}>
+<p>To write {examName} please login through your G-mail</p>
 <GoogleLogin
 
-    clientId="526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com"
+    clientId="526565895378-md97pueiv8m2t3c682eamv293tt4gaa6.apps.googleusercontent.com"
     buttonText="Login through Gmail"
     onSuccess={(res)=>{
         setBackdrop(true);
@@ -130,17 +130,27 @@ history.push(`${url}/paper/1`);
    
 />
 
-<p>To see your Dahboard Please Login through your G-mail </p>
+<br />
+<br />
+<br />
+
+
+<p>To see your Dashboard please login through your G-mail </p>
 
 <GoogleLogin
 
-    clientId="526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com"
+    clientId="526565895378-md97pueiv8m2t3c682eamv293tt4gaa6.apps.googleusercontent.com"
     buttonText="Login through Gmail"
     onSuccess={(res)=>{
         setBackdrop(true);
         axios.post("/user/find",{mail:res.profileObj.email})
         .then(resp=>{
+            if(resp.data){
         history.push(`/studentsdashboard/${res.profileObj.email}`)
+            }else{
+                setBackdrop(false);
+               alert("Sorry You are not eligible to write Exams");
+            }
         })
     }}
     onFailure={(res)=>{
@@ -151,7 +161,7 @@ history.push(`${url}/paper/1`);
    
 />
 
-<br />
+<p>(you may see it after writing the exam)</p>
 
 
 </div>
@@ -183,3 +193,8 @@ history.push(`${url}/paper/1`);
 }
 
 export default Login;
+
+
+// local 526565895378-md97pueiv8m2t3c682eamv293tt4gaa6.apps.googleusercontent.com
+
+// floating 526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com
