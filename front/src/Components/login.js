@@ -68,10 +68,12 @@ useEffect(() => {
 <Backdrop className={classes.backdrop} open={backdrop} >
     <CircularProgress color="inherit" />
     </Backdrop>
-<h1>To write {examName} ( {examType} ) Please Login through your G-mail</h1>
+    <h1 style={{fontFamily:"cursive"}}>Sarthi Academy</h1>
+    <div style={{border: "1px solid blue"}}>
+<p>To write {examName} ({examType}) Please Login through your G-mail</p>
 <GoogleLogin
-style={{margin:"300px"}} 
-    clientId="526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com"
+
+    clientId="526565895378-md97pueiv8m2t3c682eamv293tt4gaa6.apps.googleusercontent.com"
     buttonText="Login through Gmail"
     onSuccess={(res)=>{
         setBackdrop(true);
@@ -99,7 +101,7 @@ questions.map((val,i)=>{
 
 setAnswers(prev=>{
    let dum=[...prev];
-   dum.push({answer:"",danswer:"",visited:false,review:false,status:"",correct:""});
+   dum.push({answer:"",danswer:"",visited:false,review:false,status:"",correct:"",time:0,image:val.image});
    return dum;
 })
 })
@@ -116,18 +118,43 @@ history.push(`${url}/paper/1`);
             }else{
                 setBackdrop(false);
                alert("Sorry You are not eligible to write the exam");
+               
             }
         })
     }}
     onFailure={(res)=>{
-        alert("You have failed to login in, Please try again")
+        setBackdrop(false);
+        alert("You have failed to login in, Please try again");
     }}
     cookiePolicy={'single_host_origin'}
    
 />
 
+<p>To see your Dahboard Please Login through your G-mail </p>
+
+<GoogleLogin
+
+    clientId="526565895378-md97pueiv8m2t3c682eamv293tt4gaa6.apps.googleusercontent.com"
+    buttonText="Login through Gmail"
+    onSuccess={(res)=>{
+        setBackdrop(true);
+        axios.post("/user/find",{mail:res.profileObj.email})
+        .then(resp=>{
+        history.push(`/studentsdashboard/${res.profileObj.email}`)
+        })
+    }}
+    onFailure={(res)=>{
+        setBackdrop(false);
+        alert("You have failed to login in, Please try again");
+    }}
+    cookiePolicy={'single_host_origin'}
+   
+/>
+
+<br />
 
 
+</div>
 
 
 </div>

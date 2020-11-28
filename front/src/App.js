@@ -33,10 +33,6 @@ let history=useHistory();
    Students Dashboard
   </Button>
 
-
-
-  
-
 </Route>
 
 <Route  path="/writexam">

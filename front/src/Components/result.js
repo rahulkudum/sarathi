@@ -1,10 +1,10 @@
-import { Button,TextField,Backdrop,CircularProgress,RadioGroup,FormControlLabel,FormControl,FormLabel,Radio,GridList,GridListTile,Grid } from "@material-ui/core";
+import { Button,TextField,Backdrop,CircularProgress,RadioGroup,Chip,FormControlLabel,FormControl,FormLabel,Radio,GridList,GridListTile,Grid } from "@material-ui/core";
 import React,{useContext, useEffect, useState} from "react";
 import axios from "axios";
 import { Route, useHistory,useParams, useRouteMatch } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
-import { Answers, ExamName, ExamType, Marks, Questions,Time,Time2,UserName } from "./storage";
-import { set } from "mongoose";
+import { Answers, ExamName, ExamType, Marks,Time,Time2,UserName } from "./storage";
+
 
 
 function Result(){
@@ -19,7 +19,7 @@ let questionType;
 
 
  
-    const [questions,setQuestions]=useContext(Questions);
+   
     const [examName,setExamName]=useContext(ExamName);
     const [examType,setExamType]=useContext(ExamType);
   
@@ -71,6 +71,24 @@ const useStyles = makeStyles((theme) => ({
   let corrected=0;
   let wronged=0;
   let lefted=0;
+
+  function msToTime(duration) {
+    var milliseconds = parseInt((duration % 1000) / 100),
+      seconds = Math.floor((duration / 1000) % 60),
+      minutes = Math.floor((duration / (1000 * 60)) % 60),
+      hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+  
+    hours = (hours < 10) ? "0" + hours : hours;
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
+  
+    return  "Time: "+minutes + ":" + seconds ;
+  };
+
+  let butcolor;
+  if(answers[nind-1].status==="correct") butcolor="primary";
+  else if(answers[nind-1].status==="wrong") butcolor="secondary";
+  else butcolor=""; 
  
     return(
         <div className={classes.root1}>
@@ -80,31 +98,32 @@ const useStyles = makeStyles((theme) => ({
         <Grid container >
         <Grid item lg={12} >
             <h1 style={{display:"inline-block"}}>Sarathi Online Exam </h1>
-            <h1 style={{display:"inline-block" ,marginLeft:"20px"}}> You got {marks} marks </h1>
+            <h1 style={{display:"inline-block" ,marginLeft:"20px"}}> You got {marks.total} marks </h1>
         
             
         </Grid>
-        <Grid item lg={8}   xs={12} sm={12} >
+        <Grid item  xl={8} lg={8}   md={12} sm={12} xs={12} >
         <h2 style={{textAlign:"center"}}>Question {nind}</h2>
       
         
         <div>
        
        
-        <div style={{width: "800px", 
+        <div style={{width: "100%", 
     height:"500px",
     overflowX:"scroll",
     overflowY:"scroll",
     whiteSpace: "nowrap",
+    textAlign:'center',
    
     margin:"auto"
     }}>
 
-    {imageloading ? <div> <CircularProgress />  <img src={`/images/${questions[nind-1].image}`} onLoad={()=>{
+    {imageloading ? <div> <CircularProgress />  <img src={`/images/${answers[nind-1].image}`} onLoad={()=>{
          setImageloading(false);
          console.log(imageloading);
         }} />
-        </div>:<img src={`/images/${questions[nind-1].image}`}  />
+        </div>:<img src={`/images/${answers[nind-1].image}`}  />
         }
         
         </div>
@@ -125,11 +144,37 @@ const useStyles = makeStyles((theme) => ({
   </RadioGroup>
 </FormControl> :<TextField id="standard-basic" label="Answer" style={{marginBottom:"10px"}} value={answers[nind-1].answer}  />}
 
- ``
+ <br />
+ <div style={{display:"flex",justifyContent:"space-around"}}>
 
- <p>Correct Answer: {answers[nind-1].correct} </p>
+ <Chip size="large" 
+ label={msToTime(answers[nind-1].time)} 
+ color="primary"
 
-  <hr style={{width:"800px"}}/>
+
+ />
+
+<Chip size="large" 
+ label={`Correct Answer: ${answers[nind-1].correct}`} 
+ color="primary"
+
+
+ />
+
+<Chip size="large" 
+ label={answers[nind-1].status} 
+ color={butcolor}
+
+ />
+
+
+
+
+ </div>
+
+  <hr style={{width:"100%"}}/>
+
+  <div style={{backgroundColor:"#f1f6f9"}}>
 
   <Button  variant="contained" style={{margin:"5px",backgroundColor:"#e6e6e6",borderColor: "#adadad"}} onClick={()=>{
     if(nind!==1) history.push(`/writexam/${examName}_${examType}/result/${nind-1}`);
@@ -156,7 +201,7 @@ const useStyles = makeStyles((theme) => ({
   </Button>
 
 
-  
+  </div>
 
 </div>
 
@@ -164,13 +209,14 @@ const useStyles = makeStyles((theme) => ({
         
       
         </Grid>
-        <Grid item lg={4}  sm={12} xs={12}>
-        <div style={{width: "480px", 
-    height:"250px",
+        <Grid item xl={4} lg={4} md={12}  sm={12} xs={12}>
+        <div style={{width: "100%", 
+    height:"220px",
     
     overflowX:"scroll",
     
-   
+    whiteSpace: "nowrap",
+    border: "1px solid black",
     margin:"auto"
     }}>
       
@@ -190,6 +236,15 @@ const useStyles = makeStyles((theme) => ({
         </Button>
 
         <p style={{display:"inline-block"}}>Correct Answers</p>
+        <Chip size="large" 
+ label={`Positve marks: ${marks.positive}`} 
+ color="primary"
+  style={{marginLeft:"15px"}}
+
+ />
+
+
+
 <br /> 
 
         <Button color="secondary" style={{margin:"10px"}} variant="contained"  
@@ -199,6 +254,13 @@ const useStyles = makeStyles((theme) => ({
            {wronged} 
        </Button>
        <p style={{display:"inline-block"}}>Wrong Answers</p>
+       <Chip size="large" 
+ label={`Negative marks: ${marks.negative}`} 
+ color="secondary"
+ style={{marginLeft:"15px"}}
+
+ />
+        
 <br />
        <Button style={{margin:"10px"}} variant="contained"  
        
@@ -208,13 +270,20 @@ const useStyles = makeStyles((theme) => ({
        </Button>
 
        <p style={{display:"inline-block"}}>Unattempted</p>
+       <Chip size="large" 
+ label={`Total marks: ${marks.total}`} 
+ 
+ style={{marginLeft:"38px"}}
+
+ />
+        
 
       
           
        
      </div>
    <br />
-        <div style={{width: "480px", 
+        <div style={{width: "100%", 
     height:"400px",
     
     overflowY:"scroll",
@@ -223,9 +292,9 @@ const useStyles = makeStyles((theme) => ({
     margin:"auto"
     }}>
       
-        {questions.map((tile,i) => {
-            if(answers[i].status==="correct") bcolor="primary";
-            else if(answers[i].status==="wrong") bcolor="secondary";
+        {answers.map((val,i) => {
+            if(val.status==="correct") bcolor="primary";
+            else if(val.status==="wrong") bcolor="secondary";
             else bcolor="";
   
 

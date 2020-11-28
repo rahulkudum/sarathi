@@ -33,9 +33,9 @@ let questionType;
  
 if(examType==="mains"){
 
-  if(nind==5||nind===6||nind===21 || nind===22 || nind===23 || nind===24 || nind===25 
+  if( nind===5|| nind===21 || nind===22 || nind===23 || nind===24 || nind===25 
     || nind===46 || nind===47 || nind===48 || nind===49 || nind===50
-    || nind===71 || nind===72 || nind===73 || nind===74 || nind===5
+    || nind===71 || nind===72 || nind===73 || nind===74 || nind===75
     
     
     ){
@@ -67,16 +67,34 @@ const useStyles = makeStyles((theme) => ({
   let areview=0;
 
   useEffect(()=>{
-    console.log("gyhbj")
+   
    setAnswers(prev=>{
      let dum=[...prev];
      dum[nind-1].visited=true;
-     dum[nind-1].color="secondary"
+     
      return dum;
    })
   
     console.log(answers[nind-1].visited);
      setImageloading(true);
+
+
+   let atime= setInterval(() => {
+    
+
+      setAnswers(prev=>{
+        let dum=[...prev];
+       dum[nind-1].time=dum[nind-1].time+500;
+        
+        return dum;
+      })
+       
+     }, 1000);
+
+     return(()=>{
+
+      clearInterval(atime);
+     })
 
     
   },[nind]);
@@ -100,25 +118,32 @@ const useStyles = makeStyles((theme) => ({
 
        setTime2(Date.now());
   
-     if(Date.now()-time>=300000) {
-       setBackdrop(true);
+     if(Date.now()-time>=20000) {
+      
 
       let marks=0;
+      let positive=0;
+      let negative=0;
+
 
       questions.map((val,i)=>{
         if(answers[i].answer){
           if(val.answer===answers[i].answer){
               marks=marks+Number(val.correct);
+              positive=positive+Number(val.correct);
               setAnswers(prev=>{
                 let dum=[...prev];
                 dum[i].status="correct";
+                dum[i].correct=val.answer;
                 return dum;
               })
           }else{
             marks=marks+Number(val.wrong);
+            negative=negative+Number(val.wrong);
               setAnswers(prev=>{
                 let dum=[...prev];
                 dum[i].status="wrong";
+                dum[i].correct=val.answer;
                 return dum;
               })
 
@@ -127,15 +152,24 @@ const useStyles = makeStyles((theme) => ({
           setAnswers(prev=>{
                 let dum=[...prev];
                 dum[i].status="left";
+                dum[i].correct=val.answer;
                 return dum;
               })
 
 
         }
       })
+      setMarks(prev=>{
+        let dum={...prev};
+        dum.total=marks;
+        dum.positive=positive;
+        dum.negative=negative;
+        return dum;
+      });
 
-
-
+   
+console.log("gvjbhk");
+        clearInterval(rtime);
      axios.post("/user/find",{mail:mail})
      .then(res=>{
 
@@ -150,7 +184,7 @@ for(let i=0;i<res.data.exams.length;i++ ){
 if(exsists) {
   
   setBackdrop(false);
-  clearInterval(rtime);
+  
   alert("sorry you have already submitted answers for this exam");
 
 history.push(`/writexam/${examName}_${examType}`);
@@ -159,11 +193,12 @@ history.push(`/writexam/${examName}_${examType}`);
 
 
       let exams=res.data.exams;
+      console.log("fvgjnmkl",tmarks);
       exams.push({
         examname:examName,
         examtype:examType,
         answers:answers,
-        marks:marks
+        marks:{total:marks,positive:positive,negative:negative}
       });
 
       console.log(marks,exams); 
@@ -171,9 +206,9 @@ history.push(`/writexam/${examName}_${examType}`);
       axios.post("/user/updat",{mail:mail,exams:exams})
       .then(res=>{
         console.log(res);
-        setMarks(marks);
+       
         setBackdrop(false);
-        clearInterval(rtime);
+        
         history.push(`/writexam/${examName}_${examType}/result/1`)
       })
 }
@@ -182,7 +217,7 @@ history.push(`/writexam/${examName}_${examType}`);
 
 
         
-
+         
 
      }
      
@@ -210,20 +245,22 @@ history.push(`/writexam/${examName}_${examType}`);
             <h1 style={{display:"inline-block"}}>{msToTime(10800000-(time2-time))}</h1>
             
         </Grid>
-        <Grid item lg={8}   xs={12} sm={12}  >
+        <Grid item xl={8} lg={8}   md={12} sm={12} xs={12} >
         <h2 style={{textAlign:"center"}}>Question {nind}</h2>
       
         
         <div>
        
        
-        <div style={{width: "800px", 
+        <div style={{width: "100%", 
     height:"500px",
     overflowX:"scroll",
     overflowY:"scroll",
     whiteSpace: "nowrap",
-   
-    margin:"auto"
+  textAlign:"center",
+  margin:"auto"
+  
+  
     }}>
 
     {imageloading ? <div> <CircularProgress />  <img src={`/images/${questions[nind-1].image}`} onLoad={()=>{
@@ -260,7 +297,7 @@ return dum;
     <FormControlLabel value="3" control={<Radio />} label="3)" />
     <FormControlLabel value="4" control={<Radio />} label="4)" />
   </RadioGroup>
-</FormControl> :<TextField id="standard-basic" label="Answer" style={{marginBottom:"10px"}} value={answers[nind-1].danswer} onChange={(e)=>{setAnswers(prev=>{
+</FormControl> :<TextField id="standard-basic" label="round-off to TWO decimal places" style={{marginBottom:"10px",width:"400px"}} value={answers[nind-1].danswer} onChange={(e)=>{setAnswers(prev=>{
   
   let dum=[...prev];
   dum[nind-1].danswer=e.target.value;
@@ -272,7 +309,7 @@ return dum;
 
   <br />
 
-  <Button variant="contained" style={{backgroundColor:"#43d001",color:"white",fontSize:15,margin:"5px"}} onClick={()=>{
+  <Button variant="contained" style={{backgroundColor:"#43d001",color:"white",fontSize:15,marginLeft:"0px",marginRight:"15px"}} onClick={()=>{
     if(answers[nind-1].danswer || answers[nind-1].answer){
 
     setAnswers(prev=>{
@@ -281,7 +318,7 @@ return dum;
      
       return dum;
     })
-    if(nind!==5)     history.push(`/writexam/${examName}_${examType}/paper/${nind+1}`);
+    if(nind!==75)     history.push(`/writexam/${examName}_${examType}/paper/${nind+1}`);
     else history.push(`/writexam/${examName}_${examType}/paper/1`);
 
     }else{
@@ -315,7 +352,7 @@ return dum;
       dum[nind-1].review=true;
       return dum;
     })
-    if(nind!==5) history.push(`/writexam/${examName}_${examType}/paper/${nind+1}`);
+    if(nind!==75) history.push(`/writexam/${examName}_${examType}/paper/${nind+1}`);
     else history.push(`/writexam/${examName}_${examType}/paper/1`);
 
     }else{
@@ -332,36 +369,40 @@ return dum;
       dum[nind-1].review=true;
       return dum;
     })
-    if(nind!==5) history.push(`/writexam/${examName}_${examType}/paper/${nind+1}`);
+    if(nind!==75) history.push(`/writexam/${examName}_${examType}/paper/${nind+1}`);
     else history.push(`/writexam/${examName}_${examType}/paper/1`);
   }}>
  Mark for Review and Next 
   </Button>
 
-  <hr style={{width:"800px"}}/>
+  <hr />
+  <div style={{backgroundColor:"#f1f6f9"}}>
 
-  <Button  variant="contained" style={{margin:"5px",backgroundColor:"#e6e6e6",borderColor: "#adadad"}} onClick={()=>{
+  <Button  variant="contained" style={{margin:"5px",backgroundColor:"#e6e6e6",borderColor: "#adadad",marginRight:"30px"}} onClick={()=>{
     if(nind!==1) history.push(`/writexam/${examName}_${examType}/paper/${nind-1}`);
-    else history.push(`/writexam/${examName}_${examType}/paper/5`);
+    else history.push(`/writexam/${examName}_${examType}/paper/75`);
   }}  >
     Back
   </Button>
 
-  <Button variant="contained" style={{margin:"5px",backgroundColor:"#e6e6e6",borderColor: "#adadad"}} onClick={()=>{
-      if(nind!==5) history.push(`/writexam/${examName}_${examType}/paper/${nind+1}`);
+  <Button variant="contained" style={{margin:"5px",backgroundColor:"#e6e6e6",borderColor: "#adadad",marginRight:"100px"}} onClick={()=>{
+      if(nind!==75) history.push(`/writexam/${examName}_${examType}/paper/${nind+1}`);
     else history.push(`/writexam/${examName}_${examType}/paper/1`);
   }}  >
     Next
   </Button>
 
-  <Button variant="contained" style={{margin:"5px",backgroundColor:"#43d001",color:"white"}} onClick={()=>{
+  <Button variant="contained" style={{margin:"5px",backgroundColor:"#43d001",color:"white",width:"300px"}} onClick={()=>{
       let marks=0;
+      let positive=0;
+      let negative=0;
       setBackdrop(true);
 
       questions.map((val,i)=>{
         if(answers[i].answer){
           if(val.answer===answers[i].answer){
               marks=marks+Number(val.correct);
+              positive=positive+Number(val.correct);
               setAnswers(prev=>{
                 let dum=[...prev];
                 dum[i].status="correct";
@@ -370,6 +411,7 @@ return dum;
               })
           }else{
             marks=marks+Number(val.wrong);
+            negative=negative+Number(val.wrong);
               setAnswers(prev=>{
                 let dum=[...prev];
                 dum[i].status="wrong";
@@ -390,6 +432,17 @@ return dum;
         }
       })
 
+      setMarks(prev=>{
+           let dum={...prev};
+           dum.total=marks;
+           dum.positive=positive;
+           dum.negative=negative;
+           return dum;
+         });
+
+
+      
+
      axios.post("/user/find",{mail:mail})
      .then(res=>{
        let exsists=false;
@@ -405,6 +458,9 @@ if(exsists) {setBackdrop(false);
 history.push(`/writexam/${examName}_${examType}`);
 }else{
 
+ 
+         console.log(tmarks);
+
 
 
        let exams=res.data.exams;
@@ -412,7 +468,7 @@ history.push(`/writexam/${examName}_${examType}`);
          examname:examName,
          examtype:examType,
          answers:answers,
-         marks:marks
+         marks:{total:marks,positive:positive,negative:negative}
        });
 
        console.log(marks,exams); 
@@ -420,7 +476,7 @@ history.push(`/writexam/${examName}_${examType}`);
        axios.post("/user/updat",{mail:mail,exams:exams})
        .then(res=>{
          console.log(res);
-         setMarks(marks);
+         
          setBackdrop(false);
          history.push(`/writexam/${examName}_${examType}/result/1`)
        })
@@ -434,7 +490,7 @@ history.push(`/writexam/${examName}_${examType}`);
     Submit
   </Button>
 
-
+</div>
   
 
 </div>
@@ -444,14 +500,18 @@ history.push(`/writexam/${examName}_${examType}`);
       
         </Grid>
         
-        <Grid item lg={4}  sm={12} xs={12}>
-        <div style={{width: "480px", 
-    height:"250px",
+        <Grid item xl={4} lg={4} md={12}  sm={12} xs={12}>
+        <div style={{width: "100%", 
+    height:"220px",
     
     overflowX:"scroll",
     
+    border: "1px solid black",
    
-    margin:"auto"
+    
+   
+    margin:"auto",
+   
     }}>
       
         {answers.map((tile,i) => {
@@ -473,7 +533,7 @@ history.push(`/writexam/${examName}_${examType}`);
             {notvisited}
         </Button>
 
-        <p style={{display:"inline-block",marginRight:"20px"}}>Not Visited</p>
+        <p style={{display:"inline-block",marginRight:"10px"}}>Not Visited</p>
 
 
         <Button style={{backgroundColor:"red",color:"white",margin:"10px"}} variant="contained"  
@@ -514,7 +574,7 @@ history.push(`/writexam/${examName}_${examType}`);
        
      </div>
    <br />
-     <div style={{width: "480px", 
+     <div style={{width: "100%", 
     height:"400px",
     
     overflowY:"scroll",

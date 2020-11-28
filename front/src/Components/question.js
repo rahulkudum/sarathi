@@ -45,7 +45,7 @@ const [backdrop,setBackdrop]=useState(false);
 console.log(questions);
 if(examType==="mains"){
 
-    if(nind==5||nind===6||nind===21 || nind===22 || nind===23 || nind===24 || nind===25 
+    if(  nind===21 || nind===22 || nind===23 || nind===24 || nind===25 
       || nind===46 || nind===47 || nind===48 || nind===49 || nind===50
       || nind===71 || nind===72 || nind===73 || nind===74 || nind===75
       
@@ -76,7 +76,7 @@ useEffect(()=>{
         <Grid item lg={12} >
             <h1 style={{textAlign:"center"}}>Sarathi Exam paper setting</h1>
         </Grid>
-        <Grid item lg={8}   xs={12} sm={12}  >
+        <Grid item xl={8} lg={8} md={12}  xs={12} sm={12}  >
         <h2 style={{textAlign:"center"}}>Question {nind}</h2>
         <div>
         <div>
@@ -129,11 +129,12 @@ return dum;
         <div>
         
       
-        <div style={{width: "800px", 
+        <div style={{width: "100%", 
     height:"500px",
     overflowX:"scroll",
     overflowY:"scroll",
     whiteSpace: "nowrap",
+    textAlign:"center",
    
     margin:"auto"
     }}>
@@ -186,11 +187,11 @@ return dum;
         
         </div>
         </Grid>
-        <Grid item lg={4}  sm={12} xs={12} style={{marginTop:"auto",marginBottom:"auto"}}>
-        <div style={{width: "480px", 
+        <Grid item xl={4} lg={4} md={12}  sm={12} xs={12} style={{marginTop:"auto",marginBottom:"auto"}}>
+        <div style={{width: "100%", 
     height:"700px",
     
-   
+   overflowY:"scroll",
     
    
     margin:"auto"

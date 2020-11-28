@@ -24,7 +24,7 @@ const [examType,setExamType]=useLocal("examtype","");
 const [modify,setModify]=useState(false);
 const [time,setTime]=useLocal("time",null);
 const [time2,setTime2]=useLocal("time2",null);
-const [marks,setMarks]=useLocal("marks",0);
+const [marks,setMarks]=useLocal("marks",{total:0,positive:-1,negative:0});
 
 
 return(

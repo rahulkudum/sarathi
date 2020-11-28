@@ -43,7 +43,7 @@ router.route("/updat").post((req,res)=>{
 
 
 router.route("/delete").post((req,res)=>{
-   User.deleteOne({name:req.body.name,mail:req.body.mail},(err)=>{
+   User.deleteOne({mail:req.body.mail},(err)=>{
        if(!err) res.send("secessfully deleted");
    })
 });

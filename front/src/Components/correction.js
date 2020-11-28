@@ -115,11 +115,11 @@ if(examType==="mains"){
 
 
   
-     for(let i=0;i<5;i++ ){
+     for(let i=0;i<75;i++ ){
 
          setQuestions(prev=>{
             let dum=[...prev];
-            dum.push({answer:"",correct:"4",wrong:"-1",image:null});
+            dum.push({answer:"",correct:"",wrong:"",image:null});
             return dum;
 
 
@@ -169,7 +169,7 @@ return(
     setExamList(prev=>{
       let dum=[...prev];
      dum= dum.map(item=>{
-       if (item.examname!==val.examname&&item.examtype!==val.examtype) return item });
+       if (item.examname!==val.examname || item.examtype!==val.examtype) return item });
       console.log(dum);
       return dum;
     })
