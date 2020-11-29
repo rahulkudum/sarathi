@@ -112,6 +112,7 @@ return (
       <div>
   <p style={{display:"inline-block",marginRight:"500px"}}>name: {val.name} email: {val.mail}</p>
   <Button variant="contained" color="primary" style={{margin:"10px"}} onClick={()=>{
+    
     history.push(`${url}/${val.mail}`)
   }}>
       See the dash board

@@ -38,7 +38,7 @@ if(examType==="mains"){
 
   if(  nind===21 || nind===22 || nind===23 || nind===24 || nind===25 
     || nind===46 || nind===47 || nind===48 || nind===49 || nind===50
-    || nind===71 || nind===72 || nind===73 || nind===74 || nind===5
+    || nind===71 || nind===72 || nind===73 || nind===74 || nind===75
     
     
     ){
@@ -188,13 +188,13 @@ const useStyles = makeStyles((theme) => ({
 
   <Button  variant="contained" style={{margin:"5px",backgroundColor:"#e6e6e6",borderColor: "#adadad"}} onClick={()=>{
     if(nind!==1) history.push(`/writexam/${examName}_${examType}/result/${nind-1}`);
-    else history.push(`/writexam/${examName}_${examType}/result/5`);
+    else history.push(`/writexam/${examName}_${examType}/result/75`);
   }}  >
     Back
   </Button>
 
   <Button variant="contained" style={{margin:"5px",backgroundColor:"#e6e6e6",borderColor: "#adadad"}} onClick={()=>{
-      if(nind!==5) history.push(`/writexam/${examName}_${examType}/result/${nind+1}`);
+      if(nind!==75) history.push(`/writexam/${examName}_${examType}/result/${nind+1}`);
     else history.push(`/writexam/${examName}_${examType}/result/1`);
   }}  >
     Next

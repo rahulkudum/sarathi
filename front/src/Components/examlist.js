@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
         console.log(ind,mail)
         setBackdrop(true);
         
-        axios.post("/user/find",{mail:mail})
+        axios.post("/user/find",{mail:ind})
         .then(res=>{
             console.log(res.data);
             setExamList(res.data.exams);
