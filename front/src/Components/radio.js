@@ -426,17 +426,16 @@ function Options() {
                     <FormControlLabel value="3" control={<Radio />} label="3)" />
                     <FormControlLabel value="4" control={<Radio />} label="4)" />
                   </RadioGroup>
-                </FormControl> : <TextField id="standard-basic" label="round-off to TWO decimal places" style={{ marginBottom: "10px", width: "400px" }} value={answers[nind - 1].danswer} onChange={(e) => {
+                </FormControl> : <TextField id="standard-basic" label="Numerical Type" style={{ marginBottom: "10px", width: "400px" }} value={answers[nind - 1].danswer} onChange={(e) => {
                   setAnswers(prev => {
 
                     let dum = [...prev];
                     dum[nind - 1].danswer = e.target.value;
-
-
                     return dum;
 
                   })
                 }} />}
+                <p>round-off the value to TWO decimal places; e.g. 23 as 23.00, 5.2 as 5.20, 5.48913 as 5.49</p>
 
               <br />
 

@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
     </Backdrop>
         <Grid container >
         <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-            <h3 style={{fontFamily:"cursive"}}>Sarathi Mains Exam</h3>
+            <h3 style={{fontFamily:"cursive",textAlign:"center"}}>Sarathi Mains Exam</h3>
             <Chip size="large"
             label={`You got ${marks.total} marks`}
             color="primary"
