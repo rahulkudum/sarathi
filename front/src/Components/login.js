@@ -3,12 +3,13 @@ import { Route, useHistory, useParams,Switch,useRouteMatch } from "react-router-
 import axios from "axios";
 import { Answers, ExamName, ExamType,Questions,UserName,Time, Time2, Mode, Time3,Switches } from "./storage";
 
-import { Backdrop,CircularProgress } from "@material-ui/core";
+import { Backdrop,CircularProgress,Grid } from "@material-ui/core";
 import Options from "./radio";
 
 import {GoogleLogin} from "react-google-login";
 import { makeStyles } from '@material-ui/core/styles';
 import Result from "./result";
+import logo from "../logo.png"; 
 
 
 function Login(){
@@ -82,7 +83,9 @@ function msToTime(duration) {
 <Backdrop className={classes.backdrop} open={backdrop} >
     <CircularProgress color="inherit" />
     </Backdrop>
-    <h1 style={{fontFamily:"cursive"}}>Sarthi Academy</h1>
+    <Grid item xl={6} lg={6} md={12} sm={12} xs={12}>
+    <img src={logo} style={{width:"100%",height:"100px"}} />
+    </Grid>
     <div style={{border: "1px solid black"}}>
 <p>To write {examName} please login through your G-mail</p>
 <GoogleLogin
