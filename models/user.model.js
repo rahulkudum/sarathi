@@ -16,6 +16,10 @@ mail:{
 exams:{
     type:Array,
     required:true
+},
+time:{
+    type:Array
+    
 }
 
 },{timestamps:true,}

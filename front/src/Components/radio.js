@@ -3,9 +3,10 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Route, useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
-import { Answers, ExamName, ExamType, Marks, Questions, Time, Time2, UserName } from "./storage";
+import { Answers, Ctime, ExamName, ExamType, Marks, Questions, Time, Time2, Time3, UserName,Switches } from "./storage";
 import CheckCircleOutlineRoundedIcon from '@material-ui/icons/CheckCircleOutlineRounded';
 import ScrollToTop from "./scroll";
+import {getIsDocumentHidden,getBrowserVisibilityProp} from "./visible"
 
 function Options() {
 
@@ -28,11 +29,25 @@ function Options() {
   const [mail, setMail] = useContext(UserName);
   const [time, setTime] = useContext(Time);
   const [time2, setTime2] = useContext(Time2);
+  const [time3, setTime3]=useContext(Time3);
+ 
   const [backdrop, setBackdrop] = useState(false);
   const [imageloading, setImageloading] = useState(false);
   const [tmarks, setMarks] = useContext(Marks);
   const [dialog,setDialog]=useState(false);
   const [submit,setSubmit]=useState(false);
+  const [switches,setSwitches]=useContext(Switches);
+  
+  const [isVisible, setIsVisible] = useState(getIsDocumentHidden())
+  const onVisibilityChange = () => setIsVisible(getIsDocumentHidden())
+ useEffect(() => {
+    const visibilityChange = getBrowserVisibilityProp()
+    document.addEventListener(visibilityChange, onVisibilityChange, false)
+    return () => {
+      document.removeEventListener(visibilityChange, onVisibilityChange)
+    }
+  },[])
+  
 
   if (examType === "mains") {
 
@@ -69,6 +84,31 @@ function Options() {
   let answered = 0;
   let areview = 0;
 
+// useEffect(()=>{
+// console.log("copied");
+// window.addEventListener("load", () => {
+ 
+
+//   window.addEventListener("online", () => {
+//     // Set hasNetwork to online when they change to online.
+//     console.log("online");
+//   });
+
+//   window.addEventListener("offline", () => {
+//     // Set hasNetwork to offline when they change to offline.
+//   console.log("offline");
+//   });
+// });
+
+// return (()=>{
+//   console.log("uncopied");
+// })
+
+// },[])
+
+
+
+
   useEffect(() => {
 
     setAnswers(prev => {
@@ -78,11 +118,31 @@ function Options() {
       return dum;
     })
 
-    console.log(answers[nind - 1].visited);
-    setImageloading(true);
+   
+    
 
-
+let subl=questions.length/3
     let atime = setInterval(() => {
+
+      if(nind<=subl){
+        setTime3(prev=>{
+          let dum=prev;
+          dum.physics=dum.physics+500;
+          return dum;
+        })
+      }else if(nind<=2*subl){
+        setTime3(prev=>{
+          let dum=prev;
+          dum.chemistry=dum.chemistry+500;
+          return dum;
+        })
+      }else{
+        setTime3(prev=>{
+          let dum=prev;
+          dum.maths=dum.maths+500;
+          return dum;
+        })
+      }
 
 
       setAnswers(prev => {
@@ -93,6 +153,7 @@ function Options() {
       })
 
     }, 1000);
+    setImageloading(true);
 
     return (() => {
 
@@ -115,111 +176,18 @@ function Options() {
     return hours + ":" + minutes + ":" + seconds;
   }
 
+
   useEffect(() => {
 
     let rtime = setInterval(() => {
 
       setTime2(Date.now());
 
+     
+      
       if (Date.now() - time >= 10800000) {
-        setBackdrop(true);
-
-
-        let marks = 0;
-        let positive = 0;
-        let negative = 0;
-
-
-        questions.map((val, i) => {
-          if (answers[i].answer) {
-            if (val.answer === answers[i].answer) {
-              marks = marks + Number(val.correct);
-              positive = positive + Number(val.correct);
-              setAnswers(prev => {
-                let dum = [...prev];
-                dum[i].status = "correct";
-                dum[i].correct = val.answer;
-                return dum;
-              })
-            } else {
-              marks = marks + Number(val.wrong);
-              negative = negative + Number(val.wrong);
-              setAnswers(prev => {
-                let dum = [...prev];
-                dum[i].status = "wrong";
-                dum[i].correct = val.answer;
-                return dum;
-              })
-
-            }
-          } else {
-            setAnswers(prev => {
-              let dum = [...prev];
-              dum[i].status = "left";
-              dum[i].correct = val.answer;
-              return dum;
-            })
-
-
-          }
-        })
-        setMarks(prev => {
-          let dum = { ...prev };
-          dum.total = marks;
-          dum.positive = positive;
-          dum.negative = negative;
-          return dum;
-        });
-
-
-        axios.post("/user/find", { mail: mail })
-          .then(res => {
-            clearInterval(rtime);
-
-            let exsists = false;
-            console.log(res, mail);
-
-
-            for (let i = 0; i < res.data.exams.length; i++) {
-              if (res.data.exams[i].examname === examName && res.data.exams[i].examtype === examType) exsists = true;
-            }
-
-            if (exsists) {
-
-              setBackdrop(false);
-
-              alert("sorry you have already submitted answers for this exam");
-
-              history.push(`/writexam/${examName}_${examType}`);
-            } else {
-
-
-
-              let exams = res.data.exams;
-              console.log("fvgjnmkl", tmarks);
-              exams.push({
-                examname: examName,
-                examtype: examType,
-                answers: answers,
-                marks: { total: marks, positive: positive, negative: negative }
-              });
-
-              console.log(marks, exams);
-
-              axios.post("/user/updat", { mail: mail, exams: exams })
-                .then(res => {
-                  console.log(res);
-
-                  setBackdrop(false);
-                 
-                  alert("Time's up! so your answers are automatically submitted");
-                  history.push(`/writexam/${examName}_${examType}/result/1`)
-                })
-            }
-
-          })
-
-
+      setSubmit(true);
+      clearInterval(rtime);
 
 
 
@@ -238,17 +206,63 @@ function Options() {
 
   }, []);
 
+  useEffect(()=>{
+
+    setSwitches(switches+0.5);
+
+    console.log(switches);
+    let stime = setInterval(() => {
+
+if(isVisible){
+     setTime3(prev=>{
+       let dum=prev;
+       dum.time=dum.time+500;
+       return dum;
+     })
+
+    }
+
+    
+
+    }, 1000);
+
+    return (() => {
+
+      clearInterval(stime);
+    })
+
+
+
+
+
+
+  },[isVisible])
+
 
   useEffect(()=>{
     if(submit){
       let marks = 0;
       let positive = 0;
       let negative = 0;
+      let maths=0;
+      let physics=0;
+      let chemistry=0;
+      let subl=questions.length/3;
+      console.log(subl); 
       setBackdrop(true);
 
       questions.map((val, i) => {
         if (answers[i].answer) {
           if (val.answer === answers[i].answer) {
+            if(i<subl){
+              physics=physics+Number(val.correct);
+            }else if(i<2*subl){
+              chemistry=chemistry+Number(val.correct);
+
+            }else{
+              maths=maths+Number(val.correct);
+            }
+            
             marks = marks + Number(val.correct);
             positive = positive + Number(val.correct);
             setAnswers(prev => {
@@ -258,6 +272,15 @@ function Options() {
               return dum;
             })
           } else {
+            if(i<subl){
+              physics=physics+Number(val.wrong);
+            }else if(i<2*subl){
+              chemistry=chemistry+Number(val.wrong);
+
+            }else{
+              maths=maths+Number(val.wrong);
+            }
+            
             marks = marks + Number(val.wrong);
             negative = negative + Number(val.wrong);
             setAnswers(prev => {
@@ -285,14 +308,20 @@ function Options() {
         dum.total = marks;
         dum.positive = positive;
         dum.negative = negative;
+        dum.physics=physics;
+        dum.chemistry=chemistry;
+        dum.maths=maths;
         return dum;
       });
 
+      
+      console.log(tmarks,marks);
 
 
 
       axios.post("/user/find", { mail: mail })
         .then(res => {
+         
           let exsists = false;
           console.log(res, mail);
 
@@ -304,7 +333,7 @@ function Options() {
           if (exsists) {
             setBackdrop(false);
             alert("sorry you have already submitted answers for this exam");
-            history.push(`/writexam/${examName}_${examType}`);
+            history.push(`/writexam/${examName}_${examType}/result/1`);
           } else {
 
 
@@ -317,16 +346,30 @@ function Options() {
               examname: examName,
               examtype: examType,
               answers: answers,
-              marks: { total: marks, positive: positive, negative: negative }
+              marks: { total: marks, positive: positive, negative: negative,physics:physics,chemistry:chemistry,maths:maths },
+              time:{totaltime:msToTime(time2-time),actualtime:msToTime(time3.time),physics:msToTime(2*time3.physics),chemistry:msToTime(2*time3.chemistry),maths:msToTime(2*time3.maths)},
+              switches:switches
             });
 
-            console.log(marks, exams);
+            console.log(maths,physics,chemistry);
+            let ptime=res.data.time;
+            ptime.push({examname:examName,examtype:examType,stime: new Date().toLocaleTimeString("en-US"),dur:msToTime(time2-time)});    
 
-            axios.post("/user/updat", { mail: mail, exams: exams })
+            axios.post("/user/updat", { mail: mail, exams: exams,time:ptime })
               .then(res => {
                 console.log(res);
 
+                setTime3(prev=>{
+                  let dum={...prev};
+                  dum.physics=msToTime(2*dum.physics);
+                  dum.chemistry=msToTime(2*dum.chemistry);
+                  dum.maths=msToTime(2*dum.maths);
+                  return dum;
+                })
+
                 setBackdrop(false);
+
+              
                 alert("Your answers got sucessfully submitted");
                 history.push(`/writexam/${examName}_${examType}/result/1`)
               })
@@ -340,6 +383,20 @@ function Options() {
 
 
   },[submit])
+
+// useEffect(()=>{
+//   if(isVisble){
+//     setTime3(prev=>{
+//       let dum={...prev};
+//       dum.time=dum.time+1000;
+//       return dum;
+//     })
+  
+    
+//         };
+
+       
+// })
 
 
 

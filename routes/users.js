@@ -13,12 +13,14 @@ router.route("/add").post((req,res)=>{
 const name=req.body.name;
 const mail=req.body.mail;
 const exams=req.body.exams;
+const time=[];
 
 
 const newUser=new User({
     name,
     mail,
-    exams
+    exams,
+    time
 });
 
 newUser.save()
@@ -32,8 +34,9 @@ router.route("/updat").post((req,res)=>{
    
     const mail=req.body.mail;
     const exams=req.body.exams;
+    const time=req.body.time;
     
-   User.updateOne({mail:mail},{exams:exams},(err)=>{
+   User.updateOne({mail:mail},{exams:exams,time:time},(err)=>{
        if(!err) res.send("sucessfully updated");
    })
     

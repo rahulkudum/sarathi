@@ -3,7 +3,7 @@ import React,{useContext, useEffect, useState} from "react";
 import axios from "axios";
 import { Route, useHistory,useParams, useRouteMatch } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
-import { Answers, ExamName, ExamType, Marks,Time,Time2,UserName } from "./storage";
+import { Answers, Ctime, ExamName, ExamType, Marks,Mode,Switches,Time,Time2,Time3,UserName } from "./storage";
 import ScrollToTop from "./scroll";
 
 
@@ -29,9 +29,14 @@ let questionType;
     const [mail,setMail]=useContext(UserName);
     const [time,setTime]=useContext(Time);
     const [time2,setTime2]=useContext(Time2);
+    const [time3,setTime3]=useContext(Time3);
+    
     const [backdrop,setBackdrop]=useState(false);
     const [imageloading,setImageloading]=useState(false);
     const [marks,setMarks]=useContext(Marks);
+    const [mode,setMode]=useContext(Mode);
+    const [ctime,setCtime]=useContext(Ctime);
+    const [switches,setSwitches]=useContext(Switches);
     
  
 if(examType==="mains"){
@@ -60,7 +65,9 @@ const useStyles = makeStyles((theme) => ({
 
   const classes = useStyles();
   let bcolor;
- 
+
+
+
   useEffect(()=>{
    
    
@@ -107,7 +114,9 @@ const useStyles = makeStyles((theme) => ({
 
 
           />
-
+          
+ 
+ 
            
         
             
@@ -253,6 +262,20 @@ const useStyles = makeStyles((theme) => ({
 
  />
 
+<Chip size="large" 
+ label={`Physics marks: ${marks.physics}`} 
+ color="primary"
+  style={{marginLeft:"25px"}}
+
+ />
+
+<Chip size="large" 
+ label={`Physics time: ${time3.physics}`} 
+ color="primary"
+  style={{marginLeft:"30px"}}
+
+ />
+
 
 
 <br /> 
@@ -270,6 +293,21 @@ const useStyles = makeStyles((theme) => ({
  style={{marginLeft:"15px"}}
 
  />
+
+<Chip size="large" 
+ label={`Chemistry marks: ${marks.chemistry}`} 
+ color="primary"
+  style={{marginLeft:"15px"}}
+
+ />
+
+<Chip size="large" 
+ label={`Chemistry time: ${time3.chemistry}`} 
+ color="primary"
+  style={{marginLeft:"15px"}}
+
+ />
+
         
 <br />
        <Button style={{margin:"10px"}} variant="contained"  
@@ -283,16 +321,119 @@ const useStyles = makeStyles((theme) => ({
        <Chip size="large" 
  label={`Total marks: ${marks.total}`} 
  
- style={{marginLeft:"38px"}}
+ style={{marginLeft:"50px"}}
 
  />
+
+<Chip size="large" 
+ label={`Maths marks: ${marks.maths}`} 
+ color="primary"
+  style={{marginLeft:"48px"}}
+
+ />
+ 
+ <Chip size="large" 
+ label={`Maths time: ${time3.maths}`} 
+ color="primary"
+  style={{marginLeft:"40px"}}
+
+ />
+
         
 
       
           
        
      </div>
-   <br />
+   
+   {mode==="teacher"? 
+   
+   <div style={{width: "100%", 
+    height:"150px",
+    
+    overflowY:"scroll",
+    
+    whiteSpace: "nowrap",
+    border: "1px solid black",
+    margin:"auto"
+    }}>
+
+<Chip size="large" 
+ label={`No of Tab switches: ${switches-0.5}`} 
+ color="primary"
+ style={{margin:"5px"}}
+
+
+
+ />
+ <br />
+
+ <Chip size="large" 
+ label={`Total Time: ${time3.totaltime}`} 
+ color="primary"
+ style={{margin:"5px"}}
+
+
+ />
+
+<Chip size="large" 
+ label={`actual Time: ${time3.actualtime}`} 
+ color="primary"
+style={{margin:"5px"}}
+
+ />
+
+<br />
+
+
+{ctime.map((val,i)=>{
+
+if(i===ctime.length-1){
+
+  return(
+
+  <Chip size="large" 
+ label={`submitted at: ${val.stime}`} 
+ color="primary"
+ style={{margin:"5px"}}
+ />
+  );
+
+}else{
+  return(
+
+    <div>
+  <Chip size="large" 
+ label={`attempt no ${i+1}: ${val.stime}`} 
+ color="primary"
+ style={{margin:"5px"}}
+
+ />
+ <Chip size="large" 
+ label={`duration : ${ctime[i+1].dur}`} 
+ color="primary"
+ style={{margin:"5px"}}
+
+ />
+ </div>
+
+  );
+
+}
+
+
+ }) 
+
+
+}
+
+
+
+
+    </div>
+   
+   
+    : null}
         <div style={{width: "100%", 
     height:"400px",
     

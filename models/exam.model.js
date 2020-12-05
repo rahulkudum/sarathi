@@ -14,6 +14,10 @@ questions:{
     required:true
 
 },
+time:{
+    type:Array
+    
+}
 
 },{timestamps:true}
 );

@@ -1,7 +1,7 @@
 import React, { useContext,useEffect,useState } from "react";
 import { Route, useHistory, useParams,Switch,useRouteMatch } from "react-router-dom";
 import axios from "axios";
-import { Answers, ExamName, ExamType,Questions,UserName,Time, Time2 } from "./storage";
+import { Answers, ExamName, ExamType,Questions,UserName,Time, Time2, Mode, Time3,Switches } from "./storage";
 
 import { Backdrop,CircularProgress } from "@material-ui/core";
 import Options from "./radio";
@@ -27,6 +27,9 @@ const [mail,setMail]=useContext(UserName);
 const [backdrop,setBackdrop]=useState(false);
 const [time,setTime]=useContext(Time);
 const [time2,setTime2]=useContext(Time2);
+const [time3,setTime3]=useContext(Time3);
+const [mode,setMode]=useContext(Mode);
+const [switches,setSwitches]=useContext(Switches);
 
 let history=useHistory();
 const useStyles = makeStyles((theme) => ({
@@ -39,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   const classes = useStyles();
 
 useEffect(() => {
-    console.log("gvhbjn");
+    
     setBackdrop(true);
     axios.post("/exam/find",{examname:examname,examtype:examtype})
     .then(res=>{
@@ -53,7 +56,18 @@ useEffect(() => {
    
 }, [])
 
+function msToTime(duration) {
+    var milliseconds = parseInt((duration % 1000) / 100),
+      seconds = Math.floor((duration / 1000) % 60),
+      minutes = Math.floor((duration / (1000 * 60)) % 60),
+      hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
+    hours = (hours < 10) ? "0" + hours : hours;
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+    return hours + ":" + minutes + ":" + seconds;
+  }
 
 
 
@@ -85,13 +99,13 @@ for(let i=0;i<resp.data.exams.length;i++ ){
     if(resp.data.exams[i].examname===examName && resp.data.exams[i].examtype===examType) exsists=true; 
 }
 
-if(exsists) {
+if(exsists  ) {
     setBackdrop(false);
     alert("Sorry you can only write the exam once");
 
 }
 
-if(!exsists){
+if(!exsists ){
 setAnswers([]);
 
 
@@ -106,9 +120,27 @@ setAnswers(prev=>{
 })
 })
 
+let exams = resp.data.exams;
 
+let ptime=resp.data.time;
+
+ ptime.push({examname:examName,examtype:examType,stime: new Date().toLocaleTimeString("en-US"),dur:msToTime(time2-time)});    
+
+
+
+axios.post("/user/updat", { mail: res.profileObj.email , exams: exams,time:ptime  })
+  .then(res => {
+    console.log(res);
+
+})
+
+setMode("student");
 setTime(Date.now());
 setTime2(Date.now()+10800000);
+setTime3({time:0,physics:0,chemistry:0,maths:0});
+setSwitches(0);
+
+
 console.log(time,Date.now());
 setBackdrop(false);
 history.push(`${url}/paper/1`);
@@ -146,6 +178,7 @@ history.push(`${url}/paper/1`);
         axios.post("/user/find",{mail:res.profileObj.email})
         .then(resp=>{
             if(resp.data){
+                setMode("student");
         history.push(`/studentsdashboard/${res.profileObj.email}`)
             }else{
                 setBackdrop(false);

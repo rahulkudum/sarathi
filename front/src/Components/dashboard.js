@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios"
 
 import { Button,TextField,Backdrop,CircularProgress } from "@material-ui/core";
@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Examlist from "./examlist";
 import { Route, useHistory, useParams,Switch,useRouteMatch } from "react-router-dom";
+import { Mode } from "./storage";
 export default  function Dashboard(){
   let { path, url } = useRouteMatch();
 const [studentsList,setStudentsList]=useState([]);
@@ -15,6 +16,7 @@ const[show2,setShow2]=useState(false);
 const[show3,setShow3]=useState(false);
 const[pasword,setPasword]=useState("");
 const [backdrop,setBackdrop]=useState(false);
+const [mode,setMode]=useContext(Mode);
 
 let history=useHistory();
 const useStyles = makeStyles((theme) => ({
@@ -27,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
   const classes = useStyles();
 
 useEffect(()=>{
+  setMode("teacher");
 setBackdrop(true);
 axios.get("/user/")
 .then(res=>{

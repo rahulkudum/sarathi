@@ -32,15 +32,12 @@ const [backdrop,setBackdrop]=useState(false);
 
 
 
-    //const [img,setImg]=useState();
-  
     const [imageloading,setImageloading]=useState(false);
     const [questions,setQuestions]=useContext(Questions);
     const [examName,setExamName]=useContext(ExamName);
     const [examType,setExamType]=useContext(ExamType);
     const [modify,setModify]=useContext(Modify);
-    const [warning,setWarning]=useState(false);
-    const cont=useRef();
+   
     const classes = useStyles();
     let questionType;
 console.log(questions);
@@ -82,11 +79,17 @@ useEffect(()=>{
         <h2 style={{textAlign:"center"}}>Question {nind}</h2>
         <div>
         <div>
-            <input type="file" name="file" id="file"  onChange={(e)=>{
+            <input  type="file" name="file" id="file"  onChange={(e)=>{
      
      let img=e.target.files[0];
+    // console.log(img);
      const formData =new FormData();
 
+//      for (const key of Object.keys(img)) {
+//             formData.append('file', img[key])
+//         }
+
+// console.log(formData);
 
 
 
@@ -104,7 +107,7 @@ setBackdrop(true);
 axios.post("/upload",formData)
 .then(res=>{
 
- console.log(res.data.file.filename);
+ console.log(res);
  setQuestions(prev=>{
      let dum=[...prev];
 dum[nind-1].image=res.data.file.filename;
@@ -210,19 +213,8 @@ return dum;
     <br />
     <div style={{textAlign:"center"}}>
     <Button variant="contained" color="primary" onClick={()=>{
-        console.log(questions);
-let done=true;
-questions.forEach((val)=>{
+      
 
-if(!(val.answer && val.image)){
-   done=false;
-}
-
-})
-
-if(done){
-
- 
 
     if(!modify){
       setBackdrop(true);
@@ -258,15 +250,6 @@ if(done){
 
 
     }
-
-
-
-}else{
-   alert("You havent filled all the questions ")
-}
-
-
-
 
     }}>
         Submit
