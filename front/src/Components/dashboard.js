@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   const classes = useStyles();
 
 useEffect(()=>{
-  setMode("teacher");
+  
 setBackdrop(true);
 axios.get("/user/")
 .then(res=>{
@@ -115,6 +115,7 @@ return (
       <div>
   <p style={{display:"inline-block",marginRight:"500px"}}>name: {val.name} email: {val.mail}</p>
   <Button variant="contained" color="primary" style={{margin:"10px"}} onClick={()=>{
+    setMode("teacher");
     
     history.push(`${url}/${val.mail}`)
   }}>
