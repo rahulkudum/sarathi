@@ -438,7 +438,7 @@ if(isVisible){
 
             <div style={{
               width: "100%",
-              height: "500px",
+              height: "340px",
               overflowX: "scroll",
               overflowY: "scroll",
               whiteSpace: "nowrap",
@@ -493,7 +493,7 @@ if(isVisible){
                     return dum;
 
                   })
-                }} /> <p>round-off the value to TWO decimal places; e.g. 23 as 23.00, 5.2 as 5.20, 5.48913 as 5.49</p>
+                }} /> <p>round-off the value to TWO decimal places; e.g. 23 as 23, 5.2 as 5.2, 5.48913 as 5.49</p>
                 </div>
                 }
 
