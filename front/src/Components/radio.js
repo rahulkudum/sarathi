@@ -7,6 +7,7 @@ import { Answers, Ctime, ExamName, ExamType, Marks, Questions, Time, Time2, Time
 import CheckCircleOutlineRoundedIcon from '@material-ui/icons/CheckCircleOutlineRounded';
 import ScrollToTop from "./scroll";
 import {getIsDocumentHidden,getBrowserVisibilityProp} from "./visible"
+import logo from "../logo.png" 
 
 function Options() {
 
@@ -408,9 +409,9 @@ if(isVisible){
         <CircularProgress color="inherit" />
       </Backdrop>
       <Grid container >
-        <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-          <h3 style={{ fontFamily: "cursive",textAlign:"center" }}>Sarathi Mains Exam</h3>
-        
+        <Grid item xl={6} lg={6} md={12} sm={12} xs={12}>
+        <img src={logo} style={{width:"100%",height:"100px"}} />
+        <div style={{display:"flex",justifyContent:"space-around"}}>
           <Chip size="large"
             label={`${examName}`}
             color="primary"
@@ -418,7 +419,7 @@ if(isVisible){
 
 
           />
-
+<h3 style={{ textAlign: "center",display:"inline-block",marginTop:"0px" }}>Question {nind}</h3>
           <Chip size="large"
             label={msToTime(10800000 - (time2 - time))}
             color="primary"
@@ -426,11 +427,11 @@ if(isVisible){
 
           />
           
-          
+          </div>
 
         </Grid>
         <Grid item xl={8} lg={8} md={12} sm={12} xs={12} >
-          <h3 style={{ textAlign: "center" }}>Question {nind}</h3>
+          
 
 
           <div>
@@ -438,7 +439,7 @@ if(isVisible){
 
             <div style={{
               width: "100%",
-              height: "340px",
+              height: "360px",
               overflowX: "scroll",
               overflowY: "scroll",
               whiteSpace: "nowrap",

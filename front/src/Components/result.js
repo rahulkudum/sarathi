@@ -5,6 +5,7 @@ import { Route, useHistory,useParams, useRouteMatch } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import { Answers, Ctime, ExamName, ExamType, Marks,Mode,Switches,Time,Time2,Time3,UserName } from "./storage";
 import ScrollToTop from "./scroll";
+import logo from "../logo.png"; 
 
 
 
@@ -106,7 +107,8 @@ const useStyles = makeStyles((theme) => ({
     </Backdrop>
         <Grid container >
         <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-            <h3 style={{fontFamily:"cursive",textAlign:"center"}}>Sarathi Mains Exam</h3>
+        <img src={logo} style={{width:"100%",height:"100px"}} />
+        <div style={{display:"flex",justifyContent:"space-around"}}>
             <Chip size="large"
             label={`You got ${marks.total} marks`}
             color="primary"
@@ -115,21 +117,21 @@ const useStyles = makeStyles((theme) => ({
 
           />
           
- 
- 
+          <h3 style={{ textAlign: "center",display:"inline-block",marginTop:"0px" }}>Question {nind}</h3>
+ </div>
            
         
             
         </Grid>
         <Grid item  xl={8} lg={8}   md={12} sm={12} xs={12} >
-        <h3 style={{textAlign:"center"}}>Question {nind}</h3>
+      
       
         
         <div>
        
        
         <div style={{width: "100%", 
-    height:"500px",
+    height:"360px",
     overflowX:"scroll",
     overflowY:"scroll",
     whiteSpace: "nowrap",
