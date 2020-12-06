@@ -83,14 +83,13 @@ function msToTime(duration) {
 <Backdrop className={classes.backdrop} open={backdrop} >
     <CircularProgress color="inherit" />
     </Backdrop>
-    <Grid item xl={6} lg={6} md={12} sm={12} xs={12}>
+     <Grid item xl={6} lg={6} md={12} sm={12} xs={12}></Grid>
     <img src={logo} style={{width:"100%",height:"100px"}} />
-    </Grid>
     <div style={{border: "1px solid black"}}>
 <p>To write {examName} please login through your G-mail</p>
 <GoogleLogin
 
-    clientId="526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com"
+    clientId="526565895378-htg995sha25970hiiipmtkmpguam2dqi.apps.googleusercontent.com"
     buttonText="Login through Gmail"
     onSuccess={(res)=>{
         setBackdrop(true);
@@ -174,7 +173,7 @@ history.push(`${url}/paper/1`);
 
 <GoogleLogin
 
-    clientId="526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com"
+    clientId="526565895378-htg995sha25970hiiipmtkmpguam2dqi.apps.googleusercontent.com"
     buttonText="Login through Gmail"
     onSuccess={(res)=>{
         setBackdrop(true);

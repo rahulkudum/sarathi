@@ -211,18 +211,18 @@ let subl=questions.length/3
 
     setSwitches(switches+0.5);
 
-    console.log(switches);
+    console.log(switches,time3);
     let stime = setInterval(() => {
 
 if(isVisible){
      setTime3(prev=>{
        let dum=prev;
        dum.time=dum.time+500;
-       return dum;
+       return dum; 
      })
 
     }
-
+    console.log(switches,time3);
     
 
     }, 1000);
