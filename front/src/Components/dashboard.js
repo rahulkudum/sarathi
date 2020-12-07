@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios"
 
-import { Button,TextField,Backdrop,CircularProgress } from "@material-ui/core";
+import { Button,TextField,Backdrop,CircularProgress,Dialog,DialogActions,DialogContent,DialogTitle } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 
 import Examlist from "./examlist";
@@ -17,6 +17,7 @@ const[show3,setShow3]=useState(false);
 const[pasword,setPasword]=useState("");
 const [backdrop,setBackdrop]=useState(false);
 const [mode,setMode]=useContext(Mode);
+const [dialog,setDialog]=useState(false);
 
 let history=useHistory();
 const useStyles = makeStyles((theme) => ({
@@ -95,6 +96,9 @@ return (
            dum.push({name:studentName,mail:studentMail,exams:[]});
            return dum;
          })
+
+         setStudentName("");
+         setStudentMail("");
          setBackdrop(false);
      })
   
@@ -113,23 +117,50 @@ return (
   
   return(
       <div>
-  <p style={{display:"inline-block",marginRight:"500px"}}>name: {val.name} email: {val.mail}</p>
-  <Button variant="contained" color="primary" style={{margin:"10px"}} onClick={()=>{
+  <p style={{display:"inline-block",width:"700px"}}>name: {val.name} email: {val.mail}</p>
+  <Button variant="contained" color="primary" style={{marginRight:"10px"}} onClick={()=>{
     setMode("teacher");
     
     history.push(`${url}/${val.mail}`)
   }}>
-      See the dash board
+      Dashboard
   </Button>
   <Button variant="contained" color="secondary" onClick={()=>{
-    setBackdrop(true);
-      axios.post("/user/delete",{name:val.name,mail:val.mail})
+    setDialog(i+1);
+    
+  }}>
+     Delete
+  </Button>
+  
+  </div>
+  )
+    }
+  })}
+
+
+
+  <Dialog
+        open={dialog}
+        onClose={()=>{setDialog(false)}}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Are you sure to Delete"}</DialogTitle>
+        <DialogContent>
+         Once deleted all the student's data will be lost
+        </DialogContent>
+       
+        <DialogActions>
+          <Button onClick={()=>{
+            
+            setBackdrop(true);
+      axios.post("/user/delete",{name:studentsList[dialog-1].name,mail:studentsList[dialog-1].mail})
       .then(res=>{
         setStudentsList(prev=>{
         let dum=[...prev];
        dum= dum.map(item=>{
          if(item){
-         if (item.name!==val.name || item.mail!==val.mail) return item }
+         if (item.name!==studentsList[dialog-1].name || item.mail!==studentsList[dialog-1].mail) return item }
        }
          
          );
@@ -140,14 +171,16 @@ return (
   setBackdrop(false);
   
       });
-  }}>
-     Delete Account
-  </Button>
-  
-  </div>
-  )
-    }
-  })}
+            
+            
+            setDialog(false)}} color="primary">
+            Yes
+          </Button>
+          <Button onClick={()=>{setDialog(false)}} color="primary" autoFocus>
+           No
+          </Button>
+        </DialogActions>
+      </Dialog>
   
   </div> :<div>
     <TextField

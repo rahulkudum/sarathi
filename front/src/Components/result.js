@@ -106,11 +106,20 @@ const useStyles = makeStyles((theme) => ({
     <CircularProgress color="inherit" />
     </Backdrop>
         <Grid container >
-        <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+        <Grid item xl={4} lg={4} md={4} sm={12} xs={12}>
+          <div style={{width: "100%"}}></div>
+        </Grid>
+        <Grid item xl={4} lg={4} md={4} sm={12} xs={12}>
         <img src={logo} style={{width:"100%",height:"100px"}} />
+        </Grid>
+        <Grid item xl={4} lg={4} md={4} sm={12} xs={12}>
+          <div style={{width: "100%"}}></div>
+        </Grid>
+        <Grid item xl={8} lg={8} md={12} sm={12} xs={12}>
+       
         <div style={{display:"flex",justifyContent:"space-around"}}>
             <Chip size="large"
-            label={`You got ${marks.total} marks`}
+            label={examName}
             color="primary"
            
 
@@ -118,6 +127,14 @@ const useStyles = makeStyles((theme) => ({
           />
           
           <h3 style={{ textAlign: "center",display:"inline-block",marginTop:"0px" }}>Question {nind}</h3>
+
+          <Chip size="large"
+            label={`${marks.total} marks`}
+            color="primary"
+           
+
+
+          />
  </div>
            
         
@@ -142,7 +159,7 @@ const useStyles = makeStyles((theme) => ({
 
     {imageloading ? <div> <CircularProgress />  <img src={`/images/${answers[nind-1].image}`} onLoad={()=>{
          setImageloading(false);
-         console.log(imageloading);
+         
         }} />
         </div>:<img src={`/images/${answers[nind-1].image}`}  />
         }
@@ -232,7 +249,7 @@ const useStyles = makeStyles((theme) => ({
         </Grid>
         <Grid item xl={4} lg={4} md={12}  sm={12} xs={12}>
         <div style={{width: "100%", 
-    height:"220px",
+    height:"200px",
     
     overflowX:"scroll",
     

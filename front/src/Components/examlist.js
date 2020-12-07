@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
         return(
     <div>
 
-        <p style={{display:"inline-block", marginRight:"50px"}}>{val.examname} ({val.examtype})</p>
+        <p style={{display:"inline-block", width:"325px"}}>{val.examname} ({val.examtype})</p>
 
         <Button variant="contained" color="primary" onClick={()=>{
                 setExamName(val.examname);

@@ -1,17 +1,17 @@
-import { Button,TextField,Backdrop,CircularProgress } from "@material-ui/core";
+import { Button,TextField,Backdrop,CircularProgress,Dialog,DialogActions,DialogContent,DialogTitle } from "@material-ui/core";
 import React,{useContext, useState,useEffect} from "react";
 import axios from "axios";
 import { Route, useHistory,useRouteMatch,Switch } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Question from "./question";
 import { ExamName, ExamType, Questions,Modify } from "./storage";
-
+import Examresult from "./examresult";
 function Correction(){
   let { path, url } = useRouteMatch();
     
     const[pasword,setPasword]=useState("");
     const[show2,setShow2]=useState(false);
-  
+    const [dialog,setDialog]=useState(false);
     const [questions,setQuestions]=useContext(Questions);
     let history=useHistory();
 
@@ -131,7 +131,7 @@ if(examType==="mains"){
 }
 console.log(questions);
 
-history.push(`${url}/1`)
+history.push(`${url}/paper/1`)
      
      
    }    
@@ -146,7 +146,7 @@ history.push(`${url}/1`)
 
 
   {examList ? <h2>Modify or Delete previous Exams</h2> :<h2>No Previous Exams Found</h2>}
-{examList.map((val)=>{
+{examList.map((val,i)=>{
   if( val ){
 return(
   
@@ -162,21 +162,20 @@ return(
 }}>
   Modify
 </Button>
-<Button style={{margin:"20px"}} variant="contained" color="secondary" onClick={()=>{
-  setBackdrop(true);
-  axios.post("/exam/delete",{examname:val.examname,examtype:val.examtype})
-  .then(res=>{
-    setExamList(prev=>{
-      let dum=[...prev];
-     dum= dum.map(item=>{
-       if (item.examname!==val.examname || item.examtype!==val.examtype) return item });
-      console.log(dum);
-      return dum;
-    })
 
-    console.log(examList);
-    setBackdrop(false);
-  });
+
+<Button style={{margin:"20px"}} variant="contained" color="primary" onClick={()=>{
+  
+  history.push(`${url}/result/${val.examname}_${val.examtype}`)
+
+
+}}>
+  Result
+</Button>
+
+
+<Button style={{margin:"20px"}} variant="contained" color="secondary" onClick={()=>{
+  setDialog(i+1);
 
 }}>
   Delete
@@ -192,6 +191,46 @@ return(
 
 })}
 
+
+
+<Dialog
+        open={dialog}
+        onClose={()=>{setDialog(false)}}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Are you sure to Delete"}</DialogTitle>
+        <DialogContent>
+         Once deleted you cannot get it back again
+        </DialogContent>
+       
+        <DialogActions>
+          <Button onClick={()=>{
+            setBackdrop(true);
+  axios.post("/exam/delete",{examname:examList[dialog-1].examname,examtype:examList[dialog-1].examtype})
+  .then(res=>{
+    setExamList(prev=>{
+      let dum=[...prev];
+     dum= dum.map(item=>{
+       if (item.examname!==examList[dialog-1].examname || item.examtype!==examList[dialog-1].examtype) return item });
+      console.log(dum);
+      return dum;
+    })
+
+    console.log(examList);
+    setBackdrop(false);
+  });
+          
+            
+            
+            setDialog(false)}} color="primary">
+            Yes
+          </Button>
+          <Button onClick={()=>{setDialog(false)}} color="primary" autoFocus>
+           No
+          </Button>
+        </DialogActions>
+      </Dialog>
 
   
   </div> :<div>
@@ -228,9 +267,15 @@ return(
 
    </div>
    </Route>
-<Route path={`${path}/:ind`}>
+<Route path={`${path}/paper/:ind`}>
 
 <Question   />
+
+</Route>
+
+<Route path={`${path}/result/:examdetails`}>
+
+<Examresult />
 
 </Route>
 

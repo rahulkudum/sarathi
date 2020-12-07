@@ -82,15 +82,8 @@ useEffect(()=>{
             <input  type="file" name="file" id="file"  onChange={(e)=>{
      
      let img=e.target.files[0];
-    // console.log(img);
+    
      const formData =new FormData();
-
-//      for (const key of Object.keys(img)) {
-//             formData.append('file', img[key])
-//         }
-
-// console.log(formData);
-
 
 
  formData.append(
@@ -121,9 +114,6 @@ return dum;
     
    }} /> 
   
-
-
-
         </div>
         <br />
         <br />
@@ -192,15 +182,178 @@ return dum;
         
         </div>
         </Grid>
-        <Grid item xl={4} lg={4} md={12}  sm={12} xs={12} style={{marginTop:"auto",marginBottom:"auto"}}>
+       
+
+         <Grid item xl={4} lg={4} md={12}  sm={12} xs={12} style={{marginTop:"auto",marginBottom:"auto"}}>
         <div style={{width: "100%", 
     height:"700px",
-    
-   overflowY:"scroll",
-    
-   
+    overflowY:"scroll",
     margin:"auto"
     }}>
+    <div>
+    <label>Physics 25 Ques: </label>
+    <input  type="file" name="file" id="file" multiple  onChange={(e)=>{
+     
+     let img=e.target.files;
+
+     if(img.length===25){
+   
+     const formData =new FormData();
+
+     for (const key of Object.keys(img)) {
+            formData.append('file', img[key])
+        }
+
+console.log(formData);
+
+
+
+
+
+
+setBackdrop(true);
+axios.post("/uploadMultiple",formData)
+.then(res=>{
+
+ console.log(res);
+ 
+axios.get("/files").then(res=>{
+ res.data.slice(1).slice(-2).map((val,i)=>{
+
+  setQuestions(prev=>{
+     let dum=[...prev];
+dum[i].image=val.filename;
+return dum;
+ })
+
+
+
+ })
+ setBackdrop(false);
+
+})
+
+ 
+
+})
+
+     }else{
+       alert("please select exactly 25 images")
+     }
+    
+   }} /> 
+
+<br />
+<br />
+
+<label>Chemistry 25 Ques: </label>
+    <input  type="file" name="file" id="file" multiple  onChange={(e)=>{
+     
+     let img=e.target.files;
+
+     if(img.length===25){
+   
+     const formData =new FormData();
+
+     for (const key of Object.keys(img)) {
+            formData.append('file', img[key])
+        }
+
+console.log(formData);
+
+
+
+
+
+
+setBackdrop(true);
+axios.post("/uploadMultiple",formData)
+.then(res=>{
+
+ console.log(res);
+ 
+axios.get("/files").then(res=>{
+ res.data.slice(1).slice(-2).map((val,i)=>{
+
+  setQuestions(prev=>{
+     let dum=[...prev];
+dum[25+i].image=val.filename;
+return dum;
+ })
+
+
+
+ })
+ setBackdrop(false);
+
+})
+
+ 
+
+})
+
+     }else{
+       alert("please select exactly 25 images")
+     }
+    
+   }} /> 
+
+<br />
+<br />
+<label>Maths 25 Ques: </label>
+    <input  type="file" name="file" id="file" multiple  onChange={(e)=>{
+     
+     let img=e.target.files;
+
+     if(img.length===25){
+   
+     const formData =new FormData();
+
+     for (const key of Object.keys(img)) {
+            formData.append('file', img[key])
+        }
+
+console.log(formData);
+
+
+
+
+
+
+setBackdrop(true);
+axios.post("/uploadMultiple",formData)
+.then(res=>{
+
+ console.log(res);
+ 
+axios.get("/files").then(res=>{
+ res.data.slice(1).slice(-2).map((val,i)=>{
+
+  setQuestions(prev=>{
+     let dum=[...prev];
+dum[50+i].image=val.filename;
+return dum;
+ })
+
+
+
+ })
+ setBackdrop(false);
+
+})
+
+ 
+
+})
+
+     }else{
+       alert("please select exactly 25 images")
+     }
+    
+   }} /> 
+  
+</div>
+<br />
         
         {questions.map((tile,i) => (
          

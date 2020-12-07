@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Answers, Ctime, ExamName, ExamType, Marks, Questions, Time, Time2, Time3, UserName,Switches } from "./storage";
 import CheckCircleOutlineRoundedIcon from '@material-ui/icons/CheckCircleOutlineRounded';
 import ScrollToTop from "./scroll";
-import {getIsDocumentHidden,getBrowserVisibilityProp} from "./visible"
+import {usePageVisibility} from "./visible"
 import logo from "../logo.png" 
 
 function Options() {
@@ -39,15 +39,15 @@ function Options() {
   const [submit,setSubmit]=useState(false);
   const [switches,setSwitches]=useContext(Switches);
   
-  const [isVisible, setIsVisible] = useState(getIsDocumentHidden())
-  const onVisibilityChange = () => setIsVisible(getIsDocumentHidden())
- useEffect(() => {
-    const visibilityChange = getBrowserVisibilityProp()
-    document.addEventListener(visibilityChange, onVisibilityChange, false)
-    return () => {
-      document.removeEventListener(visibilityChange, onVisibilityChange)
-    }
-  },[])
+  const isVisible = usePageVisibility();
+//   const onVisibilityChange = () => setIsVisible(getIsDocumentHidden())
+//  useEffect(() => {
+//     const visibilityChange = getBrowserVisibilityProp()
+//     document.addEventListener(visibilityChange, onVisibilityChange, false)
+//     return () => {
+//       document.removeEventListener(visibilityChange, onVisibilityChange)
+//     }
+//   },[])
   
 
   if (examType === "mains") {
@@ -131,6 +131,7 @@ let subl=questions.length/3
           dum.physics=dum.physics+500;
           return dum;
         })
+        
       }else if(nind<=2*subl){
         setTime3(prev=>{
           let dum=prev;
@@ -409,8 +410,18 @@ if(isVisible){
         <CircularProgress color="inherit" />
       </Backdrop>
       <Grid container >
-        <Grid item xl={6} lg={6} md={12} sm={12} xs={12}>
+       
+        <Grid item xl={4} lg={4} md={4} sm={12} xs={12}>
+          <div style={{width: "100%"}}></div>
+        </Grid>
+        <Grid item xl={4} lg={4} md={4} sm={12} xs={12}>
         <img src={logo} style={{width:"100%",height:"100px"}} />
+        </Grid>
+        <Grid item xl={4} lg={4} md={4} sm={12} xs={12}>
+          <div style={{width: "100%"}}></div>
+        </Grid>
+       
+        <Grid item xl={8} lg={8} md={12} sm={12} xs={12}>
         <div style={{display:"flex",justifyContent:"space-around"}}>
           <Chip size="large"
             label={`${examName}`}
@@ -605,7 +616,7 @@ if(isVisible){
         <Grid item xl={4} lg={4} md={12} sm={12} xs={12}>
           <div style={{
             width: "100%",
-            height: "220px",
+            height: "200px",
 
             overflowX: "scroll",
             overflowY:"scroll",

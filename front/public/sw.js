@@ -1,5 +1,21 @@
+// import {equestions} from "../src/Components/login"
+
+
+
+const static="static-v1"
+
 const dynamic="dynamic-v2";
 
+
+
+
+
+// const imagarr=equestion.map((val,i)=>{
+
+//     return val.image
+// })
+
+// console.log(equestions ,imagarr, "cfgvhb");
 
 const limitSize=(name,size)=>{
     caches.open(name).then(cache=>{

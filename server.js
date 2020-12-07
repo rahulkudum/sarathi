@@ -75,6 +75,16 @@ app.post("/upload",upload.single("file"),(req,res)=>{
 
 
 
+app.post("/uploadMultiple",upload.array("file",25),(req,res)=>{
+
+  res.send("sucessfully submitted");
+ 
+ });
+ 
+ 
+
+
+
 
 app.get("/files",(req,res)=>{
 
@@ -88,7 +98,7 @@ gfs.files.find().toArray((err,files)=>{
 
 
 
-})
+});
 
 
 
