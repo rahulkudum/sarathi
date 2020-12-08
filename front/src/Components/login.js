@@ -151,6 +151,7 @@ setSwitches(0);
 
 
 questions.map((val,i)=>{
+if(i!==0 && i!==1){
 
 if(val.image){
 
@@ -159,6 +160,7 @@ axios.get(`/images/${val.image}`);
 
 
 
+}
 }
 
 
