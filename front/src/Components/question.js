@@ -376,7 +376,7 @@ return dum;
         setExamName("");
         setExamType("mains");
         setBackdrop(false);
-        history.push("/setexam");
+        history.push("/");
     })
     .catch(err=>{
         console.log(err);
@@ -392,7 +392,7 @@ return dum;
         setExamType("mains");
        setModify(false);
        setBackdrop(false);
-        history.push("/setexam");
+        history.push("/");
     })
     .catch(err=>{
         console.log(err);

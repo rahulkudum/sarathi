@@ -113,16 +113,20 @@ useEffect(()=>{
      let done=false;
 
      examList.map((val,i)=>{
+       if(val){
        if(texamName===val.examname && texamType===val.examtype) done=true;
+       }
      })
 
      if(!done){
   
 
   setQuestions([]);
+  
+setExamName(texamName);
+setExamType(texamType);
 
 if(texamType==="mains"){
-
 
   
      for(let i=0;i<75;i++ ){
