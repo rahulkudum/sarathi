@@ -178,17 +178,20 @@ return(
   setExamName(val.examname);
   setExamType(val.examtype);
   setQuestions(val.questions);
-  val.questions.map((valu,i)=>{
   
-  if(valu.image){
+questions.map((val,i)=>{
 
-  axios.get(`/images/${valu.image}`).then(res=>{
-      console.log("working");
-  });
+if(val.image){
+
+   
+axios.get(`/images/${val.image}`);
+
+
+
 }
-  
 
-})
+
+});
 
   setModify(true);
   history.push(`${url}/paper/1`);

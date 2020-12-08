@@ -1,7 +1,7 @@
 
 
 
-const dynamic="dynamic-v7";
+const dynamic="dynamic-v8";
 
 
 // let questions=JSON.parse(localStorage.getItem("questions"));

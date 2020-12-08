@@ -32,6 +32,7 @@ const [time2,setTime2]=useContext(Time2);
 const [time3,setTime3]=useContext(Time3);
 const [mode,setMode]=useContext(Mode);
 const [switches,setSwitches]=useContext(Switches);
+const [finished,setFinished]=useState(false);
 
 
 // equestions=questions;
@@ -117,19 +118,8 @@ if(exsists  ) {
 }
 
 if(!exsists ){
-
-    questions.map((val,i)=>{
-
-if(val.image){
-
-axios.get(`/images/${val.image}`).then(res=>{
-    console.log("fdxc",i);
-});
-
-}
-
-
-})
+    
+    
 
 setAnswers([]);
 
@@ -153,22 +143,38 @@ let ptime=resp.data.time;
 
 
 
+setMode(res.profileObj.email);
+
+setTime3({time:0,physics:0,chemistry:0,maths:0});
+setSwitches(0);
+
+
+
+questions.map((val,i)=>{
+
+if(val.image){
+
+
+axios.get(`/images/${val.image}`);
+
+
+
+}
+
+
+});
+
 axios.post("/user/updat", { mail: res.profileObj.email , exams: exams,time:ptime  })
   .then(res => {
     console.log(res);
 
 })
 
-setMode(res.profileObj.email);
 setTime(Date.now());
 setTime2(Date.now()+10800000);
-setTime3({time:0,physics:0,chemistry:0,maths:0});
-setSwitches(0);
-
-
-console.log(time,Date.now());
 setBackdrop(false);
 history.push(`${url}/paper/1`);
+
 
 }
 
