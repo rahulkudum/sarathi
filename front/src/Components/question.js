@@ -72,9 +72,7 @@ useEffect(()=>{
     <CircularProgress color="inherit" />
     </Backdrop>
         <Grid container >
-        <Grid item lg={12} >
-            <h1 style={{textAlign:"center"}}>Sarathi Exam paper setting</h1>
-        </Grid>
+        
         <Grid item xl={8} lg={8} md={12}  xs={12} sm={12}  >
         <h2 style={{textAlign:"center"}}>Question {nind}</h2>
         <div>

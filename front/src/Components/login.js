@@ -11,6 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Result from "./result";
 import logo from "../logo.png"; 
 
+// export let equestions;
 
 function Login(){
 
@@ -65,21 +66,6 @@ useEffect(() => {
 }, [])
 
 
-useEffect(() => {
-
-questions.map((val,i)=>{
-
-    axios.get(`/images/${val.image}`).then(res=>{
-        console.log("working");
-    });
-
-
-})
-
-
-
-
-},[questions]);
 
 function msToTime(duration) {
     var milliseconds = parseInt((duration % 1000) / 100),
@@ -107,20 +93,12 @@ function msToTime(duration) {
 <Backdrop className={classes.backdrop} open={backdrop} >
     <CircularProgress color="inherit" />
     </Backdrop>
-    <Grid container>
-    <Grid item xl={4} lg={4} md={4} sm={0} xs={0}>
-        <div style={{width: "100%"}}></div>
-    </Grid>
-     <Grid item xl={4} lg={4} md={4} sm={12} xs={12} style={{textAlign:"center"}}>
-    <img src={logo} style={{width:"100%",height:"100px",textAlign:"center"}} />
-    </Grid>
    
-    </Grid>
     <div style={{border: "1px solid black"}}>
 <p>To write {examName} please login through your G-mail</p>
 <GoogleLogin
 
-    clientId="526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com"
+    clientId="526565895378-md97pueiv8m2t3c682eamv293tt4gaa6.apps.googleusercontent.com"
     buttonText="Login through Gmail"
     onSuccess={(res)=>{
         setBackdrop(true);
@@ -139,6 +117,20 @@ if(exsists  ) {
 }
 
 if(!exsists ){
+
+    questions.map((val,i)=>{
+
+if(val.image){
+
+axios.get(`/images/${val.image}`).then(res=>{
+    console.log("fdxc",i);
+});
+
+}
+
+
+})
+
 setAnswers([]);
 
 
@@ -204,7 +196,7 @@ history.push(`${url}/paper/1`);
 
 <GoogleLogin
 
-    clientId="526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com"
+    clientId="526565895378-md97pueiv8m2t3c682eamv293tt4gaa6.apps.googleusercontent.com"
     buttonText="Login through Gmail"
     onSuccess={(res)=>{
         setBackdrop(true);

@@ -60,14 +60,25 @@ const useStyles = makeStyles((theme) => ({
     <Backdrop className={classes.backdrop} open={backdrop} >
       <CircularProgress color="inherit" />
       </Backdrop>
-<h1>Please Select an Exam from your Previously Written Exams </h1>
-    {examList.map((val)=>{
+{examList ? 
+<div>
+
+<h1>Select an Exam</h1> 
+<p style={{display:"inline-block",width:"50px",margin:"10px"}}>S.No</p>
+  <p style={{display:"inline-block",width:"300px"}}>Exam Name</p>
+  <p style={{display:"inline-block",width:"100px"}}>Exam Type</p>
+</div>:
+<h1>You haven't written any exam yet</h1>}
+
+    {examList.map((val,i)=>{
         if(val){
         console.log(val.examname,val.examtype);
         return(
     <div>
-
-        <p style={{display:"inline-block", width:"325px"}}>{val.examname} ({val.examtype})</p>
+    <p style={{display:"inline-block",width:"50px",margin:"10px"}}>{i+1}</p>
+<p style={{display:"inline-block",width:"300px"}}>{val.examname}</p>
+<p style={{display:"inline-block",width:"100px",margin:"10px" }}>{val.examtype}</p>
+       
 
         <Button variant="contained" color="primary" onClick={()=>{
                 
@@ -113,7 +124,7 @@ const useStyles = makeStyles((theme) => ({
 
 <GoogleLogin
 
-    clientId="526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com"
+    clientId="526565895378-md97pueiv8m2t3c682eamv293tt4gaa6.apps.googleusercontent.com"
     buttonText="Login through Gmail"
     onSuccess={(res)=>{
         if(res.profileObj.email===ind){

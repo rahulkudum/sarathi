@@ -411,15 +411,7 @@ if(isVisible){
       </Backdrop>
       <Grid container >
        
-        <Grid item xl={4} lg={4} md={4} sm={12} xs={12}>
-          <div style={{width: "100%"}}></div>
-        </Grid>
-        <Grid item xl={4} lg={4} md={4} sm={12} xs={12}>
-        <img src={logo} style={{width:"100%",height:"100px"}} />
-        </Grid>
-        <Grid item xl={4} lg={4} md={4} sm={12} xs={12}>
-          <div style={{width: "100%"}}></div>
-        </Grid>
+       
        
         <Grid item xl={8} lg={8} md={12} sm={12} xs={12}>
         <div style={{display:"flex",justifyContent:"space-around"}}>

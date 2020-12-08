@@ -45,8 +45,9 @@ useEffect(()=>{
     setBackdrop(false);
   })
 
-},[])
-  
+},[]);
+
+
 
 
    return( 
@@ -177,6 +178,18 @@ return(
   setExamName(val.examname);
   setExamType(val.examtype);
   setQuestions(val.questions);
+  val.questions.map((valu,i)=>{
+  
+  if(valu.image){
+
+  axios.get(`/images/${valu.image}`).then(res=>{
+      console.log("working");
+  });
+}
+  
+
+})
+
   setModify(true);
   history.push(`${url}/paper/1`);
 }}>
@@ -232,7 +245,9 @@ return(
     setExamList(prev=>{
       let dum=[...prev];
      dum= dum.map(item=>{
-       if (item.examname!==examList[dialog-1].examname || item.examtype!==examList[dialog-1].examtype) return item });
+       if(item){
+       if (item.examname!==examList[dialog-1].examname || item.examtype!==examList[dialog-1].examtype) return item }
+     });
       console.log(dum);
       return dum;
     })

@@ -1,7 +1,7 @@
 
 
 
-const dynamic="dynamic-v3";
+const dynamic="dynamic-v7";
 
 
 // let questions=JSON.parse(localStorage.getItem("questions"));
@@ -46,7 +46,7 @@ self.addEventListener("fetch",evt=>{
                    console.log("xdfcgvb");
             return caches.open(dynamic).then(cache=>{
                 cache.put(evt.request.url,fres.clone());
-                limitSize(dynamic,180);
+                limitSize(dynamic,75);
                 return fres;
             })
         }else{

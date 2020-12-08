@@ -63,18 +63,36 @@ setBackdrop(true);
     </Backdrop>
 
  {examList ? <h2>Select a Exam</h2> :<h2>No Exams Found</h2>}
-{examList.map((val)=>{
+ <p style={{display:"inline-block",width:"50px",margin:"10px"}}>S.No</p>
+  <p style={{display:"inline-block",width:"300px"}}>Exam Name</p>
+  <p style={{display:"inline-block",width:"100px"}}>Exam Type</p>
+{examList.map((val,i)=>{
 
 return(
 
   <div>
-<p style={{display:"inline-block",width:"500px"}}>{val.examname}({val.examtype})</p>
-<Button variant="contained" color="primary" onClick={()=>{
+  <p style={{display:"inline-block",width:"50px",margin:"10px"}}>{i+1}</p>
+<p style={{display:"inline-block",width:"300px"}}>{val.examname}</p>
+<p style={{display:"inline-block",width:"100px",margin:"10px" }}>{val.examtype}</p>
+<Button variant="contained" color="primary" style={{margin:"10px"}} onClick={()=>{
  
   history.push(`${url}/${val.examname}_${val.examtype}`);
 }}>
  Go
 </Button>
+
+<Button variant="contained" color="primary" style={{margin:"10px"}} onClick={()=>{
+                    var tempInput = document.createElement("input");
+    tempInput.style = "position: absolute; left: -1000px; top: -1000px";
+    tempInput.value =encodeURI(`https://sarathikgptest.herokuapp.com${url}/${val.examname}_${val.examtype}`);
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+  }}>
+      Copy
+  </Button>
+
 
 
 

@@ -95,10 +95,12 @@ return (
             
    <Button variant="contained" color="primary" onClick={()=>{
 let done = false;
-
+console.log(studentsList);
 studentsList.map((val,i)=>{
+  if(val){
 
   if(studentMail===val.mail) done = true;
+  }
 
 })
 
@@ -155,6 +157,18 @@ if(!done){
   }}>
       Dashboard
   </Button>
+
+  <Button variant="contained" color="primary" style={{marginRight:"10px"}} onClick={()=>{
+                    var tempInput = document.createElement("input");
+    tempInput.style = "position: absolute; left: -1000px; top: -1000px";
+    tempInput.value =encodeURI(`https://sarathikgptest.herokuapp.com${url}/${val.mail}`);
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+  }}>
+      Copy
+  </Button>
   <Button variant="contained" color="secondary" onClick={()=>{
     setDialog(i+1);
     
@@ -190,7 +204,8 @@ if(!done){
         let dum=[...prev];
        dum= dum.map(item=>{
          if(item){
-         if (item.name!==studentsList[dialog-1].name || item.mail!==studentsList[dialog-1].mail) return item }
+         if (item.name!==studentsList[dialog-1].name || item.mail!==studentsList[dialog-1].mail) return item
+         }
        }
          
          );
@@ -201,7 +216,7 @@ if(!done){
   setBackdrop(false);
   
       });
-            
+            console.log(studentsList);
             
             setDialog(false)}} color="primary">
             Yes
