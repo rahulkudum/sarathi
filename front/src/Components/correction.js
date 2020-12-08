@@ -180,7 +180,7 @@ return(
   setQuestions(val.questions);
   
 questions.map((val,i)=>{
-
+  if(i!==0 ){
 if(val.image){
 
    
@@ -190,7 +190,7 @@ axios.get(`/images/${val.image}`);
 
 }
 
-
+  }
 });
 
   setModify(true);
