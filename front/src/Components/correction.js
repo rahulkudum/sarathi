@@ -179,8 +179,8 @@ return(
   setExamType(val.examtype);
   setQuestions(val.questions);
   
-questions.map((val,i)=>{
-  if(i!==0 ){
+val.questions.map((val,i)=>{
+ 
 if(val.image){
 
    
@@ -190,7 +190,7 @@ axios.get(`/images/${val.image}`);
 
 }
 
-  }
+  
 });
 
   setModify(true);

@@ -178,6 +178,21 @@ return(
                 setExamType(examtype);
                 setAnswers(val.answers);
                 setMarks(val.marks);
+                  
+val.answers.map((val,i)=>{
+ 
+ if(val.image){
+ 
+    
+ axios.get(`/images/${val.image}`);
+ 
+ 
+ 
+ }
+ 
+   
+ });
+ 
                 let etime=[];
 
                 val.timelist.map((value,i)=>{

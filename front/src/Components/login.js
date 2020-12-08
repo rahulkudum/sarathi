@@ -151,8 +151,8 @@ setSwitches(0);
 
 
 questions.map((val,i)=>{
-if(i!==0 ){
 
+if(i!==0){
 if(val.image){
 
 
@@ -161,10 +161,12 @@ axios.get(`/images/${val.image}`);
 
 
 }
+
 }
 
-
 });
+
+
 
 axios.post("/user/updat", { mail: res.profileObj.email , exams: exams,time:ptime  })
   .then(res => {
@@ -230,6 +232,10 @@ history.push(`${url}/paper/1`);
 
 <p>(you may see it after writing the exam)</p>
 
+<img style={{position: 'absolute',opacity:0}}  src={`/images/${questions[0].image}`} onLoad={() => {
+                
+                console.log("imageloading");
+              }} />
 
 </div>
 

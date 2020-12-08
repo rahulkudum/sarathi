@@ -86,6 +86,21 @@ const useStyles = makeStyles((theme) => ({
                 setExamType(val.examtype);
                 setAnswers(val.answers);
                 setMarks(val.marks);
+                  
+val.answers.map((val,i)=>{
+ 
+ if(val.image){
+ 
+    
+ axios.get(`/images/${val.image}`);
+ 
+ 
+ 
+ }
+ 
+   
+ });
+ 
                 let etime=[];
 
                 timeList.map((value,i)=>{
