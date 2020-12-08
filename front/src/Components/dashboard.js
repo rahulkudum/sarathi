@@ -30,6 +30,10 @@ const useStyles = makeStyles((theme) => ({
   const classes = useStyles();
 
 useEffect(()=>{
+
+
+  // localStorage.setItem('theme', JSON.stringify(JSON.stringify({data:"fhgj"})));
+  // console.log(JSON.parse(localStorage.getItem('theme')));
   
 setBackdrop(true);
 axios.get("/user/")
@@ -42,6 +46,7 @@ axios.get("/user/")
 },[])
 
 
+
 return (
   <Switch>
     <Route exact path={path}>
@@ -50,7 +55,7 @@ return (
    
   
     <div>
-    {show2 ?
+    {(show2 || mode==="teacher") ?
     <div>
     <Backdrop className={classes.backdrop} open={backdrop} >
       <CircularProgress color="inherit" />
@@ -62,6 +67,7 @@ return (
      InputLabelProps={{
        shrink: true,
      }}
+     style={{width:"250px"}}
     
      value={studentName}
      onChange={(e)=>{setStudentName(e.target.value);
@@ -77,6 +83,7 @@ return (
      InputLabelProps={{
        shrink: true,
      }}
+     style={{width:"450px"}}
     
      value={studentMail}
      onChange={(e)=>{setStudentMail(e.target.value);
@@ -87,6 +94,17 @@ return (
    <br />
             
    <Button variant="contained" color="primary" onClick={()=>{
+let done = false;
+
+studentsList.map((val,i)=>{
+
+  if(studentMail===val.mail) done = true;
+
+})
+
+
+if(!done){
+  
   setBackdrop(true);
      axios.post("/user/add",{name:studentName,mail:studentMail,exams:[]})
      .then(res=>{
@@ -102,7 +120,11 @@ return (
          setBackdrop(false);
      })
   
-   
+
+}else{
+  alert("User with same MailId already exsists");
+}
+
    }} >
       Create Student
     </Button>
@@ -110,6 +132,11 @@ return (
   
   <br />
   <p>List of Exsisting Users</p>
+
+  <p style={{display:"inline-block",width:"50px",margin:"10px"}}>S.No</p>
+  <p style={{display:"inline-block",width:"250px"}}>Name</p>
+  <p style={{display:"inline-block",width:"450px"}}>MailId</p>
+
   
   {studentsList.map((val,i)=>{
     if(val){
@@ -117,7 +144,10 @@ return (
   
   return(
       <div>
-  <p style={{display:"inline-block",width:"700px"}}>name: {val.name} email: {val.mail}</p>
+      <p style={{display:"inline-block",width:"50px",margin:"10px"}}>{i+1}</p>    
+  <p style={{display:"inline-block",width:"250px"}}>{val.name}</p>
+  <p style={{display:"inline-block",width:"450px"}}>{val.mail}</p>
+
   <Button variant="contained" color="primary" style={{marginRight:"10px"}} onClick={()=>{
     setMode("teacher");
     
@@ -198,6 +228,7 @@ return (
   
       if(pasword==="sarathi"){
           setShow2(true);
+          setMode("teacher");
       }else{
           setShow3(true);
       }

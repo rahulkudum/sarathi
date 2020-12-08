@@ -11,7 +11,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Result from "./result";
 import logo from "../logo.png"; 
 
-// export let equestions;
 
 function Login(){
 
@@ -58,8 +57,29 @@ useEffect(() => {
         setQuestions(res.data.questions);
         setBackdrop(false);
    })
+
+  
+
+
    
 }, [])
+
+
+useEffect(() => {
+
+questions.map((val,i)=>{
+
+    axios.get(`/images/${val.image}`).then(res=>{
+        console.log("working");
+    });
+
+
+})
+
+
+
+
+},[questions]);
 
 function msToTime(duration) {
     var milliseconds = parseInt((duration % 1000) / 100),
@@ -147,7 +167,7 @@ axios.post("/user/updat", { mail: res.profileObj.email , exams: exams,time:ptime
 
 })
 
-setMode("student");
+setMode(res.profileObj.email);
 setTime(Date.now());
 setTime2(Date.now()+10800000);
 setTime3({time:0,physics:0,chemistry:0,maths:0});
@@ -191,11 +211,12 @@ history.push(`${url}/paper/1`);
         axios.post("/user/find",{mail:res.profileObj.email})
         .then(resp=>{
             if(resp.data){
-                setMode("student");
+                setMode(res.profileObj.email);
+                setBackdrop(false);
         history.push(`/studentsdashboard/${res.profileObj.email}`)
             }else{
                 setBackdrop(false);
-               alert("Sorry You are not eligible to write Exams");
+                               alert("Sorry You are not eligible to write Exams");
             }
         })
     }}

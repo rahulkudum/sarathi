@@ -3,7 +3,7 @@ import React,{useContext, useState,useEffect} from "react";
 import axios from "axios";
 import { Route, useHistory,useRouteMatch,Switch } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
-
+import {Mode } from "./storage";
 
 import Login from './login';
 
@@ -20,7 +20,7 @@ function Examselect(){
    
   
     const [examList,setExamList]=useState([]);
-   
+    const [mode,setMode]=useContext(Mode);
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -54,7 +54,7 @@ setBackdrop(true);
   
   <div>
 
-  {show2 ?
+  {(show2 || mode==="teacher") ?
     
    
   <div>
@@ -103,6 +103,7 @@ return(
 <Button variant="contained" color="primary" onClick={()=>{
 
     if(pasword==="sarathi"){
+      setMode("teacher");
         setShow2(true);
     }else{
         setShow3(true);

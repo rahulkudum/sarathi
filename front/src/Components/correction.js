@@ -4,7 +4,7 @@ import axios from "axios";
 import { Route, useHistory,useRouteMatch,Switch } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Question from "./question";
-import { ExamName, ExamType, Questions,Modify } from "./storage";
+import { ExamName, ExamType, Questions,Modify,Mode } from "./storage";
 import Examresult from "./examresult";
 function Correction(){
   let { path, url } = useRouteMatch();
@@ -19,10 +19,13 @@ function Correction(){
     let examtypes=["mains","neet","advanced"];
     const[examName,setExamName]=useContext(ExamName);
     const [examType,setExamType]=useContext(ExamType);
+    const[texamName,setTexamName]=useState("");
+    const [texamType,setTexamType]=useState("mains");
   
     const [examList,setExamList]=useState([]);
     const [modify,setModify]=useContext(Modify);
-    const [resume,setResume]=useState(true);
+   
+    const [mode,setMode]=useContext(Mode);
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -58,7 +61,7 @@ useEffect(()=>{
    
   
   <div>
-  {show2 ?
+  {(show2 || mode==="teacher") ?
   <div>
   <Backdrop className={classes.backdrop} open={backdrop} >
     <CircularProgress color="inherit" />
@@ -71,9 +74,9 @@ useEffect(()=>{
      shrink: true,
    }}
   
-   value={examName}
-   onChange={(e)=>{setExamName(e.target.value);
-   setResume(false)}}
+   value={texamName}
+   onChange={(e)=>{setTexamName(e.target.value);
+  }}
  />
  <br />
  <br />
@@ -81,9 +84,9 @@ useEffect(()=>{
           id="outlined-select-currency-native"
           select
           label="Exam Type"
-          value={examType}
-          onChange={(e)=>{setExamType(e.target.value);
-          setResume(false)}}
+          value={texamType}
+          onChange={(e)=>{setTexamType(e.target.value);
+         }}
           SelectProps={{
             native: true,
           }}
@@ -104,14 +107,20 @@ useEffect(()=>{
           
  <Button variant="contained" color="primary" onClick={()=>{
 
-   if(examName){
-   if(resume){
-     history.push(`${url}/1`);
-   }else{
+   if(texamName){
+
+     let done=false;
+
+     examList.map((val,i)=>{
+       if(texamName===val.examname && texamType===val.examtype) done=true;
+     })
+
+     if(!done){
+  
 
   setQuestions([]);
 
-if(examType==="mains"){
+if(texamType==="mains"){
 
 
   
@@ -125,16 +134,21 @@ if(examType==="mains"){
 
          })
          
-              }
+              
 
               
 }
 console.log(questions);
+setTexamName("");
 
 history.push(`${url}/paper/1`)
      
      
-   }    
+   }   
+
+     }else{
+       alert("This Exam already exists");
+     } 
  
    }else{
      alert("please write the exam name");
@@ -146,19 +160,25 @@ history.push(`${url}/paper/1`)
 
 
   {examList ? <h2>Modify or Delete previous Exams</h2> :<h2>No Previous Exams Found</h2>}
+  <p style={{display:"inline-block",width:"50px",margin:"10px"}}>S.No</p>
+  <p style={{display:"inline-block",width:"300px"}}>Exam Name</p>
+  <p style={{display:"inline-block",width:"100px"}}>Exam Type</p>
+
 {examList.map((val,i)=>{
   if( val ){
 return(
   
 
   <div>
-<p style={{display:"inline-block",width:"500px"}}>{val.examname}({val.examtype})</p>
+  <p style={{display:"inline-block",width:"50px",margin:"10px"}}>{i+1}</p>
+<p style={{display:"inline-block",width:"300px"}}>{val.examname}</p>
+<p style={{display:"inline-block",width:"100px",margin:"10px" }}>{val.examtype}</p>
 <Button variant="contained" color="primary" onClick={()=>{
   setExamName(val.examname);
   setExamType(val.examtype);
   setQuestions(val.questions);
   setModify(true);
-  history.push(`${url}/1`);
+  history.push(`${url}/paper/1`);
 }}>
   Modify
 </Button>
@@ -248,6 +268,7 @@ return(
 <Button variant="contained" color="primary" onClick={()=>{
 
     if(pasword==="sarathi"){
+        setMode("teacher");
         setShow2(true);
     }else{
        alert("wrong password, try again")

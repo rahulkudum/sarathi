@@ -1,10 +1,11 @@
 
 import React, { useContext, useState,useEffect } from "react";
-import { UserName,ExamName,ExamType,Answers,Marks, Ctime, Time3, Switches } from "./storage";
+import { UserName,ExamName,ExamType,Answers,Marks, Ctime, Time3, Switches,Mode } from "./storage";
 import axios from "axios";
 import { Route, useHistory, useParams,Switch,useRouteMatch } from "react-router-dom";
 import { Button,Backdrop,CircularProgress } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
+import {GoogleLogin} from "react-google-login";
 function Examlist(){
 
     let {ind}=useParams();
@@ -21,6 +22,8 @@ function Examlist(){
     const [ctime,setCtime]=useContext(Ctime);
     const [time3,setTime3]=useContext(Time3);
     const [switches,setSwitches]=useContext(Switches);
+    const [show,setShow]=useState(false);
+    const [mode,setMode]=useContext(Mode);
 
     console.log("count");
 
@@ -52,6 +55,8 @@ const useStyles = makeStyles((theme) => ({
     },[])
 
     return(<div>
+    {(show || mode===ind || mode==="teacher") ?
+    <div>
     <Backdrop className={classes.backdrop} open={backdrop} >
       <CircularProgress color="inherit" />
       </Backdrop>
@@ -100,6 +105,50 @@ const useStyles = makeStyles((theme) => ({
         
         }
     })}
+    </div> :
+    
+    <div style={{textAlign: 'center'}}>
+    
+<p>To see your Dashboard please login through your G-mail </p>
+
+<GoogleLogin
+
+    clientId="526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com"
+    buttonText="Login through Gmail"
+    onSuccess={(res)=>{
+        if(res.profileObj.email===ind){
+        setBackdrop(true);
+        axios.post("/user/find",{mail:res.profileObj.email})
+        .then(resp=>{
+            if(resp.data){
+                setMode(res.profileObj.email);
+                setShow(true);
+                setBackdrop(false);
+            }else{
+                setBackdrop(false);
+               alert("Sorry You are not eligible to write Exams");
+            }
+        })
+        }else{
+            alert("Email Id does not match");
+        }
+    }}
+    onFailure={(res)=>{
+        setBackdrop(false);
+        alert("You have failed to login in, Please try again");
+    }}
+    cookiePolicy={'single_host_origin'}
+   
+/>
+
+
+
+    </div>
+    
+    
+    
+    
+    }
 
     </div>);
 

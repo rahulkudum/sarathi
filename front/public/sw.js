@@ -1,21 +1,12 @@
-// import {equestions} from "../src/Components/login"
 
 
 
-const static="static-v1"
-
-const dynamic="dynamic-v2";
+const dynamic="dynamic-v3";
 
 
+// let questions=JSON.parse(localStorage.getItem("questions"));
+// console.log(questions);
 
-
-
-// const imagarr=equestion.map((val,i)=>{
-
-//     return val.image
-// })
-
-// console.log(equestions ,imagarr, "cfgvhb");
 
 const limitSize=(name,size)=>{
     caches.open(name).then(cache=>{
@@ -55,7 +46,7 @@ self.addEventListener("fetch",evt=>{
                    console.log("xdfcgvb");
             return caches.open(dynamic).then(cache=>{
                 cache.put(evt.request.url,fres.clone());
-                limitSize(dynamic,75);
+                limitSize(dynamic,180);
                 return fres;
             })
         }else{

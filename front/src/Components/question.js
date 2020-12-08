@@ -357,7 +357,7 @@ return dum;
         
         {questions.map((tile,i) => (
          
-        <Button style={{margin:"5px"}} variant="contained" color={(questions[i].image && questions[i].answer) ? "primary" : "secondary"} onClick={()=>history.push(`/setexam/${i+1}`)}>
+        <Button style={{margin:"5px"}} variant="contained" color={(questions[i].image && questions[i].answer) ? "primary" : "secondary"} onClick={()=>history.push(`/setexam/paper/${i+1}`)}>
             {i+1}
         </Button>
          
@@ -378,7 +378,7 @@ return dum;
         setExamName("");
         setExamType("mains");
         setBackdrop(false);
-        history.push("/");
+        history.push("/setexam");
     })
     .catch(err=>{
         console.log(err);
@@ -394,7 +394,7 @@ return dum;
         setExamType("mains");
        setModify(false);
        setBackdrop(false);
-        history.push("/");
+        history.push("/setexam");
     })
     .catch(err=>{
         console.log(err);
@@ -405,7 +405,7 @@ return dum;
     }
 
     }}>
-        Submit
+        Save
     </Button>
     </div>
    
