@@ -64,9 +64,9 @@ const useStyles = makeStyles((theme) => ({
 <div>
 
 <h1>Select an Exam</h1> 
-<p style={{display:"inline-block",width:"50px",margin:"10px"}}>S.No</p>
-  <p style={{display:"inline-block",width:"300px"}}>Exam Name</p>
-  <p style={{display:"inline-block",width:"100px"}}>Exam Type</p>
+
+  <p style={{display:"inline-block",width:"200px"}}>Exam Name</p>
+  <p style={{display:"inline-block",width:"70px",margin:"10px" }}>Type</p>
 </div>:
 <h1>You haven't written any exam yet</h1>}
 
@@ -75,9 +75,9 @@ const useStyles = makeStyles((theme) => ({
         console.log(val.examname,val.examtype);
         return(
     <div>
-    <p style={{display:"inline-block",width:"50px",margin:"10px"}}>{i+1}</p>
-<p style={{display:"inline-block",width:"300px"}}>{val.examname}</p>
-<p style={{display:"inline-block",width:"100px",margin:"10px" }}>{val.examtype}</p>
+    
+<p style={{display:"inline-block",width:"200px"}}>{val.examname}</p>
+<p style={{display:"inline-block",width:"70px",margin:"10px" }}>{val.examtype}</p>
        
 
         <Button variant="contained" color="primary" onClick={()=>{

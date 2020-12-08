@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Answers, Ctime, ExamName, ExamType, Marks,Mode,Switches,Time,Time2,Time3,UserName } from "./storage";
 import ScrollToTop from "./scroll";
 import logo from "../logo.png"; 
-
+import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 
 
 function Result(){
@@ -334,7 +334,7 @@ answers.map((val,i)=>{
 <Chip size="large" 
  label={`Physics marks: ${marks.physics}`} 
  color="primary"
-  style={{marginLeft:"15px",width:"180px"}}
+  style={{marginLeft:"15px",width:"190px"}}
 
  />
 
@@ -366,7 +366,7 @@ answers.map((val,i)=>{
 <Chip size="large" 
  label={`Chemistry marks: ${marks.chemistry}`} 
  color="primary"
-  style={{marginLeft:"15px",width:"180px"}}
+  style={{marginLeft:"15px",width:"190px"}}
 
  />
 
@@ -397,7 +397,7 @@ answers.map((val,i)=>{
 <Chip size="large" 
  label={`Maths marks: ${marks.maths}`} 
  color="primary"
-  style={{marginLeft:"15px",width:"180px"}}
+  style={{marginLeft:"15px",width:"190px"}}
 
  />
  
@@ -524,6 +524,7 @@ if(i===ctime.length-1){
         
         }}>
             {i+1}
+            {val.review ? <BookmarkBorderIcon style={{ fontSize: 13, backgroundColor: "#52057b",color: "white"}} /> : null}
         </Button>
         );
           

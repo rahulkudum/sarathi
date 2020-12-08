@@ -37,6 +37,8 @@ function Options() {
   const [imageloading, setImageloading] = useState(false);
   const [tmarks, setMarks] = useContext(Marks);
   const [dialog,setDialog]=useState(false);
+  const [dialog2,setDialog2]=useState(false);
+
   const [submit,setSubmit]=useState(false);
   const [switches,setSwitches]=useContext(Switches);
   
@@ -116,6 +118,12 @@ function Options() {
 
     console.log(answers[nind - 1].time);
     setImageloading(true);
+    setAnswers(prev=>{
+      let dum= [...prev];
+      dum[nind - 1].visited=true;
+      return dum;
+    })
+
 
     setTime3(prev=>{
       let dum= { ...prev};
@@ -161,7 +169,7 @@ function Options() {
       setTime2(Date.now());
 
       if (Date.now() - time >= 10800000) {
-      setSubmit(true);
+      setSubmit(1);
       clearInterval(rtime);
 
       }
@@ -368,8 +376,16 @@ setAnswers(prev=>{
                 alert("Your answers got sucessfully submitted");
                 history.push(`/writexam/${examName}_${examType}/result/1`)
               })
+              .catch(err=>{
+                console.log(err);
+                setDialog2(true);
+              })
           }
 
+        })
+        .catch(err=>{
+          console.log(err);
+          setDialog2(true);
         })
 
 
@@ -723,12 +739,36 @@ setAnswers(prev=>{
         </DialogContent>
        
         <DialogActions>
-          <Button onClick={()=>{setSubmit(true);setDialog(false)}} color="primary">
+          <Button onClick={()=>{setSubmit(1);setDialog(false)}} color="primary">
             Yes
           </Button>
           <Button onClick={()=>{setDialog(false)}} color="primary" autoFocus>
            No
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={dialog2}
+       
+        onClose={()=>{ }}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Failed to Submit"}</DialogTitle>
+        <DialogContent>
+         It seems you are offline but don't worry until you get internet don't close this tab and once you are online click on Try again 
+        </DialogContent>
+       
+        <DialogActions>
+          <Button onClick={()=>{
+            
+            setSubmit(submit+1);
+           
+            setDialog2(false)}} color="primary">
+           Try again
+          </Button>
+          
         </DialogActions>
       </Dialog>
     </div>
