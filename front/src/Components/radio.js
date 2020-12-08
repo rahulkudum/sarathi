@@ -8,6 +8,7 @@ import CheckCircleOutlineRoundedIcon from '@material-ui/icons/CheckCircleOutline
 import ScrollToTop from "./scroll";
 import {usePageVisibility} from "./visible"
 import logo from "../logo.png" 
+import { set } from "mongoose";
 
 function Options() {
 
@@ -112,54 +113,28 @@ function Options() {
 
   useEffect(() => {
 
-    setAnswers(prev => {
-      let dum = [...prev];
-      dum[nind - 1].visited = true;
 
+    console.log(answers[nind - 1].time);
+    setImageloading(true);
+
+    setTime3(prev=>{
+      let dum= { ...prev};
+      dum.qon=Date.now();
       return dum;
-    })
-
-   
-    
-
-let subl=questions.length/3
-    let atime = setInterval(() => {
-
-      if(nind<=subl){
-        setTime3(prev=>{
-          let dum=prev;
-          dum.physics=dum.physics+500;
-          return dum;
-        })
-        
-      }else if(nind<=2*subl){
-        setTime3(prev=>{
-          let dum=prev;
-          dum.chemistry=dum.chemistry+500;
-          return dum;
-        })
-      }else{
-        setTime3(prev=>{
-          let dum=prev;
-          dum.maths=dum.maths+500;
-          return dum;
-        })
-      }
+    });
+  
+    return (() => {
+      let htime=JSON.parse(localStorage.getItem("time3"));
+      console.log(answers[nind - 1],htime.qon,Date.now());
 
 
-      setAnswers(prev => {
-        let dum = [...prev];
-        dum[nind - 1].time = dum[nind - 1].time + 500;
-
+      setAnswers(prev=>{
+        let dum= [...prev];
+        dum[nind - 1].time=dum[nind - 1].time+Date.now()-htime.qon;
         return dum;
       })
 
-    }, 1000);
-    setImageloading(true);
-
-    return (() => {
-
-      clearInterval(atime);
+    
     })
 
 
@@ -185,20 +160,11 @@ let subl=questions.length/3
 
       setTime2(Date.now());
 
-     
-      
       if (Date.now() - time >= 10800000) {
       setSubmit(true);
       clearInterval(rtime);
 
-
-
       }
-
-
-
-
-
     }, 1000);
 
     return(()=>{
@@ -211,27 +177,28 @@ let subl=questions.length/3
   useEffect(()=>{
 
     setSwitches(switches+0.5);
-
-    console.log(switches,time3);
-    let stime = setInterval(() => {
-
-if(isVisible){
-     setTime3(prev=>{
-       let dum=prev;
-       dum.time=dum.time+500;
-       return dum; 
-     })
-
-    }
-    console.log(switches,time3);
     
 
-    }, 1000);
+    if(isVisible){
+      setTime3(prev=>{
+        let dum = { ...prev};
+        dum.on=Date.now();
+        return dum;
+      })
+    }else{
+      setTime3(prev=>{
+        let dum = { ...prev};
+        dum.time=dum.time+Date.now()-dum.on;
+        return dum;
+      })
 
-    return (() => {
 
-      clearInterval(stime);
-    })
+    }
+
+  
+    console.log(switches,time3,isVisible);
+    
+   
 
 
 
@@ -252,7 +219,18 @@ if(isVisible){
       let subl=questions.length/3;
       console.log(subl); 
       setBackdrop(true);
+      // if (nind !== 75) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+      // else history.push(`/writexam/${examName}_${examType}/paper/1`);
+      let htime=JSON.parse(localStorage.getItem("time3"));
+      console.log(answers[nind - 1],htime.qon,Date.now(),"vb");
+setAnswers(prev=>{
+  let dum= [...prev];
+  dum[nind - 1].time=dum[nind - 1].time+Date.now()-htime.qon;
+  return dum;
 
+
+})
+     
       questions.map((val, i) => {
         if (answers[i].answer) {
           if (val.answer === answers[i].answer) {
@@ -344,14 +322,21 @@ if(isVisible){
 
 
             let exams = res.data.exams;
+            // let hanswers=[...answers];
+            // hanswers[nind - 2].time= hanswers[nind - 2].time/2;
+            // console.log(hanswers,nind);
+            // setAnswers(hanswers);
+            
             exams.push({
               examname: examName,
               examtype: examType,
               answers: answers,
               marks: { total: marks, positive: positive, negative: negative,physics:physics,chemistry:chemistry,maths:maths },
-              time:{totaltime:msToTime(time2-time),actualtime:msToTime(time3.time),physics:msToTime(2*time3.physics),chemistry:msToTime(2*time3.chemistry),maths:msToTime(2*time3.maths)},
+              time:{totaltime:msToTime(time2-time),actualtime:msToTime(time3.time+Date.now()-time3.on),physics:0,chemistry:0,maths:0},
               switches:switches
             });
+
+
 
             console.log(maths,physics,chemistry);
             let ptime=res.data.time;
@@ -360,13 +345,21 @@ if(isVisible){
             axios.post("/user/updat", { mail: mail, exams: exams,time:ptime })
               .then(res => {
                 console.log(res);
+               
 
                 setTime3(prev=>{
                   let dum={...prev};
-                  dum.physics=msToTime(2*dum.physics);
-                  dum.chemistry=msToTime(2*dum.chemistry);
-                  dum.maths=msToTime(2*dum.maths);
+                  dum.physics=0;
+                  dum.chemistry=0;
+                  dum.maths=0;
+                  dum.time=msToTime(dum.time+Date.now()-dum.on);
                   return dum;
+                })
+                setAnswers(prev=>{
+                  let dum= [...prev];
+                  dum[nind - 1].time=dum[nind - 1].time-(Date.now()-htime.qon)/2;
+                  return dum;
+                
                 })
 
                 setBackdrop(false);

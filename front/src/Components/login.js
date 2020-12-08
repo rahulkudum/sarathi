@@ -145,7 +145,7 @@ let ptime=resp.data.time;
 
 setMode(res.profileObj.email);
 
-setTime3({time:0,physics:0,chemistry:0,maths:0});
+setTime3({time:0,physics:0,chemistry:0,maths:0,on:0,qon:0,no:0});
 setSwitches(0);
 
 

@@ -68,6 +68,51 @@ const useStyles = makeStyles((theme) => ({
   let bcolor;
 
 
+useEffect(()=>{
+
+answers.map((val,i)=>{
+
+  if(i<25){
+    setTime3(prev=>{
+      let dum = { ...prev};
+      dum.physics=dum.physics+val.time;
+      return dum;
+
+    })
+  }else if(i<50){
+
+    setTime3(prev=>{
+      let dum = { ...prev};
+      dum.chemistry=dum.chemistry+val.time;
+      return dum;
+
+    })
+
+    
+  }else{
+
+    setTime3(prev=>{
+      let dum = { ...prev};
+      dum.maths=dum.maths+val.time;
+      return dum;
+
+    })
+
+
+  }
+
+
+
+
+
+})
+
+
+},[])
+
+
+
+
 
   useEffect(()=>{
    
@@ -92,6 +137,19 @@ const useStyles = makeStyles((theme) => ({
     seconds = (seconds < 10) ? "0" + seconds : seconds;
   
     return  "Time: "+minutes + ":" + seconds ;
+  };
+
+  function msToTime2(duration) {
+    var milliseconds = parseInt((duration % 1000) / 100),
+      seconds = Math.floor((duration / 1000) % 60),
+      minutes = Math.floor((duration / (1000 * 60)) % 60),
+      hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+  
+    hours = (hours < 10) ? "0" + hours : hours;
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
+  
+    return  hours +":"+minutes + ":" + seconds ;
   };
 
   let butcolor;
@@ -265,25 +323,25 @@ const useStyles = makeStyles((theme) => ({
             {corrected}
         </Button>
 
-        <p style={{display:"inline-block"}}>Correct Answers</p>
+        <p style={{display:"inline-block",width:"140px"}}>Correct Answers</p>
         <Chip size="large" 
  label={`Positve marks: ${marks.positive}`} 
  color="primary"
-  style={{marginLeft:"15px"}}
+  style={{marginLeft:"15px",width:"180px"}}
 
  />
 
 <Chip size="large" 
  label={`Physics marks: ${marks.physics}`} 
  color="primary"
-  style={{marginLeft:"25px"}}
+  style={{marginLeft:"15px",width:"180px"}}
 
  />
 
 <Chip size="large" 
- label={`Physics time: ${time3.physics}`} 
+ label={`Physics time: ${msToTime2(time3.physics)}`} 
  color="primary"
-  style={{marginLeft:"30px"}}
+  style={{marginLeft:"15px",width:"220px"}}
 
  />
 
@@ -297,25 +355,25 @@ const useStyles = makeStyles((theme) => ({
        >
            {wronged} 
        </Button>
-       <p style={{display:"inline-block"}}>Wrong Answers</p>
+       <p style={{display:"inline-block",width:"140px"}}>Wrong Answers</p>
        <Chip size="large" 
  label={`Negative marks: ${marks.negative}`} 
  color="secondary"
- style={{marginLeft:"15px"}}
+ style={{marginLeft:"15px",width:"180px"}}
 
  />
 
 <Chip size="large" 
  label={`Chemistry marks: ${marks.chemistry}`} 
  color="primary"
-  style={{marginLeft:"15px"}}
+  style={{marginLeft:"15px",width:"180px"}}
 
  />
 
 <Chip size="large" 
- label={`Chemistry time: ${time3.chemistry}`} 
+ label={`Chemistry time: ${msToTime2(time3.chemistry)}`} 
  color="primary"
-  style={{marginLeft:"15px"}}
+  style={{marginLeft:"15px",width:"220px"}}
 
  />
 
@@ -328,25 +386,25 @@ const useStyles = makeStyles((theme) => ({
            {lefted} 
        </Button>
 
-       <p style={{display:"inline-block"}}>Unattempted</p>
+       <p style={{display:"inline-block",width:"140px"}}>Unattempted</p>
        <Chip size="large" 
  label={`Total marks: ${marks.total}`} 
  
- style={{marginLeft:"50px"}}
+ style={{marginLeft:"15px",width:"180px"}}
 
  />
 
 <Chip size="large" 
  label={`Maths marks: ${marks.maths}`} 
  color="primary"
-  style={{marginLeft:"48px"}}
+  style={{marginLeft:"15px",width:"180px"}}
 
  />
  
  <Chip size="large" 
- label={`Maths time: ${time3.maths}`} 
+ label={`Maths time: ${msToTime2(time3.maths)}`} 
  color="primary"
-  style={{marginLeft:"40px"}}
+  style={{marginLeft:"15px",width:"220px"}}
 
  />
 
@@ -372,7 +430,7 @@ const useStyles = makeStyles((theme) => ({
 <Chip size="large" 
  label={`No of Tab switches: ${switches-0.5}`} 
  color="primary"
- style={{margin:"5px"}}
+ style={{margin:"5px",width:"220px"}}
 
 
 
@@ -382,7 +440,7 @@ const useStyles = makeStyles((theme) => ({
  <Chip size="large" 
  label={`Total Time: ${time3.totaltime}`} 
  color="primary"
- style={{margin:"5px"}}
+ style={{margin:"5px",width:"220px"}}
 
 
  />
@@ -390,7 +448,7 @@ const useStyles = makeStyles((theme) => ({
 <Chip size="large" 
  label={`actual Time: ${time3.actualtime}`} 
  color="primary"
-style={{margin:"5px"}}
+style={{margin:"5px",width:"200px"}}
 
  />
 
@@ -406,7 +464,7 @@ if(i===ctime.length-1){
   <Chip size="large" 
  label={`submitted at: ${val.stime}`} 
  color="primary"
- style={{margin:"5px"}}
+ style={{margin:"5px",width:"220px"}}
  />
   );
 
@@ -417,13 +475,13 @@ if(i===ctime.length-1){
   <Chip size="large" 
  label={`attempt no ${i+1}: ${val.stime}`} 
  color="primary"
- style={{margin:"5px"}}
+ style={{margin:"5px",width:"220px"}}
 
  />
  <Chip size="large" 
  label={`duration : ${ctime[i+1].dur}`} 
  color="primary"
- style={{margin:"5px"}}
+ style={{margin:"5px",width:"200px"}}
 
  />
  </div>
