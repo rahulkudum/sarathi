@@ -44,7 +44,7 @@ console.log(questions);
 
 if (examType === "mains") {
 
-  if(examName === "FULL TEST 944 2"){
+  if(examName === "2021WM7"){
 
     if ( nind === 21 || nind === 22 || nind === 23 || nind === 24 || nind === 25
       
