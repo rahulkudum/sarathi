@@ -41,19 +41,39 @@ const [backdrop,setBackdrop]=useState(false);
     const classes = useStyles();
     let questionType;
 console.log(questions);
-if(examType==="mains"){
 
-    if(  nind===21 || nind===22 || nind===23 || nind===24 || nind===25 
-      || nind===46 || nind===47 || nind===48 || nind===49 || nind===50
-      || nind===71 || nind===72 || nind===73 || nind===74 || nind===75
+if (examType === "mains") {
+
+  if(examName === "FULL TEST 944 2"){
+
+    if ( nind === 21 || nind === 22 || nind === 23 || nind === 24 || nind === 25
       
-      
-      ){
-        questionType="integer";
-    }else{
-        questionType="single";
+      || nind === 71 || nind === 72 || nind === 73 || nind === 74 || nind === 75
+
+
+    ) {
+      questionType = "integer";
+    } else {
+      questionType = "single";
     }
+
+
+  }else{
+
+  if ( nind === 21 || nind === 22 || nind === 23 || nind === 24 || nind === 25
+    || nind === 46 || nind === 47 || nind === 48 || nind === 49 || nind === 50
+    || nind === 71 || nind === 72 || nind === 73 || nind === 74 || nind === 75
+
+
+  ) {
+    questionType = "integer";
+  } else {
+    questionType = "single";
+  }
+
 }
+}
+
 
 useEffect(()=>{
    

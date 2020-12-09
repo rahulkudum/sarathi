@@ -55,6 +55,22 @@ function Options() {
 
   if (examType === "mains") {
 
+    if(examName === "FULL TEST 944 2"){
+
+      if ( nind === 21 || nind === 22 || nind === 23 || nind === 24 || nind === 25
+        
+        || nind === 71 || nind === 72 || nind === 73 || nind === 74 || nind === 75
+  
+  
+      ) {
+        questionType = "integer";
+      } else {
+        questionType = "single";
+      }
+
+
+    }else{
+
     if ( nind === 21 || nind === 22 || nind === 23 || nind === 24 || nind === 25
       || nind === 46 || nind === 47 || nind === 48 || nind === 49 || nind === 50
       || nind === 71 || nind === 72 || nind === 73 || nind === 74 || nind === 75
@@ -65,6 +81,8 @@ function Options() {
     } else {
       questionType = "single";
     }
+
+  }
   }
 
 
@@ -227,10 +245,10 @@ function Options() {
       let subl=questions.length/3;
       console.log(subl); 
       setBackdrop(true);
-      // if (nind !== 75) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-      // else history.push(`/writexam/${examName}_${examType}/paper/1`);
+     
       let htime=JSON.parse(localStorage.getItem("time3"));
       console.log(answers[nind - 1],htime.qon,Date.now(),"vb");
+
 setAnswers(prev=>{
   let dum= [...prev];
   dum[nind - 1].time=dum[nind - 1].time+Date.now()-htime.qon;
@@ -384,7 +402,80 @@ setAnswers(prev=>{
 
         })
         .catch(err=>{
-          console.log(err);
+          let htime=JSON.parse(localStorage.getItem("time3"));
+          console.log(answers[nind - 1],htime.qon,Date.now(),"vb");
+    
+    setAnswers(prev=>{
+      let dum= [...prev];
+      dum[nind - 1].time=dum[nind - 1].time-(Date.now()-htime.qon)/2;
+      return dum;
+    
+    
+    })
+         
+          questions.map((val, i) => {
+            if (answers[i].answer) {
+              if (val.answer === answers[i].answer) {
+                if(i<subl){
+                  physics=physics-Number(val.correct);
+                }else if(i<2*subl){
+                  chemistry=chemistry-Number(val.correct);
+    
+                }else{
+                  maths=maths-Number(val.correct);
+                }
+                
+                marks = marks - Number(val.correct);
+                positive = positive - Number(val.correct);
+                setAnswers(prev => {
+                  let dum = [...prev];
+                  dum[i].status = "correct";
+                  dum[i].correct = val.answer;
+                  return dum;
+                })
+              } else {
+                if(i<subl){
+                  physics=physics-Number(val.wrong);
+                }else if(i<2*subl){
+                  chemistry=chemistry-Number(val.wrong);
+    
+                }else{
+                  maths=maths-Number(val.wrong);
+                }
+                
+                marks = marks - Number(val.wrong);
+                negative = negative - Number(val.wrong);
+                setAnswers(prev => {
+                  let dum = [...prev];
+                  dum[i].status = "wrong";
+                  dum[i].correct = val.answer;
+                  return dum;
+                })
+    
+              }
+            } else {
+              setAnswers(prev => {
+                let dum = [...prev];
+                dum[i].status = "left";
+                dum[i].correct = val.answer;
+                return dum;
+              })
+    
+    
+            }
+          })
+    
+          setMarks(prev => {
+            let dum = { ...prev };
+            dum.total = marks;
+            dum.positive = positive;
+            dum.negative = negative;
+            dum.physics=physics;
+            dum.chemistry=chemistry;
+            dum.maths=maths;
+            return dum;
+          });
+    
           setDialog2(true);
         })
 
@@ -395,19 +486,6 @@ setAnswers(prev=>{
 
   },[submit])
 
-// useEffect(()=>{
-//   if(isVisble){
-//     setTime3(prev=>{
-//       let dum={...prev};
-//       dum.time=dum.time+1000;
-//       return dum;
-//     })
-  
-    
-//         };
-
-       
-// })
 
 
 
