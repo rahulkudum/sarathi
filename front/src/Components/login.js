@@ -232,10 +232,11 @@ history.push(`${url}/paper/1`);
 
 <p>(you may see it after writing the exam)</p>
 
-<img style={{position: 'absolute',opacity:0}}  src={`/images/${questions[0].image}`} onLoad={() => {
+ 
+{questions.length >0 ? <img style={{position: 'absolute',opacity:0}}  src={`/images/${questions[0].image}`} onLoad={() => {
                 
                 console.log("imageloading");
-              }} />
+              }} /> : null}
 
 </div>
 
