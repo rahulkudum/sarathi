@@ -7,8 +7,7 @@ import { Answers, Ctime, ExamName, ExamType, Marks, Questions, Time, Time2, Time
 import CheckCircleOutlineRoundedIcon from '@material-ui/icons/CheckCircleOutlineRounded';
 import ScrollToTop from "./scroll";
 import {usePageVisibility} from "./visible"
-import logo from "../logo.png" 
-import { set } from "mongoose";
+
 
 function Options() {
 
@@ -43,15 +42,7 @@ function Options() {
   const [switches,setSwitches]=useContext(Switches);
   
   const isVisible = usePageVisibility();
-//   const onVisibilityChange = () => setIsVisible(getIsDocumentHidden())
-//  useEffect(() => {
-//     const visibilityChange = getBrowserVisibilityProp()
-//     document.addEventListener(visibilityChange, onVisibilityChange, false)
-//     return () => {
-//       document.removeEventListener(visibilityChange, onVisibilityChange)
-//     }
-//   },[])
-  
+
 
   if (examType === "mains") {
 
@@ -85,6 +76,10 @@ function Options() {
   }
   }
 
+  if(examType === "neet"){
+    questionType = "single";
+  }
+
 
 
 
@@ -105,28 +100,6 @@ function Options() {
   let review = 0;
   let answered = 0;
   let areview = 0;
-
-// useEffect(()=>{
-// console.log("copied");
-// window.addEventListener("load", () => {
- 
-
-//   window.addEventListener("online", () => {
-//     // Set hasNetwork to online when they change to online.
-//     console.log("online");
-//   });
-
-//   window.addEventListener("offline", () => {
-//     // Set hasNetwork to offline when they change to offline.
-//   console.log("offline");
-//   });
-// });
-
-// return (()=>{
-//   console.log("uncopied");
-// })
-
-// },[])
 
 
 
@@ -242,8 +215,7 @@ function Options() {
       let maths=0;
       let physics=0;
       let chemistry=0;
-      let subl=questions.length/3;
-      console.log(subl); 
+    
       setBackdrop(true);
      
       let htime=JSON.parse(localStorage.getItem("time3"));
@@ -256,13 +228,13 @@ setAnswers(prev=>{
 
 
 })
-     
+     if(examType==="mains"){
       questions.map((val, i) => {
         if (answers[i].answer) {
           if (val.answer === answers[i].answer) {
-            if(i<subl){
+            if(i<25){
               physics=physics+Number(val.correct);
-            }else if(i<2*subl){
+            }else if(i<50){
               chemistry=chemistry+Number(val.correct);
 
             }else{
@@ -278,9 +250,9 @@ setAnswers(prev=>{
               return dum;
             })
           } else {
-            if(i<subl){
+            if(i<25){
               physics=physics+Number(val.wrong);
-            }else if(i<2*subl){
+            }else if(i<50){
               chemistry=chemistry+Number(val.wrong);
 
             }else{
@@ -309,6 +281,63 @@ setAnswers(prev=>{
         }
       })
 
+    }else if(examType==="neet"){
+
+      
+      questions.map((val, i) => {
+        if (answers[i].answer) {
+          if (val.answer === answers[i].answer) {
+            if(i<45){
+              physics=physics+Number(val.correct);
+            }else if(i<90){
+              chemistry=chemistry+Number(val.correct);
+
+            }else{
+              maths=maths+Number(val.correct);
+            }
+            
+            marks = marks + Number(val.correct);
+            positive = positive + Number(val.correct);
+            setAnswers(prev => {
+              let dum = [...prev];
+              dum[i].status = "correct";
+              dum[i].correct = val.answer;
+              return dum;
+            })
+          } else {
+            if(i<45){
+              physics=physics+Number(val.wrong);
+            }else if(i<90){
+              chemistry=chemistry+Number(val.wrong);
+
+            }else{
+              maths=maths+Number(val.wrong);
+            }
+            
+            marks = marks + Number(val.wrong);
+            negative = negative + Number(val.wrong);
+            setAnswers(prev => {
+              let dum = [...prev];
+              dum[i].status = "wrong";
+              dum[i].correct = val.answer;
+              return dum;
+            })
+
+          }
+        } else {
+          setAnswers(prev => {
+            let dum = [...prev];
+            dum[i].status = "left";
+            dum[i].correct = val.answer;
+            return dum;
+          })
+
+
+        }
+      })
+
+    }
+
       setMarks(prev => {
         let dum = { ...prev };
         dum.total = marks;
@@ -321,8 +350,7 @@ setAnswers(prev=>{
       });
 
       
-      console.log(tmarks,marks);
-
+    
 
 
       axios.post("/user/find", { mail: mail })
@@ -343,15 +371,9 @@ setAnswers(prev=>{
           } else {
 
 
-            console.log(tmarks);
-
-
 
             let exams = res.data.exams;
-            // let hanswers=[...answers];
-            // hanswers[nind - 2].time= hanswers[nind - 2].time/2;
-            // console.log(hanswers,nind);
-            // setAnswers(hanswers);
+           
             
             exams.push({
               examname: examName,
@@ -364,7 +386,6 @@ setAnswers(prev=>{
 
 
 
-            console.log(maths,physics,chemistry);
             let ptime=res.data.time;
             ptime.push({examname:examName,examtype:examType,stime: new Date().toLocaleTimeString("en-US"),dur:msToTime(time2-time)});    
 
@@ -396,7 +417,7 @@ setAnswers(prev=>{
               })
               .catch(err=>{
                 console.log(err);
-                setDialog2(true);
+                setDialog2(1);
               })
           }
 
@@ -412,71 +433,133 @@ setAnswers(prev=>{
     
     
     })
-         
-          questions.map((val, i) => {
-            if (answers[i].answer) {
-              if (val.answer === answers[i].answer) {
-                if(i<subl){
-                  physics=physics-Number(val.correct);
-                }else if(i<2*subl){
-                  chemistry=chemistry-Number(val.correct);
     
-                }else{
-                  maths=maths-Number(val.correct);
-                }
-                
-                marks = marks - Number(val.correct);
-                positive = positive - Number(val.correct);
-                setAnswers(prev => {
-                  let dum = [...prev];
-                  dum[i].status = "correct";
-                  dum[i].correct = val.answer;
-                  return dum;
-                })
-              } else {
-                if(i<subl){
-                  physics=physics-Number(val.wrong);
-                }else if(i<2*subl){
-                  chemistry=chemistry-Number(val.wrong);
-    
-                }else{
-                  maths=maths-Number(val.wrong);
-                }
-                
-                marks = marks - Number(val.wrong);
-                negative = negative - Number(val.wrong);
-                setAnswers(prev => {
-                  let dum = [...prev];
-                  dum[i].status = "wrong";
-                  dum[i].correct = val.answer;
-                  return dum;
-                })
-    
-              }
-            } else {
-              setAnswers(prev => {
-                let dum = [...prev];
-                dum[i].status = "left";
-                dum[i].correct = val.answer;
-                return dum;
-              })
-    
-    
+    if(examType==="mains"){
+      questions.map((val, i) => {
+        if (answers[i].answer) {
+          if (val.answer === answers[i].answer) {
+            if(i<25){
+              physics=physics-Number(val.correct);
+            }else if(i<50){
+              chemistry=chemistry-Number(val.correct);
+
+            }else{
+              maths=maths-Number(val.correct);
             }
-          })
-    
-          setMarks(prev => {
-            let dum = { ...prev };
-            dum.total = marks;
-            dum.positive = positive;
-            dum.negative = negative;
-            dum.physics=physics;
-            dum.chemistry=chemistry;
-            dum.maths=maths;
+            
+            marks = marks - Number(val.correct);
+            positive = positive - Number(val.correct);
+            setAnswers(prev => {
+              let dum = [...prev];
+              dum[i].status = "correct";
+              dum[i].correct = val.answer;
+              return dum;
+            })
+          } else {
+            if(i<25){
+              physics=physics-Number(val.wrong);
+            }else if(i<50){
+              chemistry=chemistry-Number(val.wrong);
+
+            }else{
+              maths=maths-Number(val.wrong);
+            }
+            
+            marks = marks - Number(val.wrong);
+            negative = negative - Number(val.wrong);
+            setAnswers(prev => {
+              let dum = [...prev];
+              dum[i].status = "wrong";
+              dum[i].correct = val.answer;
+              return dum;
+            })
+
+          }
+        } else {
+          setAnswers(prev => {
+            let dum = [...prev];
+            dum[i].status = "left";
+            dum[i].correct = val.answer;
             return dum;
-          });
+          })
+
+
+        }
+      })
+
+    }else if(examType==="neet"){
+
+      
+      questions.map((val, i) => {
+        if (answers[i].answer) {
+          if (val.answer === answers[i].answer) {
+            if(i<45){
+              physics=physics-Number(val.correct);
+            }else if(i<90){
+              chemistry=chemistry-Number(val.correct);
+
+            }else{
+              maths=maths-Number(val.correct);
+            }
+            
+            marks = marks - Number(val.correct);
+            positive = positive - Number(val.correct);
+            setAnswers(prev => {
+              let dum = [...prev];
+              dum[i].status = "correct";
+              dum[i].correct = val.answer;
+              return dum;
+            })
+          } else {
+            if(i<45){
+              physics=physics-Number(val.wrong);
+            }else if(i<90){
+              chemistry=chemistry-Number(val.wrong);
+
+            }else{
+              maths=maths-Number(val.wrong);
+            }
+            
+            marks = marks - Number(val.wrong);
+            negative = negative - Number(val.wrong);
+            setAnswers(prev => {
+              let dum = [...prev];
+              dum[i].status = "wrong";
+              dum[i].correct = val.answer;
+              return dum;
+            })
+
+          }
+        } else {
+          setAnswers(prev => {
+            let dum = [...prev];
+            dum[i].status = "left";
+            dum[i].correct = val.answer;
+            return dum;
+          })
+
+
+        }
+      })
+
+    }
+
+      setMarks(prev => {
+        let dum = { ...prev };
+        dum.total = marks;
+        dum.positive = positive;
+        dum.negative = negative;
+        dum.physics=physics;
+        dum.chemistry=chemistry;
+        dum.maths=maths;
+        return dum;
+      });
+
+      
+
+         
     
-          setDialog2(true);
+          setDialog2(1);
         })
 
 
@@ -600,8 +683,17 @@ setAnswers(prev=>{
 
                     return dum;
                   })
+
+                  if(examType==="mains"){
                   if (nind !== 75) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
                   else history.push(`/writexam/${examName}_${examType}/paper/1`);
+                  }else if (examType === "neet"){
+
+                    if (nind !== 180) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+                  else history.push(`/writexam/${examName}_${examType}/paper/1`);
+
+
+                  }
 
                 } else {
                   alert("Please Select a Option");
@@ -634,8 +726,18 @@ setAnswers(prev=>{
                     dum[nind - 1].review = true;
                     return dum;
                   })
+
+                  if(examType==="mains"){
                   if (nind !== 75) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
                   else history.push(`/writexam/${examName}_${examType}/paper/1`);
+                  }else if (examType === "neet"){
+
+                    if (nind !== 180) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+                  else history.push(`/writexam/${examName}_${examType}/paper/1`);
+
+
+                  }
+                 
 
                 } else {
                   alert("Please Select a Option");
@@ -651,8 +753,16 @@ setAnswers(prev=>{
                   dum[nind - 1].review = true;
                   return dum;
                 })
-                if (nind !== 75) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-                else history.push(`/writexam/${examName}_${examType}/paper/1`);
+                if(examType==="mains"){
+                  if (nind !== 75) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+                  else history.push(`/writexam/${examName}_${examType}/paper/1`);
+                  }else if (examType === "neet"){
+
+                    if (nind !== 180) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+                  else history.push(`/writexam/${examName}_${examType}/paper/1`);
+
+
+                  }
               }}>
                 Mark for Review and Next
   </Button>
@@ -661,21 +771,37 @@ setAnswers(prev=>{
               <div style={{ backgroundColor: "#f1f6f9" }}>
 
                 <Button variant="contained" style={{ margin: "5px", backgroundColor: "#e6e6e6", borderColor: "#adadad", marginRight: "30px" }} onClick={() => {
+                 if(examType==="mains"){
                   if (nind !== 1) history.push(`/writexam/${examName}_${examType}/paper/${nind - 1}`);
                   else history.push(`/writexam/${examName}_${examType}/paper/75`);
+                  }else if (examType === "neet"){
+
+                    if (nind !== 1) history.push(`/writexam/${examName}_${examType}/paper/${nind - 1}`);
+                  else history.push(`/writexam/${examName}_${examType}/paper/180`);
+
+
+                  }
                 }}  >
                   Back
   </Button>
 
                 <Button variant="contained" style={{ margin: "5px", backgroundColor: "#e6e6e6", borderColor: "#adadad", marginRight: "100px" }} onClick={() => {
+                 if(examType==="mains"){
                   if (nind !== 75) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
                   else history.push(`/writexam/${examName}_${examType}/paper/1`);
+                  }else if (examType === "neet"){
+
+                    if (nind !== 180) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+                  else history.push(`/writexam/${examName}_${examType}/paper/1`);
+
+
+                  }
                 }}  >
                   Next
   </Button>
 
                 <Button variant="contained" style={{ margin: "5px", backgroundColor: "#43d001", color: "white", width: "300px" }} onClick={() => {
-              setDialog(true);
+              setDialog(1);
 
 
                 }} >
@@ -773,8 +899,6 @@ setAnswers(prev=>{
             height: "400px",
 
             overflowY: "scroll",
-
-
             margin: "auto"
           }}>
 

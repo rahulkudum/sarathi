@@ -72,6 +72,12 @@ let questionType;
   
     }
     }
+
+    
+  if(examType === "neet"){
+    questionType = "single";
+  }
+
   
 
 
@@ -88,6 +94,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 useEffect(()=>{
+
+
+  if(examType === "mains"){
 
 answers.map((val,i)=>{
 
@@ -125,6 +134,50 @@ answers.map((val,i)=>{
 
 
 })
+
+  }else if(examType === "neet"){
+
+    
+answers.map((val,i)=>{
+
+  if(i<45){
+    setTime3(prev=>{
+      let dum = { ...prev};
+      dum.physics=dum.physics+val.time;
+      return dum;
+
+    })
+  }else if(i<90){
+
+    setTime3(prev=>{
+      let dum = { ...prev};
+      dum.chemistry=dum.chemistry+val.time;
+      return dum;
+
+    })
+
+    
+  }else{
+
+    setTime3(prev=>{
+      let dum = { ...prev};
+      dum.maths=dum.maths+val.time;
+      return dum;
+
+    })
+
+
+  }
+
+
+
+
+
+})
+
+
+
+  }
 
 
 },[])
@@ -284,15 +337,31 @@ answers.map((val,i)=>{
   <div style={{backgroundColor:"#f1f6f9"}}>
 
   <Button  variant="contained" style={{margin:"5px",backgroundColor:"#e6e6e6",borderColor: "#adadad"}} onClick={()=>{
-    if(nind!==1) history.push(`/writexam/${examName}_${examType}/result/${nind-1}`);
-    else history.push(`/writexam/${examName}_${examType}/result/75`);
+     if(examType==="mains"){
+                  if (nind !== 1) history.push(`/writexam/${examName}_${examType}/paper/${nind - 1}`);
+                  else history.push(`/writexam/${examName}_${examType}/paper/75`);
+                  }else if (examType === "neet"){
+
+                    if (nind !== 1) history.push(`/writexam/${examName}_${examType}/paper/${nind - 1}`);
+                  else history.push(`/writexam/${examName}_${examType}/paper/180`);
+
+
+                  }
   }}  >
     Back
   </Button>
 
   <Button variant="contained" style={{margin:"5px",backgroundColor:"#e6e6e6",borderColor: "#adadad"}} onClick={()=>{
-      if(nind!==75) history.push(`/writexam/${examName}_${examType}/result/${nind+1}`);
-    else history.push(`/writexam/${examName}_${examType}/result/1`);
+     if(examType==="mains"){
+                  if (nind !== 75) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+                  else history.push(`/writexam/${examName}_${examType}/paper/1`);
+                  }else if (examType === "neet"){
+
+                    if (nind !== 180) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+                  else history.push(`/writexam/${examName}_${examType}/paper/1`);
+
+
+                  }
   }}  >
     Next
   </Button>
@@ -413,6 +482,9 @@ answers.map((val,i)=>{
 
  />
 
+
+{examType==="mains" ? 
+<>
 <Chip size="large" 
  label={`Maths marks: ${marks.maths}`} 
  color="primary"
@@ -425,7 +497,24 @@ answers.map((val,i)=>{
  color="primary"
   style={{marginLeft:"15px",width:"220px"}}
 
+ /> 
+ </>:
+ <>
+ <Chip size="large" 
+ label={`Biology marks: ${marks.maths}`} 
+ color="primary"
+  style={{marginLeft:"15px",width:"190px"}}
+
  />
+ 
+ <Chip size="large" 
+ label={`Biology time: ${msToTime2(time3.maths)}`} 
+ color="primary"
+  style={{marginLeft:"15px",width:"220px"}}
+
+ /> 
+ </>}
+
 
         
 

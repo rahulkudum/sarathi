@@ -9,7 +9,6 @@ import Options from "./radio";
 import {GoogleLogin} from "react-google-login";
 import { makeStyles } from '@material-ui/core/styles';
 import Result from "./result";
-import logo from "../logo.png"; 
 
 // export let equestions;
 

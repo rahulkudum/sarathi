@@ -40,7 +40,7 @@ const [backdrop,setBackdrop]=useState(false);
    
     const classes = useStyles();
     let questionType;
-console.log(questions);
+
 
 if (examType === "mains") {
 
@@ -241,44 +241,49 @@ return dum;
 
      if(img.length===25){
    
-     const formData =new FormData();
+    
 
-     for (const key of Object.keys(img)) {
-            formData.append('file', img[key])
-        }
 
-console.log(formData);
+   for (let key=0; key<img.length; key++) {
+     console.log(key,img[key],img)
+    let formData =new FormData();
 
+    
+formData.append(
+"file",
+img[key],
+key
+
+);
 
 
 
 
 
 setBackdrop(true);
-axios.post("/uploadMultiple",formData)
+axios.post("/upload",formData)
 .then(res=>{
 
- console.log(res);
- 
-axios.get("/files").then(res=>{
- res.data.slice(1).slice(-25).map((val,i)=>{
-
-  setQuestions(prev=>{
-     let dum=[...prev];
-dum[i].image=val.filename;
+console.log(res.data.filename);
+setQuestions(prev=>{
+   let dum=[...prev];
+dum[key].image=res.data.file.filename;
 return dum;
- })
-
-
-
- })
- setBackdrop(false);
+})
+setBackdrop(false);
 
 })
 
- 
 
-})
+
+         
+
+
+
+
+      }
+
+
 
      }else{
        alert("please select exactly 25 images")
@@ -294,46 +299,52 @@ return dum;
      
      let img=e.target.files;
 
+     
      if(img.length===25){
    
-     const formData =new FormData();
+    
 
-     for (const key of Object.keys(img)) {
-            formData.append('file', img[key])
-        }
 
-console.log(formData);
+   for (let key=0; key<img.length; key++) {
+     console.log(key,img[key],img)
+    let formData =new FormData();
 
+    
+formData.append(
+"file",
+img[key],
+key
+
+);
 
 
 
 
 
 setBackdrop(true);
-axios.post("/uploadMultiple",formData)
+axios.post("/upload",formData)
 .then(res=>{
 
- console.log(res);
- 
-axios.get("/files").then(res=>{
- res.data.slice(1).slice(-25).map((val,i)=>{
-
-  setQuestions(prev=>{
-     let dum=[...prev];
-dum[25+i].image=val.filename;
+console.log(res.data.filename);
+setQuestions(prev=>{
+   let dum=[...prev];
+dum[25+key].image=res.data.file.filename;
 return dum;
- })
-
-
-
- })
- setBackdrop(false);
+})
+setBackdrop(false);
 
 })
 
- 
 
-})
+
+         
+
+
+
+
+      }
+
+
 
      }else{
        alert("please select exactly 25 images")
@@ -348,46 +359,52 @@ return dum;
      
      let img=e.target.files;
 
+   
      if(img.length===25){
    
-     const formData =new FormData();
+    
 
-     for (const key of Object.keys(img)) {
-            formData.append('file', img[key])
-        }
 
-console.log(formData);
+   for (let key=0; key<img.length; key++) {
+     console.log(key,img[key],img)
+    let formData =new FormData();
 
+    
+formData.append(
+"file",
+img[key],
+key
+
+);
 
 
 
 
 
 setBackdrop(true);
-axios.post("/uploadMultiple",formData)
+axios.post("/upload",formData)
 .then(res=>{
 
- console.log(res);
- 
-axios.get("/files").then(res=>{
- res.data.slice(1).slice(-25).map((val,i)=>{
-
-  setQuestions(prev=>{
-     let dum=[...prev];
-dum[50+i].image=val.filename;
+console.log(res.data.filename);
+setQuestions(prev=>{
+   let dum=[...prev];
+dum[50+key].image=res.data.file.filename;
 return dum;
- })
-
-
-
- })
- setBackdrop(false);
+})
+setBackdrop(false);
 
 })
 
- 
 
-})
+
+         
+
+
+
+
+      }
+
+
 
      }else{
        alert("please select exactly 25 images")
@@ -403,44 +420,52 @@ return dum;
 
      if(img.length===45){
    
-     const formData =new FormData();
+    
 
-     for (const key of Object.keys(img)) {
-            formData.append('file', img[key])
-        }
 
-console.log(formData);
+     for (let key=0; key<img.length; key++) {
+       console.log(key,img[key],img)
+      let formData =new FormData();
 
+      
+ formData.append(
+ "file",
+ img[key],
+ key
+ 
+);
 
 
 
 
 
 setBackdrop(true);
-axios.post("/uploadMultiple",formData)
+axios.post("/upload",formData)
 .then(res=>{
 
- console.log(res);
- 
-axios.get("/files").then(res=>{
- res.data.slice(1).slice(-45).map((val,i)=>{
-
-  setQuestions(prev=>{
+ console.log(res.data.filename);
+ setQuestions(prev=>{
      let dum=[...prev];
-dum[i].image=val.filename;
+dum[key].image=res.data.file.filename;
 return dum;
- })
-
-
-
  })
  setBackdrop(false);
 
 })
 
- 
 
-})
+
+           
+
+
+
+
+        }
+
+
+
+
+
 
      }else{
        alert("please select exactly 45 images")
@@ -456,46 +481,53 @@ return dum;
      
      let img=e.target.files;
 
+    
      if(img.length===45){
    
-     const formData =new FormData();
+    
 
-     for (const key of Object.keys(img)) {
-            formData.append('file', img[key])
-        }
 
-console.log(formData);
+   for (let key=0; key<img.length; key++) {
+     console.log(key,img[key],img)
+    let formData =new FormData();
 
+    
+formData.append(
+"file",
+img[key],
+key
+
+);
 
 
 
 
 
 setBackdrop(true);
-axios.post("/uploadMultiple",formData)
+axios.post("/upload",formData)
 .then(res=>{
 
- console.log(res);
- 
-axios.get("/files").then(res=>{
- res.data.slice(1).slice(-45).map((val,i)=>{
-
-  setQuestions(prev=>{
-     let dum=[...prev];
-dum[45+i].image=val.filename;
+console.log(res.data.filename);
+setQuestions(prev=>{
+   let dum=[...prev];
+dum[45+key].image=res.data.file.filename;
 return dum;
- })
-
-
-
- })
- setBackdrop(false);
+})
+setBackdrop(false);
 
 })
 
- 
 
-})
+
+         
+
+
+
+
+      }
+
+
+
 
      }else{
        alert("please select exactly 45 images")
@@ -510,46 +542,52 @@ return dum;
      
      let img=e.target.files;
 
+    
      if(img.length===90){
    
-     const formData =new FormData();
+    
 
-     for (const key of Object.keys(img)) {
-            formData.append('file', img[key])
-        }
 
-console.log(formData);
+   for (let key=0; key<img.length; key++) {
+     console.log(key,img[key],img)
+    let formData =new FormData();
 
+    
+formData.append(
+"file",
+img[key],
+key
+
+);
 
 
 
 
 
 setBackdrop(true);
-axios.post("/uploadMultiple",formData)
+axios.post("/upload",formData)
 .then(res=>{
 
- console.log(res);
- 
-axios.get("/files").then(res=>{
- res.data.slice(1).slice(-90).map((val,i)=>{
-
-  setQuestions(prev=>{
-     let dum=[...prev];
-dum[90+i].image=val.filename;
+console.log(res.data.filename);
+setQuestions(prev=>{
+   let dum=[...prev];
+dum[90+key].image=res.data.file.filename;
 return dum;
- })
-
-
-
- })
- setBackdrop(false);
+})
+setBackdrop(false);
 
 })
 
- 
 
-})
+
+         
+
+
+
+
+      }
+
+
 
      }else{
        alert("please select exactly 90 images")
