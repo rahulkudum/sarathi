@@ -74,6 +74,11 @@ if (examType === "mains") {
 }
 }
 
+if(examType === "neet"){
+  questionType = "single";
+}
+
+
 
 useEffect(()=>{
    
@@ -165,7 +170,12 @@ return dum;
 {questionType==="single" ?
         <FormControl component="fieldset">
   <FormLabel component="legend">Correct Option</FormLabel>
-  <RadioGroup row aria-label="options" name="options" value={questions[nind-1].answer} onChange={(e)=>{setQuestions(prev=>{
+  <RadioGroup row aria-label="options" name="options" value={questions[nind-1].answer} onChange={(e)=>{
+    
+    
+  
+    
+    setQuestions(prev=>{
 
 let dum=[...prev];
 dum[nind-1].answer=e.target.value;
@@ -174,14 +184,23 @@ dum[nind-1].wrong=-1;
 
 return dum;
 
-  })}}>
+  })
+ 
+ 
+  
+  }}>
     <FormControlLabel value="1" control={<Radio />} label="1)" />
     <FormControlLabel value="2" control={<Radio />} label="2)" />
     <FormControlLabel value="3" control={<Radio />} label="3)" />
     <FormControlLabel value="4" control={<Radio />} label="4)" />
   </RadioGroup>
 </FormControl>
-:<TextField id="standard-basic" label="Answer" value={questions[nind-1].answer} onChange={(e)=>{setQuestions(prev=>{
+:<TextField id="standard-basic" label="Answer" value={questions[nind-1].answer} onChange={(e)=>{
+  
+  
+  
+  if(examType === "mains"){
+  setQuestions(prev=>{
   
 let dum=[...prev];
 dum[nind-1].answer=e.target.value;
@@ -189,7 +208,12 @@ dum[nind-1].correct=4;
 dum[nind-1].wrong=0;
 return dum;
 
-  })}} />}
+  })
+  
+  } 
+  
+  
+  }} />}
 
  
 </div>
@@ -208,6 +232,7 @@ return dum;
     overflowY:"scroll",
     margin:"auto"
     }}>
+    {examType==="mains" ? 
     <div>
     <label>Physics 25 Ques: </label>
     <input  type="file" name="file" id="file" multiple  onChange={(e)=>{
@@ -236,7 +261,7 @@ axios.post("/uploadMultiple",formData)
  console.log(res);
  
 axios.get("/files").then(res=>{
- res.data.slice(1).slice(-2).map((val,i)=>{
+ res.data.slice(1).slice(-25).map((val,i)=>{
 
   setQuestions(prev=>{
      let dum=[...prev];
@@ -291,7 +316,7 @@ axios.post("/uploadMultiple",formData)
  console.log(res);
  
 axios.get("/files").then(res=>{
- res.data.slice(1).slice(-2).map((val,i)=>{
+ res.data.slice(1).slice(-25).map((val,i)=>{
 
   setQuestions(prev=>{
      let dum=[...prev];
@@ -345,7 +370,7 @@ axios.post("/uploadMultiple",formData)
  console.log(res);
  
 axios.get("/files").then(res=>{
- res.data.slice(1).slice(-2).map((val,i)=>{
+ res.data.slice(1).slice(-25).map((val,i)=>{
 
   setQuestions(prev=>{
      let dum=[...prev];
@@ -370,9 +395,171 @@ return dum;
     
    }} /> 
   
-</div>
+</div> : <div>
+    <label>Physics 45 Ques: </label>
+    <input  type="file" name="file" id="file" multiple  onChange={(e)=>{
+     
+     let img=e.target.files;
+
+     if(img.length===45){
+   
+     const formData =new FormData();
+
+     for (const key of Object.keys(img)) {
+            formData.append('file', img[key])
+        }
+
+console.log(formData);
+
+
+
+
+
+
+setBackdrop(true);
+axios.post("/uploadMultiple",formData)
+.then(res=>{
+
+ console.log(res);
+ 
+axios.get("/files").then(res=>{
+ res.data.slice(1).slice(-45).map((val,i)=>{
+
+  setQuestions(prev=>{
+     let dum=[...prev];
+dum[i].image=val.filename;
+return dum;
+ })
+
+
+
+ })
+ setBackdrop(false);
+
+})
+
+ 
+
+})
+
+     }else{
+       alert("please select exactly 45 images")
+     }
+    
+   }} /> 
+
 <br />
-        
+<br />
+
+<label>Chemistry 45 Ques: </label>
+    <input  type="file" name="file" id="file" multiple  onChange={(e)=>{
+     
+     let img=e.target.files;
+
+     if(img.length===45){
+   
+     const formData =new FormData();
+
+     for (const key of Object.keys(img)) {
+            formData.append('file', img[key])
+        }
+
+console.log(formData);
+
+
+
+
+
+
+setBackdrop(true);
+axios.post("/uploadMultiple",formData)
+.then(res=>{
+
+ console.log(res);
+ 
+axios.get("/files").then(res=>{
+ res.data.slice(1).slice(-45).map((val,i)=>{
+
+  setQuestions(prev=>{
+     let dum=[...prev];
+dum[45+i].image=val.filename;
+return dum;
+ })
+
+
+
+ })
+ setBackdrop(false);
+
+})
+
+ 
+
+})
+
+     }else{
+       alert("please select exactly 45 images")
+     }
+    
+   }} /> 
+
+<br />
+<br />
+<label>Biology 90 Ques: </label>
+    <input  type="file" name="file" id="file" multiple  onChange={(e)=>{
+     
+     let img=e.target.files;
+
+     if(img.length===90){
+   
+     const formData =new FormData();
+
+     for (const key of Object.keys(img)) {
+            formData.append('file', img[key])
+        }
+
+console.log(formData);
+
+
+
+
+
+
+setBackdrop(true);
+axios.post("/uploadMultiple",formData)
+.then(res=>{
+
+ console.log(res);
+ 
+axios.get("/files").then(res=>{
+ res.data.slice(1).slice(-90).map((val,i)=>{
+
+  setQuestions(prev=>{
+     let dum=[...prev];
+dum[90+i].image=val.filename;
+return dum;
+ })
+
+
+
+ })
+ setBackdrop(false);
+
+})
+
+ 
+
+})
+
+     }else{
+       alert("please select exactly 90 images")
+     }
+    
+   }} /> 
+  
+</div>}
+<br />
+ 
         {questions.map((tile,i) => (
          
         <Button style={{margin:"5px"}} variant="contained" color={(questions[i].image && questions[i].answer) ? "primary" : "secondary"} onClick={()=>history.push(`/setexam/paper/${i+1}`)}>
@@ -380,8 +567,13 @@ return dum;
         </Button>
          
         ))}
+
+
+        
      </div>
     <br />
+
+
     <div style={{textAlign:"center"}}>
     <Button variant="contained" color="primary" onClick={()=>{
       
@@ -393,8 +585,7 @@ return dum;
     .then(res=>{
         console.log(res);
        
-        setExamName("");
-        setExamType("mains");
+      
         setBackdrop(false);
         history.push("/");
     })
@@ -408,8 +599,7 @@ return dum;
     .then(res=>{
         console.log(res);
        
-        setExamName("");
-        setExamType("mains");
+       
        setModify(false);
        setBackdrop(false);
         history.push("/");

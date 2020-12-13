@@ -16,7 +16,7 @@ function Correction(){
     let history=useHistory();
 
     const [backdrop,setBackdrop]=useState(false);
-    let examtypes=["mains","neet","advanced"];
+    let examtypes=["mains","neet"];
     const[examName,setExamName]=useContext(ExamName);
     const [examType,setExamType]=useContext(ExamType);
     const[texamName,setTexamName]=useState("");
@@ -143,13 +143,32 @@ if(texamType==="mains"){
 
               
 }
+
+}
+
+if(texamType==="neet"){
+
+for(let i=0;i<180;i++ ){
+
+setQuestions(prev=>{
+   let dum=[...prev];
+   dum.push({answer:"",correct:"",wrong:"",image:null});
+   return dum;
+
+
+})
+    
+}
+
+}
+
 console.log(questions);
 setTexamName("");
 
-history.push(`${url}/paper/1`)
+history.push(`${url}/paper/1`);
      
      
-   }   
+      
 
      }else{
        alert("This Exam already exists");

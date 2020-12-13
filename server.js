@@ -75,7 +75,7 @@ app.post("/upload",upload.single("file"),(req,res)=>{
 
 
 
-app.post("/uploadMultiple",upload.array("file",25),(req,res)=>{
+app.post("/uploadMultiple",upload.array("file",90),(req,res)=>{
 
   res.send("sucessfully submitted");
  
