@@ -68,12 +68,22 @@ setBackdrop(true);
   <p style={{display:"inline-block",width:"100px"}}>Exam Type</p>
 {examList.map((val,i)=>{
 
+  let done = false;
+
+  val.questions.map((valu,i)=>{
+
+    if(valu.image==="" || valu.answer==="") done=true;
+  })
+
+  if(!done){
+
+
 return(
 
   <div>
   <p style={{display:"inline-block",width:"50px",margin:"10px"}}>{i+1}</p>
 <p style={{display:"inline-block",width:"300px"}}>{val.examname}</p>
-<p style={{display:"inline-block",width:"100px",margin:"10px" }}>{val.examtype}</p>
+<p style={{display:"inline-block",width:"150px",margin:"10px" }}>{val.examtype}</p>
 <Button variant="contained" color="primary" style={{margin:"10px"}} onClick={()=>{
  
   history.push(`${url}/${val.examname}_${val.examtype}`);
@@ -99,6 +109,16 @@ return(
 
   </div> 
 );
+
+  }else return(
+    <div>
+  <p style={{display:"inline-block",width:"50px",margin:"10px"}}>{i+1}</p>
+<p style={{display:"inline-block",width:"300px"}}>{val.examname}</p>
+<p style={{display:"inline-block",width:"150px",margin:"10px" }}>{val.examtype}</p>
+<p style={{display:"inline-block",width:"300px",margin:"10px" }}>preparation is not complete</p>
+</div>
+    
+  ) 
 
 
 
@@ -130,11 +150,6 @@ return(
     Go
 </Button>
 {show3 ? <p>Wrong password try again</p>: null}
-
-
-
-
-
 
   </div> }
 </div>  

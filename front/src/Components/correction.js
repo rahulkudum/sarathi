@@ -16,7 +16,7 @@ function Correction(){
     let history=useHistory();
 
     const [backdrop,setBackdrop]=useState(false);
-    let examtypes=["mains","neet"];
+    let examtypes=["mains","neet","single-mains"];
     const[examName,setExamName]=useContext(ExamName);
     const [examType,setExamType]=useContext(ExamType);
     const[texamName,setTexamName]=useState("");
@@ -109,6 +109,10 @@ useEffect(()=>{
 
    if(texamName){
 
+     if(texamName.indexOf("_")!==-1){
+       alert("Exam name should not contain underscores")
+     }else{
+
      let done=false;
 
      examList.map((val,i)=>{
@@ -145,7 +149,7 @@ if(texamType==="mains"){
 
 }
 
-if(texamType==="neet"){
+else if(texamType==="neet"){
 
 for(let i=0;i<180;i++ ){
 
@@ -161,6 +165,30 @@ setQuestions(prev=>{
 
 }
 
+else if(texamType==="single-mains"){
+
+  for(let i=0;i<25;i++ ){
+
+setQuestions(prev=>{
+   let dum=[...prev];
+   dum.push({answer:"",correct:"",wrong:"",image:null});
+   return dum;
+
+
+})
+
+     
+
+     
+}
+
+
+
+
+}
+
+
+
 console.log(questions);
 setTexamName("");
 
@@ -173,6 +201,8 @@ history.push(`${url}/paper/1`);
      }else{
        alert("This Exam already exists");
      } 
+
+     }
  
    }else{
      alert("please write the exam name");

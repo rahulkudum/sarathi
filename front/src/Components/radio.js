@@ -44,7 +44,7 @@ function Options() {
   const isVisible = usePageVisibility();
 
 
-  if (examType === "mains") {
+  if (examType.indexOf("mains")!==-1) {
 
     if(examName === "2021WM7"){
 
@@ -228,7 +228,7 @@ setAnswers(prev=>{
 
 
 })
-     if(examType==="mains"){
+     if(examType.indexOf("mains")!==-1){
       questions.map((val, i) => {
         if (answers[i].answer) {
           if (val.answer === answers[i].answer) {
@@ -423,6 +423,7 @@ setAnswers(prev=>{
 
         })
         .catch(err=>{
+         
           let htime=JSON.parse(localStorage.getItem("time3"));
           console.log(answers[nind - 1],htime.qon,Date.now(),"vb");
     
@@ -434,7 +435,7 @@ setAnswers(prev=>{
     
     })
     
-    if(examType==="mains"){
+    if(examType.indexOf("mains")!==-1){
       questions.map((val, i) => {
         if (answers[i].answer) {
           if (val.answer === answers[i].answer) {
@@ -693,6 +694,10 @@ setAnswers(prev=>{
                   else history.push(`/writexam/${examName}_${examType}/paper/1`);
 
 
+                  } else if (examType==="single-mains"){
+                    if (nind !== 25) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+                    else history.push(`/writexam/${examName}_${examType}/paper/1`);
+
                   }
 
                 } else {
@@ -736,6 +741,10 @@ setAnswers(prev=>{
                   else history.push(`/writexam/${examName}_${examType}/paper/1`);
 
 
+                  }else if (examType==="single-mains"){
+                    if (nind !== 25) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+                    else history.push(`/writexam/${examName}_${examType}/paper/1`);
+
                   }
                  
 
@@ -762,6 +771,10 @@ setAnswers(prev=>{
                   else history.push(`/writexam/${examName}_${examType}/paper/1`);
 
 
+                  }else if (examType==="single-mains"){
+                    if (nind !== 25) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+                    else history.push(`/writexam/${examName}_${examType}/paper/1`);
+
                   }
               }}>
                 Mark for Review and Next
@@ -780,6 +793,10 @@ setAnswers(prev=>{
                   else history.push(`/writexam/${examName}_${examType}/paper/180`);
 
 
+                  }else if (examType==="single-mains"){
+                    if (nind !== 25) history.push(`/writexam/${examName}_${examType}/paper/${nind - 1}`);
+                    else history.push(`/writexam/${examName}_${examType}/paper/25`);
+
                   }
                 }}  >
                   Back
@@ -794,6 +811,10 @@ setAnswers(prev=>{
                     if (nind !== 180) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
                   else history.push(`/writexam/${examName}_${examType}/paper/1`);
 
+
+                  }else if (examType==="single-mains"){
+                    if (nind !== 25) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+                    else history.push(`/writexam/${examName}_${examType}/paper/1`);
 
                   }
                 }}  >
@@ -829,8 +850,8 @@ setAnswers(prev=>{
             border: "1px solid black",
 
 
-
-            margin: "auto",
+            marginTop: "10px",
+    marginBottom: "10px"
 
           }}>
 

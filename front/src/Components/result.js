@@ -41,7 +41,7 @@ let questionType;
     
  
 
-    if (examType === "mains") {
+    if (examType.indexOf("mains")!==-1) {
 
       if(examName === "2021WM7"){
   
@@ -337,7 +337,7 @@ answers.map((val,i)=>{
   <div style={{backgroundColor:"#f1f6f9"}}>
 
   <Button  variant="contained" style={{margin:"5px",backgroundColor:"#e6e6e6",borderColor: "#adadad"}} onClick={()=>{
-     if(examType==="mains"){
+      if(examType==="mains"){
                   if (nind !== 1) history.push(`/writexam/${examName}_${examType}/paper/${nind - 1}`);
                   else history.push(`/writexam/${examName}_${examType}/paper/75`);
                   }else if (examType === "neet"){
@@ -345,6 +345,10 @@ answers.map((val,i)=>{
                     if (nind !== 1) history.push(`/writexam/${examName}_${examType}/paper/${nind - 1}`);
                   else history.push(`/writexam/${examName}_${examType}/paper/180`);
 
+
+                  }else if (examType==="single-mains"){
+                    if (nind !== 25) history.push(`/writexam/${examName}_${examType}/paper/${nind - 1}`);
+                    else history.push(`/writexam/${examName}_${examType}/paper/25`);
 
                   }
   }}  >
@@ -361,20 +365,29 @@ answers.map((val,i)=>{
                   else history.push(`/writexam/${examName}_${examType}/paper/1`);
 
 
+                  }else if (examType==="single-mains"){
+                    if (nind !== 25) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+                    else history.push(`/writexam/${examName}_${examType}/paper/1`);
+
                   }
-  }}  >
-    Next
-  </Button>
+    }}  >
+      Next
+    </Button>
 
-  <Button variant="contained" style={{margin:"5px",backgroundColor:"#43d001",color:"white"}} onClick={()=>{
+    <Button variant="contained" style={{margin:"5px",backgroundColor:"#43d001",color:"white"}} onClick={()=>{
 
+        
+
+        history.push(`/writexam/${examName}_${examType}`)
       
-
-      history.push(`/writexam/${examName}_${examType}`)
-     
-    }} >
+      }} >
     Exit
   </Button>
+
+  <Button color="primary" variant="contained" style={{margin:"5px"}} onClick="location.href='mailto:rahulkudum@gmail.com'" >
+Feedback
+</Button>
+  
 
 
   </div>
@@ -393,7 +406,8 @@ answers.map((val,i)=>{
     
     whiteSpace: "nowrap",
     border: "1px solid black",
-    margin:"auto"
+    marginTop: "10px",
+    marginBottom: "10px"
     }}>
       
         {answers.map((tile,i) => {
@@ -403,7 +417,64 @@ answers.map((val,i)=>{
 
 })}
 
-      
+{examType.indexOf("single")!==-1 ? <div>
+        <Button color="primary" style={{margin:"10px"}} variant="contained"  
+       
+        
+        >
+            {corrected}
+        </Button>
+
+        <p style={{display:"inline-block",width:"140px"}}>Correct Answers</p>
+        <Chip size="large" 
+ label={`Positve marks: ${marks.positive}`} 
+ color="primary"
+  style={{marginLeft:"15px",width:"180px"}}
+
+ />
+
+
+
+<br /> 
+
+        <Button color="secondary" style={{margin:"10px"}} variant="contained"  
+       
+        
+       >
+           {wronged} 
+       </Button>
+       <p style={{display:"inline-block",width:"140px"}}>Wrong Answers</p>
+       <Chip size="large" 
+ label={`Negative marks: ${marks.negative}`} 
+ color="secondary"
+ style={{marginLeft:"15px",width:"180px"}}
+
+ />
+
+ 
+
+
+        
+<br />
+       <Button style={{margin:"10px"}} variant="contained"  
+       
+        
+       >
+           {lefted} 
+       </Button>
+
+       <p style={{display:"inline-block",width:"140px"}}>Unattempted</p>
+       <Chip size="large" 
+ label={`Total marks: ${marks.total}`} 
+ 
+ style={{marginLeft:"15px",width:"180px"}}
+
+ />
+
+
+
+
+ </div>: <div>
         <Button color="primary" style={{margin:"10px"}} variant="contained"  
        
         
@@ -450,6 +521,8 @@ answers.map((val,i)=>{
  style={{marginLeft:"15px",width:"180px"}}
 
  />
+
+ 
 
 <Chip size="large" 
  label={`Chemistry marks: ${marks.chemistry}`} 
@@ -513,7 +586,12 @@ answers.map((val,i)=>{
   style={{marginLeft:"15px",width:"220px"}}
 
  /> 
- </>}
+ </>
+ 
+ }
+
+
+ </div>}
 
 
         

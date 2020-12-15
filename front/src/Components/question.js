@@ -42,9 +42,11 @@ const [backdrop,setBackdrop]=useState(false);
     let questionType;
 
 
-if (examType === "mains") {
+if (examType.indexOf("mains")!==-1) {
 
+  
   if(examName === "2021WM7"){
+
 
     if ( nind === 21 || nind === 22 || nind === 23 || nind === 24 || nind === 25
       
@@ -199,7 +201,7 @@ return dum;
   
   
   
-  if(examType === "mains"){
+  if(examType.indexOf("mains")!==-1){
   setQuestions(prev=>{
   
 let dum=[...prev];
@@ -221,6 +223,53 @@ return dum;
         </div>
         
         }
+
+        
+  <div style={{textAlign:"center"}}>
+
+<Button color="primary"  variant="contained" style={{margin:"5px"}} onClick={()=>{
+  if(examType==="mains"){
+                  if (nind !== 1) history.push(`/setexam/paper/${nind - 1}`);
+                  else history.push(`/setexam/paper/75`);
+                  }else if (examType === "neet"){
+
+                    if (nind !== 1) history.push(`/setexam/paper/${nind - 1}`);
+                  else history.push(`/setexam/paper/180`);
+
+
+                  }else if (examType==="single-mains"){
+                    if (nind !== 25) history.push(`/setexam/paper/${nind - 1}`);
+                    else history.push(`/setexam/paper/25`);
+
+                  }
+}}  >
+  Back
+</Button>
+
+<Button color="primary" variant="contained" style={{margin:"5px"}} onClick={()=>{
+
+if(examType==="mains"){
+                  if (nind !== 75) history.push(`/setexam/paper/${nind + 1}`);
+                  else history.push(`/setexam/paper/1`);
+                  }else if (examType === "neet"){
+
+                    if (nind !== 180) history.push(`/setexam/paper/${nind + 1}`);
+                  else history.push(`/setexam/paper/1`);
+
+
+                  }else if (examType==="single-mains"){
+                    if (nind !== 25) history.push(`/setexam/paper/${nind + 1}`);
+                    else history.push(`/setexam/paper/1`);
+
+                  }
+
+
+   
+  }}  >
+    Next
+  </Button>
+
+  </div>
         
         </div>
         </Grid>
@@ -232,9 +281,9 @@ return dum;
     overflowY:"scroll",
     margin:"auto"
     }}>
-    {examType==="mains" ? 
+    {examType.indexOf("mains")!==-1 ? 
     <div>
-    <label>Physics 25 Ques: </label>
+    <label>{examType.indexOf("single")===-1 ? "Physics 25 Ques: " : "All 25 Ques: "}</label>
     <input  type="file" name="file" id="file" multiple  onChange={(e)=>{
      
      let img=e.target.files;
@@ -293,7 +342,8 @@ setBackdrop(false);
 
 <br />
 <br />
-
+{examType.indexOf("single")===-1 ?
+<div>
 <label>Chemistry 25 Ques: </label>
     <input  type="file" name="file" id="file" multiple  onChange={(e)=>{
      
@@ -396,12 +446,6 @@ setBackdrop(false);
 })
 
 
-
-         
-
-
-
-
       }
 
 
@@ -411,7 +455,7 @@ setBackdrop(false);
      }
     
    }} /> 
-  
+</div>:null}
 </div> : <div>
     <label>Physics 45 Ques: </label>
     <input  type="file" name="file" id="file" multiple  onChange={(e)=>{
