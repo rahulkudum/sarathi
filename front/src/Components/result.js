@@ -1,4 +1,4 @@
-import { Button,TextField,Backdrop,CircularProgress,RadioGroup,Chip,FormControlLabel,FormControl,FormLabel,Radio,GridList,GridListTile,Grid } from "@material-ui/core";
+import { Button,TextField,Backdrop,CircularProgress,RadioGroup,Chip,FormControlLabel,FormControl,FormLabel,Radio,GridList,GridListTile,Grid,Link } from "@material-ui/core";
 import React,{useContext, useEffect, useState} from "react";
 import axios from "axios";
 import { Route, useHistory,useParams, useRouteMatch } from "react-router-dom";
@@ -384,11 +384,9 @@ answers.map((val,i)=>{
     Exit
   </Button>
 
-  <Button color="primary" variant="contained" style={{margin:"5px"}} onClick="location.href='mailto:rahulkudum@gmail.com'" >
+<Button href="mailto:rahulkudum@gmail.com" color="primary" variant="contained" style={{margin:"5px"}}  >
 Feedback
 </Button>
-  
-
 
   </div>
 
