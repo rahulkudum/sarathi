@@ -109,8 +109,8 @@ useEffect(()=>{
 
    if(texamName){
 
-     if(texamName.indexOf("_")!==-1){
-       alert("Exam name should not contain underscores")
+     if(texamName.indexOf("_")!==-1 || texamName.indexOf("/")!==-1  ){
+       alert("Exam name should not contain underscores and slashes")
      }else{
 
      let done=false;
@@ -226,7 +226,7 @@ return(
   <div>
   <p style={{display:"inline-block",width:"50px",margin:"10px"}}>{i+1}</p>
 <p style={{display:"inline-block",width:"300px"}}>{val.examname}</p>
-<p style={{display:"inline-block",width:"100px",margin:"10px" }}>{val.examtype}</p>
+<p style={{display:"inline-block",width:"150px",margin:"10px" }}>{val.examtype}</p>
 <Button variant="contained" color="primary" onClick={()=>{
   setExamName(val.examname);
   setExamType(val.examtype);
@@ -236,10 +236,7 @@ val.questions.map((val,i)=>{
  
 if(val.image){
 
-   
 axios.get(`/images/${val.image}`);
-
-
 
 }
 
@@ -261,6 +258,159 @@ axios.get(`/images/${val.image}`);
 }}>
   Result
 </Button>
+
+
+
+<Button style={{margin:"20px"}} variant="contained" color="primary" onClick={()=>{
+  
+  setBackdrop(true);
+ 
+    axios.get("/user/")
+    .then(res=>{
+
+        res.data.map((val2,p)=>{
+          let wrote=false;
+
+          val2.exams.map((val3,q)=>{
+            if(val3.examname===val.examname && val3.examtype===val.examtype){
+              wrote=true;
+
+              let marks = 0;
+      let positive = 0;
+      let negative = 0;
+      let maths=0;
+      let physics=0;
+      let chemistry=0;
+
+      if(val.examtype.indexOf("mains")!==-1){
+      val.questions.map((val4, i) => {
+        if (val3.answers[i].answer) {
+          if (val4.answer === val3.answers[i].answer) {
+            if(i<25){
+              physics=physics+Number(val4.correct);
+            }else if(i<50){
+              chemistry=chemistry+Number(val4.correct);
+
+            }else{
+              maths=maths+Number(val4.correct);
+            }
+            
+            marks = marks + Number(val4.correct);
+            positive = positive + Number(val4.correct);
+           
+              val3.answers[i].status = "correct";
+              val3.answers[i].correct = val4.answer;
+             
+          } else {
+            if(i<25){
+              physics=physics+Number(val4.wrong);
+            }else if(i<50){
+              chemistry=chemistry+Number(val4.wrong);
+
+            }else{
+              maths=maths+Number(val4.wrong);
+            }
+            
+            marks = marks + Number(val4.wrong);
+            negative = negative + Number(val4.wrong);
+            
+              val3.answers[i].status = "wrong";
+              val3.answers[i].correct = val4.answer;
+             
+          }
+        } else {
+         
+            val3.answers[i].status = "left";
+            val3.answers[i].correct = val4.answer;
+          
+
+        }
+      })
+
+    }else if(val.examtype==="neet"){
+
+      
+      val.questions.map((val4, i) => {
+        if (val3.answers[i].answer) {
+          if (val4.answer === val3.answers[i].answer) {
+            if(i<45){
+              physics=physics+Number(val4.correct);
+            }else if(i<90){
+              chemistry=chemistry+Number(val4.correct);
+
+            }else{
+              maths=maths+Number(val4.correct);
+            }
+            
+            marks = marks + Number(val4.correct);
+            positive = positive + Number(val4.correct);
+           
+              val3.answers[i].status = "correct";
+              val3.answers[i].correct = val4.answer;
+            
+          } else {
+            if(i<45){
+              physics=physics+Number(val4.wrong);
+            }else if(i<90){
+              chemistry=chemistry+Number(val4.wrong);
+
+            }else{
+              maths=maths+Number(val4.wrong);
+            }
+            
+            marks = marks + Number(val4.wrong);
+            negative = negative + Number(val4.wrong);
+            
+              val3.answers[i].status = "wrong";
+              val3.answers[i].correct = val4.answer;
+             
+
+          }
+        } else {
+          
+            val3.answers[i].status = "left";
+            val3.answers[i].correct = val4.answer;
+           
+
+        }
+      })
+
+    }
+
+// { total: marks, positive: positive, negative: negative,physics:physics,chemistry:chemistry,maths:maths },
+    val3.marks.total=marks;
+    val3.marks.positive=positive;
+    val3.marks.negative=negative;
+    val3.marks.physics=physics;
+    val3.marks.chemistry=chemistry;
+    val3.marks.maths=maths;
+
+    
+              
+            }
+          })
+
+
+if(wrote) {console.log(val2);
+  axios.post("/user/updat", { mail: val2.mail, exams: val2.exams,time:val2.time })
+              .then(res => console.log(res) );
+
+}
+          
+
+        })
+
+
+       setBackdrop(false);
+       
+    }) 
+
+
+}}>
+ Re-Evalu
+</Button>
+
+
 
 
 <Button style={{margin:"20px"}} variant="contained" color="secondary" onClick={()=>{

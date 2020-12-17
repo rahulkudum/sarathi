@@ -133,7 +133,9 @@ return(
           select
           label="Sort By"
           value={sort}
-          onChange={(e)=>{setSort(e.target.value);
+          onChange={(e)=>{
+              if(e.target.value==="biology") setSort("maths");
+              else setSort(e.target.value);
           }}
           SelectProps={{
             native: true,
@@ -141,7 +143,7 @@ return(
         
           variant="outlined"
         >
-        {["total","physics","chemistry","maths"].map((option) => (
+        {["total","physics","chemistry","biology"].map((option) => (
             <option key={option} value={option}>
               {option}
             </option>
@@ -157,7 +159,7 @@ return(
     <p style={{ margin:"10px" ,display:"inline-block",width:"100px"}}>Total</p>
     <p style={{ margin:"10px" ,display:"inline-block",width:"100px"}}>Physics</p>
     <p style={{ margin:"10px" ,display:"inline-block",width:"100px"}}>Chemistry</p>
-    <p style={{ margin:"10px" ,display:"inline-block",width:"100px"}}>Maths</p>
+    {examtype==="neet" ? <p style={{ margin:"10px" ,display:"inline-block",width:"100px"}}>Biology</p> : <p style={{ margin:"10px" ,display:"inline-block",width:"100px"}}>Maths</p>}
 {result.map((val,i)=>{
     return(
 <div>

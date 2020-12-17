@@ -170,13 +170,18 @@ axios.get(`/images/${val.image}`);
 axios.post("/user/updat", { mail: res.profileObj.email , exams: exams,time:ptime  })
   .then(res => {
     console.log(res);
-
-})
-
-setTime(Date.now());
+    setTime(Date.now());
 setTime2(Date.now()+10800000);
 setBackdrop(false);
 history.push(`${url}/paper/1`);
+
+})
+
+.catch(err => {
+    setBackdrop(false);
+    alert("sorry, something went wrong please try again");
+})
+
 
 
 }

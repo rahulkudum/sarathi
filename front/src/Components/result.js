@@ -338,17 +338,17 @@ answers.map((val,i)=>{
 
   <Button  variant="contained" style={{margin:"5px",backgroundColor:"#e6e6e6",borderColor: "#adadad"}} onClick={()=>{
       if(examType==="mains"){
-                  if (nind !== 1) history.push(`/writexam/${examName}_${examType}/paper/${nind - 1}`);
-                  else history.push(`/writexam/${examName}_${examType}/paper/75`);
+                  if (nind !== 1) history.push(`/writexam/${examName}_${examType}/result/${nind - 1}`);
+                  else history.push(`/writexam/${examName}_${examType}/result/75`);
                   }else if (examType === "neet"){
 
-                    if (nind !== 1) history.push(`/writexam/${examName}_${examType}/paper/${nind - 1}`);
-                  else history.push(`/writexam/${examName}_${examType}/paper/180`);
+                    if (nind !== 1) history.push(`/writexam/${examName}_${examType}/result/${nind - 1}`);
+                  else history.push(`/writexam/${examName}_${examType}/result/180`);
 
 
                   }else if (examType==="single-mains"){
-                    if (nind !== 25) history.push(`/writexam/${examName}_${examType}/paper/${nind - 1}`);
-                    else history.push(`/writexam/${examName}_${examType}/paper/25`);
+                    if (nind !== 25) history.push(`/writexam/${examName}_${examType}/result/${nind - 1}`);
+                    else history.push(`/writexam/${examName}_${examType}/result/25`);
 
                   }
   }}  >
@@ -357,17 +357,17 @@ answers.map((val,i)=>{
 
   <Button variant="contained" style={{margin:"5px",backgroundColor:"#e6e6e6",borderColor: "#adadad"}} onClick={()=>{
      if(examType==="mains"){
-                  if (nind !== 75) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-                  else history.push(`/writexam/${examName}_${examType}/paper/1`);
+                  if (nind !== 75) history.push(`/writexam/${examName}_${examType}/result/${nind + 1}`);
+                  else history.push(`/writexam/${examName}_${examType}/result/1`);
                   }else if (examType === "neet"){
 
-                    if (nind !== 180) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-                  else history.push(`/writexam/${examName}_${examType}/paper/1`);
+                    if (nind !== 180) history.push(`/writexam/${examName}_${examType}/result/${nind + 1}`);
+                  else history.push(`/writexam/${examName}_${examType}/result/1`);
 
 
                   }else if (examType==="single-mains"){
-                    if (nind !== 25) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-                    else history.push(`/writexam/${examName}_${examType}/paper/1`);
+                    if (nind !== 25) history.push(`/writexam/${examName}_${examType}/result/${nind + 1}`);
+                    else history.push(`/writexam/${examName}_${examType}/result/1`);
 
                   }
     }}  >
