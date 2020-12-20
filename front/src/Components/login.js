@@ -80,7 +80,11 @@ function Login() {
      </Backdrop>
 
      <div style={{ border: "1px solid black" }}>
-      <p>To write {examname} please login through your G-mail</p>
+      {examName === examname && examType === examtype ? (
+       <p>To resume {examname} please login through your G-mail</p>
+      ) : (
+       <p>To write {examname} please login through your G-mail</p>
+      )}
       <GoogleLogin
        clientId="526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com"
        buttonText="Login through Gmail"
@@ -162,13 +166,10 @@ function Login() {
        }}
        cookiePolicy={"single_host_origin"}
       />
-
       <br />
       <br />
       <br />
-
       <p>To see your Dashboard please login through your G-mail </p>
-
       <GoogleLogin
        clientId="526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com"
        buttonText="Login through Gmail"
@@ -191,9 +192,7 @@ function Login() {
        }}
        cookiePolicy={"single_host_origin"}
       />
-
       <p>(you may see it after writing the exam)</p>
-
       {questions.length > 0 ? (
        <img
         style={{ position: "absolute", opacity: 0 }}

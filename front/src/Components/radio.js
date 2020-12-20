@@ -366,14 +366,14 @@ function Options() {
         history.push(`/writexam/${examName}_${examType}/result/1`);
        })
        .catch((err) => {
-        console.log(err);
-        setErrText(err);
+        console.log(err.message);
+        setErrText(err.message);
         setDialog2(1);
        });
      }
     })
     .catch((err) => {
-     console.log(err);
+     console.log(err.message);
      let htime = JSON.parse(localStorage.getItem("time3"));
      console.log(answers[nind - 1], htime.qon, Date.now(), "vb");
 
@@ -489,7 +489,7 @@ function Options() {
       dum.maths = maths;
       return dum;
      });
-     setErrText(err);
+     setErrText(err.message);
      setDialog2(1);
     });
   }
@@ -870,12 +870,13 @@ function Options() {
     <DialogTitle id="alert-dialog-title">{"Failed to Submit"}</DialogTitle>
     <DialogContent>
      <p> It seems you are offline but don't worry until you get internet don't close this tab and once you are online click on Try again</p>
+     <p style={{ color: "red" }}>Error msg: {errText}</p>
     </DialogContent>
 
     <DialogActions>
      <Button
       onClick={() => {
-       console.log(errText.TypeError);
+       console.log(errText);
        setSubmit(submit + 1);
 
        setDialog2(false);
