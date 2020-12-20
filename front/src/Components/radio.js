@@ -53,6 +53,7 @@ function Options() {
  const [submit, setSubmit] = useState(false);
  const [switches, setSwitches] = useContext(Switches);
  const [timeLimit, setTimeLimit] = useState(0);
+ const [errText, setErrText] = useState("");
 
  const isVisible = usePageVisibility();
 
@@ -366,11 +367,13 @@ function Options() {
        })
        .catch((err) => {
         console.log(err);
+        setErrText(err);
         setDialog2(1);
        });
      }
     })
     .catch((err) => {
+     console.log(err);
      let htime = JSON.parse(localStorage.getItem("time3"));
      console.log(answers[nind - 1], htime.qon, Date.now(), "vb");
 
@@ -486,7 +489,7 @@ function Options() {
       dum.maths = maths;
       return dum;
      });
-
+     setErrText(err);
      setDialog2(1);
     });
   }
@@ -866,12 +869,13 @@ function Options() {
    <Dialog open={dialog2} onClose={() => {}} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
     <DialogTitle id="alert-dialog-title">{"Failed to Submit"}</DialogTitle>
     <DialogContent>
-     It seems you are offline but don't worry until you get internet don't close this tab and once you are online click on Try again
+     <p> It seems you are offline but don't worry until you get internet don't close this tab and once you are online click on Try again</p>
     </DialogContent>
 
     <DialogActions>
      <Button
       onClick={() => {
+       console.log(errText.TypeError);
        setSubmit(submit + 1);
 
        setDialog2(false);

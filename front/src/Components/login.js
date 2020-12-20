@@ -48,8 +48,7 @@ function Login() {
   setBackdrop(true);
   axios.post("/exam/find", { examname: examname, examtype: examtype }).then((res) => {
    console.log(res);
-   setExamName(examname);
-   setExamType(examtype);
+
    setQuestions(res.data.questions);
    setBackdrop(false);
   });
@@ -81,7 +80,7 @@ function Login() {
      </Backdrop>
 
      <div style={{ border: "1px solid black" }}>
-      <p>To write {examName} please login through your G-mail</p>
+      <p>To write {examname} please login through your G-mail</p>
       <GoogleLogin
        clientId="526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com"
        buttonText="Login through Gmail"
@@ -91,7 +90,7 @@ function Login() {
          if (resp.data) {
           let exsists = false;
           for (let i = 0; i < resp.data.exams.length; i++) {
-           if (resp.data.exams[i].examname === examName && resp.data.exams[i].examtype === examType) exsists = true;
+           if (resp.data.exams[i].examname === examname && resp.data.exams[i].examtype === examtype) exsists = true;
           }
 
           if (exsists) {
@@ -100,23 +99,29 @@ function Login() {
           }
 
           if (!exsists) {
-           setAnswers([]);
+           if (examName === examname && examType === examtype) {
+            console.log("gv");
+           } else {
+            setExamName(examname);
+            setExamType(examtype);
+            setAnswers([]);
+
+            questions.map((val, i) => {
+             setAnswers((prev) => {
+              let dum = [...prev];
+              dum.push({ answer: "", danswer: "", visited: false, review: false, status: "", correct: "", time: 0, image: val.image });
+              return dum;
+             });
+            });
+           }
 
            setMail(res.profileObj.email);
-
-           questions.map((val, i) => {
-            setAnswers((prev) => {
-             let dum = [...prev];
-             dum.push({ answer: "", danswer: "", visited: false, review: false, status: "", correct: "", time: 0, image: val.image });
-             return dum;
-            });
-           });
 
            let exams = resp.data.exams;
 
            let ptime = resp.data.time;
 
-           ptime.push({ examname: examName, examtype: examType, stime: new Date().toLocaleTimeString("en-US"), dur: msToTime(time2 - time) });
+           ptime.push({ examname: examname, examtype: examtype, stime: new Date().toLocaleTimeString("en-US"), dur: msToTime(time2 - time) });
 
            setMode(res.profileObj.email);
 

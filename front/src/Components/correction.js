@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Question from "./question";
 import { ExamName, ExamType, Questions, Modify, Mode } from "./storage";
 import Examresult from "./examresult";
+import AddIcon from "@material-ui/icons/Add";
 function Correction() {
  let { path, url } = useRouteMatch();
 
@@ -16,7 +17,7 @@ function Correction() {
  let history = useHistory();
 
  const [backdrop, setBackdrop] = useState(false);
- let examtypes = ["mains", "neet", "single-mains"];
+ let examtypes = ["mains", "neet", "single-mains", "advanced"];
  const [examName, setExamName] = useContext(ExamName);
  const [examType, setExamType] = useContext(ExamType);
  const [texamName, setTexamName] = useState("");
@@ -26,6 +27,8 @@ function Correction() {
  const [modify, setModify] = useContext(Modify);
 
  const [mode, setMode] = useContext(Mode);
+
+ const [sec, setSec] = useState([{ name: "single", answer: null, length: 0, correct: 0, wrong: 0 }]);
 
  const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -400,6 +403,176 @@ function Correction() {
           );
          }
         })}
+
+        <Dialog
+         open={texamType === "advanced"}
+         onClose={() => {
+          setTexamType("mains");
+         }}
+         aria-labelledby="form-dialog-title"
+        >
+         <DialogTitle id="form-dialog-title">Pattern</DialogTitle>
+         <DialogContent>
+          {sec.map((val1, i) => {
+           return (
+            <div>
+             <TextField
+              id="outlined-select-currency-native"
+              select
+              label={`Section ${i + 1}`}
+              value={val1.name}
+              onChange={(e) => {
+               setSec((prev) => {
+                let dum = [...prev];
+                dum[i].name = e.target.value;
+                if (e.target.value === "multiple") {
+                 dum[i].answer = { one: false, two: false, three: false, four: false };
+                } else {
+                 dum[i].answer = "";
+                }
+                return dum;
+               });
+              }}
+              SelectProps={{
+               native: true,
+              }}
+              variant="outlined"
+             >
+              {["single", "multiple", "numerical"].map((option) => (
+               <option key={option} value={option}>
+                {option}
+               </option>
+              ))}
+             </TextField>
+
+             <TextField
+              id="outlined-number"
+              label="length"
+              type="number"
+              value={val1.length}
+              style={{ width: "75px" }}
+              InputLabelProps={{
+               shrink: true,
+              }}
+              onChange={(e) => {
+               setSec((prev) => {
+                let dum = [...prev];
+                dum[i].length = e.target.value;
+                return dum;
+               });
+              }}
+              variant="outlined"
+             />
+             <TextField
+              id="outlined-number"
+              label="correct"
+              type="number"
+              style={{ width: "75px" }}
+              value={val1.correct}
+              InputLabelProps={{
+               shrink: true,
+              }}
+              onChange={(e) => {
+               setSec((prev) => {
+                let dum = [...prev];
+                dum[i].correct = e.target.value;
+                return dum;
+               });
+              }}
+              variant="outlined"
+             />
+             <TextField
+              id="outlined-number"
+              label="wrong"
+              type="number"
+              style={{ width: "75px" }}
+              value={val1.wrong}
+              InputLabelProps={{
+               shrink: true,
+              }}
+              onChange={(e) => {
+               setSec((prev) => {
+                let dum = [...prev];
+                dum[i].wrong = e.target.value;
+                return dum;
+               });
+              }}
+              variant="outlined"
+             />
+             <Button
+              onClick={() => {
+               setSec((prev) => {
+                let dum = [...prev];
+                dum.push({ name: "single", length: 0, correct: 0, wrong: 0, answer: "" });
+                return dum;
+               });
+               console.log(sec);
+              }}
+             >
+              <AddIcon />
+             </Button>
+             <br />
+             <br />
+            </div>
+           );
+          })}
+         </DialogContent>
+         <DialogActions>
+          <Button
+           onClick={() => {
+            if (texamName) {
+             if (texamName.indexOf("_") !== -1 || texamName.indexOf("/") !== -1) {
+              alert("Exam name should not contain underscores and slashes");
+             } else {
+              let done = false;
+
+              examList.map((val3, i) => {
+               if (val3) {
+                if (texamName === val3.examname && texamType === val3.examtype) done = true;
+               }
+              });
+
+              if (!done) {
+               setQuestions([]);
+
+               setExamName(texamName);
+               setExamType(texamType);
+               [1, 2, 3].map(() => {
+                sec.map((val2, i) => {
+                 for (let j = 0; j < val2.length; j++) {
+                  setQuestions((prev) => {
+                   let dum = [...prev];
+                   dum.push({
+                    answer: val2.answer,
+                    correct: val2.correct,
+                    wrong: val2.wrong,
+                    image: null,
+                    type: val2.name,
+                   });
+                   return dum;
+                  });
+                 }
+                });
+               });
+
+               console.log(questions);
+               setTexamName("");
+
+               history.push(`${url}/paper/1`);
+              } else {
+               alert("This Exam already exists");
+              }
+             }
+            } else {
+             alert("please write the exam name");
+            }
+           }}
+           color="primary"
+          >
+           Next
+          </Button>
+         </DialogActions>
+        </Dialog>
 
         <Dialog
          open={dialog}
