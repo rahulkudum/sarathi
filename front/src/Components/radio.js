@@ -16,6 +16,7 @@ import {
  GridListTile,
  Grid,
  DialogContent,
+ Checkbox,
 } from "@material-ui/core";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
@@ -32,7 +33,6 @@ function Options() {
  let history = useHistory();
 
  let nind = Number(ind);
- let questionType;
 
  const [questions, setQuestions] = useContext(Questions);
  const [examName, setExamName] = useContext(ExamName);
@@ -54,44 +54,8 @@ function Options() {
  const [switches, setSwitches] = useContext(Switches);
  const [timeLimit, setTimeLimit] = useState(0);
  const [errText, setErrText] = useState("");
-
+ const [questionType, setQuestionType] = useState("single");
  const isVisible = usePageVisibility();
-
- if (examType.indexOf("mains") !== -1) {
-  if (examName === "2021WM7") {
-   if (nind === 21 || nind === 22 || nind === 23 || nind === 24 || nind === 25 || nind === 71 || nind === 72 || nind === 73 || nind === 74 || nind === 75) {
-    questionType = "integer";
-   } else {
-    questionType = "single";
-   }
-  } else {
-   if (
-    nind === 21 ||
-    nind === 22 ||
-    nind === 23 ||
-    nind === 24 ||
-    nind === 25 ||
-    nind === 46 ||
-    nind === 47 ||
-    nind === 48 ||
-    nind === 49 ||
-    nind === 50 ||
-    nind === 71 ||
-    nind === 72 ||
-    nind === 73 ||
-    nind === 74 ||
-    nind === 75
-   ) {
-    questionType = "integer";
-   } else {
-    questionType = "single";
-   }
-  }
- }
-
- if (examType === "neet") {
-  questionType = "single";
- }
 
  const useStyles = makeStyles((theme) => ({
   root1: {
@@ -113,8 +77,43 @@ function Options() {
  let areview = 0;
 
  useEffect(() => {
-  console.log(answers[nind - 1].time);
   setImageloading(true);
+
+  if (examType.indexOf("mains") !== -1) {
+   if (examName === "2021WM7") {
+    if (nind === 21 || nind === 22 || nind === 23 || nind === 24 || nind === 25 || nind === 71 || nind === 72 || nind === 73 || nind === 74 || nind === 75) {
+     setQuestionType("numerical");
+    } else {
+     setQuestionType("single");
+    }
+   } else {
+    if (
+     nind === 21 ||
+     nind === 22 ||
+     nind === 23 ||
+     nind === 24 ||
+     nind === 25 ||
+     nind === 46 ||
+     nind === 47 ||
+     nind === 48 ||
+     nind === 49 ||
+     nind === 50 ||
+     nind === 71 ||
+     nind === 72 ||
+     nind === 73 ||
+     nind === 74 ||
+     nind === 75
+    ) {
+     setQuestionType("numerical");
+    } else {
+     setQuestionType("single");
+    }
+   }
+  }
+
+  if (examType.indexOf("advanced") !== -1) {
+   setQuestionType(answers[nind - 1].type);
+  }
   setAnswers((prev) => {
    let dum = [...prev];
    dum[nind - 1].visited = true;
@@ -252,7 +251,7 @@ function Options() {
       });
      }
     });
-   } else if (examType === "neet") {
+   } else if (examType.indexOf("neet") !== -1) {
     questions.map((val, i) => {
      if (answers[i].answer) {
       if (val.answer === answers[i].answer) {
@@ -276,6 +275,53 @@ function Options() {
        if (i < 45) {
         physics = physics + Number(val.wrong);
        } else if (i < 90) {
+        chemistry = chemistry + Number(val.wrong);
+       } else {
+        maths = maths + Number(val.wrong);
+       }
+
+       marks = marks + Number(val.wrong);
+       negative = negative + Number(val.wrong);
+       setAnswers((prev) => {
+        let dum = [...prev];
+        dum[i].status = "wrong";
+        dum[i].correct = val.answer;
+        return dum;
+       });
+      }
+     } else {
+      setAnswers((prev) => {
+       let dum = [...prev];
+       dum[i].status = "left";
+       dum[i].correct = val.answer;
+       return dum;
+      });
+     }
+    });
+   } else if (examType.indexOf("advanced") !== -1) {
+    questions.map((val, i) => {
+     if (val.type === "multiple" ? answers[i].answer.one || answers[i].answer.two || answers[i].answer.three || answers[i].answer.four : answers[i].answer) {
+      if (JSON.stringify(val.answer) === JSON.stringify(answers[i].answer)) {
+       if (i < questions.length / 3 || examType.indexOf("single") !== -1) {
+        physics = physics + Number(val.correct);
+       } else if (i < 2 * (questions.length / 3)) {
+        chemistry = chemistry + Number(val.correct);
+       } else {
+        maths = maths + Number(val.correct);
+       }
+
+       marks = marks + Number(val.correct);
+       positive = positive + Number(val.correct);
+       setAnswers((prev) => {
+        let dum = [...prev];
+        dum[i].status = "correct";
+        dum[i].correct = val.answer;
+        return dum;
+       });
+      } else {
+       if (i < questions.length / 3 || examType.indexOf("single") !== -1) {
+        physics = physics + Number(val.wrong);
+       } else if (i < 2 * (questions.length / 3)) {
         chemistry = chemistry + Number(val.wrong);
        } else {
         maths = maths + Number(val.wrong);
@@ -430,7 +476,7 @@ function Options() {
         });
        }
       });
-     } else if (examType === "neet") {
+     } else if (examType.indexOf("neet") !== -1) {
       questions.map((val, i) => {
        if (answers[i].answer) {
         if (val.answer === answers[i].answer) {
@@ -454,6 +500,53 @@ function Options() {
          if (i < 45) {
           physics = physics - Number(val.wrong);
          } else if (i < 90) {
+          chemistry = chemistry - Number(val.wrong);
+         } else {
+          maths = maths - Number(val.wrong);
+         }
+
+         marks = marks - Number(val.wrong);
+         negative = negative - Number(val.wrong);
+         setAnswers((prev) => {
+          let dum = [...prev];
+          dum[i].status = "wrong";
+          dum[i].correct = val.answer;
+          return dum;
+         });
+        }
+       } else {
+        setAnswers((prev) => {
+         let dum = [...prev];
+         dum[i].status = "left";
+         dum[i].correct = val.answer;
+         return dum;
+        });
+       }
+      });
+     } else if (examType.indexOf("advanced") !== -1) {
+      questions.map((val, i) => {
+       if (answers[i].answer) {
+        if (val.answer === answers[i].answer) {
+         if (i < questions.length / 3 || examType.indexOf("single") !== -1) {
+          physics = physics - Number(val.correct);
+         } else if (i < 2 * (questions.length / 3)) {
+          chemistry = chemistry - Number(val.correct);
+         } else {
+          maths = maths - Number(val.correct);
+         }
+
+         marks = marks - Number(val.correct);
+         positive = positive - Number(val.correct);
+         setAnswers((prev) => {
+          let dum = [...prev];
+          dum[i].status = "correct";
+          dum[i].correct = val.answer;
+          return dum;
+         });
+        } else {
+         if (i < questions.length / 3 || examType.indexOf("single") !== -1) {
+          physics = physics - Number(val.wrong);
+         } else if (i < 2 * (questions.length / 3)) {
           chemistry = chemistry - Number(val.wrong);
          } else {
           maths = maths - Number(val.wrong);
@@ -531,7 +624,7 @@ function Options() {
          {" "}
          <CircularProgress />{" "}
          <img
-          src={`/images/${questions[nind - 1].image}`}
+          src={`/images/${answers[nind - 1].image}`}
           onLoad={() => {
            setImageloading(false);
            console.log(imageloading);
@@ -539,7 +632,7 @@ function Options() {
          />
         </div>
        ) : (
-        <img src={`/images/${questions[nind - 1].image}`} />
+        <img src={`/images/${answers[nind - 1].image}`} />
        )}
       </div>
 
@@ -568,6 +661,73 @@ function Options() {
           <FormControlLabel value="4" control={<Radio />} label="4)" />
          </RadioGroup>
         </FormControl>
+       ) : questionType === "multiple" ? (
+        <>
+         <FormControlLabel
+          control={
+           <Checkbox
+            checked={answers[nind - 1].answer ? answers[nind - 1].danswer.one : null}
+            onChange={(e) => {
+             setAnswers((prev) => {
+              let dum = [...prev];
+              dum[nind - 1].danswer.one = e.target.checked;
+              return dum;
+             });
+            }}
+            color="primary"
+           />
+          }
+          label="1)"
+         />
+         <FormControlLabel
+          control={
+           <Checkbox
+            checked={answers[nind - 1].answer ? answers[nind - 1].danswer.two : null}
+            onChange={(e) => {
+             setAnswers((prev) => {
+              let dum = [...prev];
+              dum[nind - 1].danswer.two = e.target.checked;
+              return dum;
+             });
+            }}
+            color="primary"
+           />
+          }
+          label="2)"
+         />
+         <FormControlLabel
+          control={
+           <Checkbox
+            checked={answers[nind - 1].answer ? answers[nind - 1].danswer.three : null}
+            onChange={(e) => {
+             setAnswers((prev) => {
+              let dum = [...prev];
+              dum[nind - 1].danswer.three = e.target.checked;
+              return dum;
+             });
+            }}
+            color="primary"
+           />
+          }
+          label="3)"
+         />
+         <FormControlLabel
+          control={
+           <Checkbox
+            checked={answers[nind - 1].answer ? answers[nind - 1].danswer.four : null}
+            onChange={(e) => {
+             setAnswers((prev) => {
+              let dum = [...prev];
+              dum[nind - 1].danswer.four = e.target.checked;
+              return dum;
+             });
+            }}
+            color="primary"
+           />
+          }
+          label="4)"
+         />
+        </>
        ) : (
         <div>
          <TextField
@@ -593,24 +753,17 @@ function Options() {
         variant="contained"
         style={{ backgroundColor: "#43d001", color: "white", fontSize: 15, marginLeft: "3px", marginRight: "15px" }}
         onClick={() => {
-         if (answers[nind - 1].danswer || answers[nind - 1].answer) {
+         if (answers[nind - 1].danswer) {
           setAnswers((prev) => {
            let dum = [...prev];
-           dum[nind - 1].answer = dum[nind - 1].danswer;
+           dum[nind - 1].answer =
+            examType.indexOf("advanced") !== -1 && dum[nind - 1].type === "multiple" ? { ...dum[nind - 1].danswer } : dum[nind - 1].danswer;
 
            return dum;
           });
 
-          if (examType === "mains") {
-           if (nind !== 75) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-           else history.push(`/writexam/${examName}_${examType}/paper/1`);
-          } else if (examType === "neet") {
-           if (nind !== 180) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-           else history.push(`/writexam/${examName}_${examType}/paper/1`);
-          } else if (examType === "single-mains") {
-           if (nind !== 25) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-           else history.push(`/writexam/${examName}_${examType}/paper/1`);
-          }
+          if (nind === answers.length) history.push(`/writexam/${examName}_${examType}/paper/1`);
+          else history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
          } else {
           alert("Please Select a Option");
          }
@@ -625,8 +778,10 @@ function Options() {
         onClick={() => {
          setAnswers((prev) => {
           let dum = [...prev];
-          dum[nind - 1].answer = "";
-          dum[nind - 1].danswer = "";
+          dum[nind - 1].answer =
+           examType.indexOf("advanced") !== -1 && dum[nind - 1].type === "multiple" ? { one: false, two: false, three: false, four: false } : "";
+          dum[nind - 1].danswer =
+           examType.indexOf("advanced") !== -1 && dum[nind - 1].type === "multiple" ? { one: false, two: false, three: false, four: false } : "";
 
           return dum;
          });
@@ -639,24 +794,18 @@ function Options() {
         variant="contained"
         style={{ backgroundColor: "#ec971f", color: "white", fontSize: 15, margin: "5px" }}
         onClick={() => {
-         if (answers[nind - 1].danswer || answers[nind - 1].answer) {
+         if (answers[nind - 1].danswer) {
           setAnswers((prev) => {
            let dum = [...prev];
-           dum[nind - 1].answer = dum[nind - 1].danswer;
+           dum[nind - 1].answer =
+            examType.indexOf("advanced") !== -1 && dum[nind - 1].type === "multiple" ? { ...dum[nind - 1].danswer } : dum[nind - 1].danswer;
+
            dum[nind - 1].review = true;
            return dum;
           });
 
-          if (examType === "mains") {
-           if (nind !== 75) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-           else history.push(`/writexam/${examName}_${examType}/paper/1`);
-          } else if (examType === "neet") {
-           if (nind !== 180) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-           else history.push(`/writexam/${examName}_${examType}/paper/1`);
-          } else if (examType === "single-mains") {
-           if (nind !== 25) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-           else history.push(`/writexam/${examName}_${examType}/paper/1`);
-          }
+          if (nind === answers.length) history.push(`/writexam/${examName}_${examType}/paper/1`);
+          else history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
          } else {
           alert("Please Select a Option");
          }
@@ -675,16 +824,8 @@ function Options() {
           dum[nind - 1].review = true;
           return dum;
          });
-         if (examType === "mains") {
-          if (nind !== 75) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-          else history.push(`/writexam/${examName}_${examType}/paper/1`);
-         } else if (examType === "neet") {
-          if (nind !== 180) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-          else history.push(`/writexam/${examName}_${examType}/paper/1`);
-         } else if (examType === "single-mains") {
-          if (nind !== 25) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-          else history.push(`/writexam/${examName}_${examType}/paper/1`);
-         }
+         if (nind === answers.length) history.push(`/writexam/${examName}_${examType}/paper/1`);
+         else history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
         }}
        >
         Mark for Review and Next
@@ -696,16 +837,8 @@ function Options() {
          variant="contained"
          style={{ margin: "5px", backgroundColor: "#e6e6e6", borderColor: "#adadad", marginRight: "30px" }}
          onClick={() => {
-          if (examType === "mains") {
-           if (nind !== 1) history.push(`/writexam/${examName}_${examType}/paper/${nind - 1}`);
-           else history.push(`/writexam/${examName}_${examType}/paper/75`);
-          } else if (examType === "neet") {
-           if (nind !== 1) history.push(`/writexam/${examName}_${examType}/paper/${nind - 1}`);
-           else history.push(`/writexam/${examName}_${examType}/paper/180`);
-          } else if (examType === "single-mains") {
-           if (nind !== 25) history.push(`/writexam/${examName}_${examType}/paper/${nind - 1}`);
-           else history.push(`/writexam/${examName}_${examType}/paper/25`);
-          }
+          if (nind === 1) history.push(`/writexam/${examName}_${examType}/paper/${answers.length}`);
+          else history.push(`/writexam/${examName}_${examType}/paper/${nind - 1}`);
          }}
         >
          Back
@@ -715,16 +848,8 @@ function Options() {
          variant="contained"
          style={{ margin: "5px", backgroundColor: "#e6e6e6", borderColor: "#adadad", marginRight: "100px" }}
          onClick={() => {
-          if (examType === "mains") {
-           if (nind !== 75) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-           else history.push(`/writexam/${examName}_${examType}/paper/1`);
-          } else if (examType === "neet") {
-           if (nind !== 180) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-           else history.push(`/writexam/${examName}_${examType}/paper/1`);
-          } else if (examType === "single-mains") {
-           if (nind !== 25) history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
-           else history.push(`/writexam/${examName}_${examType}/paper/1`);
-          }
+          if (nind === answers.length) history.push(`/writexam/${examName}_${examType}/paper/1`);
+          else history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
          }}
         >
          Next
@@ -809,11 +934,19 @@ function Options() {
       }}
      >
       {questions.map((tile, i) => {
-       if (answers[i].answer && answers[i].review) bcolor = "#52057b";
-       else if (answers[i].answer) bcolor = "#43d001";
-       else if (answers[i].review) bcolor = "#52057b";
-       else if (answers[i].visited) bcolor = "red";
-       else bcolor = "";
+       if (examType.indexOf("advanced") !== -1 && answers[i].type === "multiple") {
+        if ((answers[i].answer.one || answers[i].answer.two || answers[i].answer.three || answers[i].answer.four) && answers[i].review) bcolor = "#52057b";
+        else if ((answers[i].answer.one || answers[i].answer.two || answers[i].answer.three || answers[i].answer.four) && answers[i].answer) bcolor = "#43d001";
+        else if (answers[i].review) bcolor = "#52057b";
+        else if (answers[i].visited) bcolor = "red";
+        else bcolor = "";
+       } else {
+        if (answers[i].answer && answers[i].review) bcolor = "#52057b";
+        else if (answers[i].answer) bcolor = "#43d001";
+        else if (answers[i].review) bcolor = "#52057b";
+        else if (answers[i].visited) bcolor = "red";
+        else bcolor = "";
+       }
 
        if (answers[i].visited) tcolor = "white";
        else tcolor = "";

@@ -103,21 +103,34 @@ function Question() {
         id="file"
         onChange={(e) => {
          let img = e.target.files[0];
+         let found = false;
 
-         const formData = new FormData();
-
-         formData.append("file", img, examName + "_" + examType + "_" + ind);
-
-         setBackdrop(true);
-         axios.post("/upload", formData).then((res) => {
-          console.log(res);
+         if (img) {
           setQuestions((prev) => {
            let dum = [...prev];
-           dum[nind - 1].image = res.data.file.filename;
+           dum[nind - 1].image = img.lastModified;
            return dum;
           });
-          setBackdrop(false);
-         });
+          axios.get("/files").then((res) => {
+           res.data.map((val, i) => {
+            if (Number(val.filename) === img.lastModified) {
+             console.log("found image", img.lastModified);
+             found = true;
+            }
+           });
+
+           if (!found) {
+            console.log("uploading new image", img.lastModified);
+            const formData = new FormData();
+
+            formData.append("file", img, img.lastModified);
+
+            axios.post("/upload", formData).then((res) => {
+             console.log(res);
+            });
+           }
+          });
+         }
         }}
        />
       </div>
@@ -185,7 +198,7 @@ function Question() {
          ) : (
           <div>
            {questionType === "multiple" ? (
-            <>
+            <d>
              <FormControlLabel
               control={
                <Checkbox
@@ -250,31 +263,34 @@ function Question() {
               }
               label="4)"
              />
-            </>
+            </d>
            ) : (
-            <TextField
-             id="standard-basic"
-             label="Answer"
-             value={questions[nind - 1].answer}
-             onChange={(e) => {
-              if (examType.indexOf("mains") !== -1) {
-               setQuestions((prev) => {
-                let dum = [...prev];
-                dum[nind - 1].answer = e.target.value;
-                dum[nind - 1].correct = 4;
-                dum[nind - 1].wrong = 0;
-                return dum;
-               });
-              } else if (examType.indexOf("advanced") !== -1) {
-               setQuestions((prev) => {
-                let dum = [...prev];
-                dum[nind - 1].answer = e.target.value;
+            <div>
+             <TextField
+              id="standard-basic"
+              label="Answer"
+              value={questions[nind - 1].answer}
+              onChange={(e) => {
+               if (examType.indexOf("mains") !== -1) {
+                setQuestions((prev) => {
+                 let dum = [...prev];
+                 dum[nind - 1].answer = e.target.value;
+                 dum[nind - 1].correct = 4;
+                 dum[nind - 1].wrong = 0;
+                 return dum;
+                });
+               } else if (examType.indexOf("advanced") !== -1) {
+                setQuestions((prev) => {
+                 let dum = [...prev];
+                 dum[nind - 1].answer = e.target.value;
 
-                return dum;
-               });
-              }
-             }}
-            />
+                 return dum;
+                });
+               }
+              }}
+             />
+             <p>round-off the value to TWO decimal places; e.g. 23 as 23, 5.2 as 5.2, 5.48913 as 5.49</p>
+            </div>
            )}
           </div>
          )}
@@ -288,36 +304,19 @@ function Question() {
         variant="contained"
         style={{ margin: "5px" }}
         onClick={() => {
-         if (examType === "mains") {
-          if (nind !== 1) history.push(`/setexam/paper/${nind - 1}`);
-          else history.push(`/setexam/paper/75`);
-         } else if (examType === "neet") {
-          if (nind !== 1) history.push(`/setexam/paper/${nind - 1}`);
-          else history.push(`/setexam/paper/180`);
-         } else if (examType === "single-mains") {
-          if (nind !== 25) history.push(`/setexam/paper/${nind - 1}`);
-          else history.push(`/setexam/paper/25`);
-         }
+         if (nind === 1) history.push(`/setexam/paper/${questions.length}`);
+         else history.push(`/setexam/paper/${nind - 1}`);
         }}
        >
         Back
        </Button>
-
        <Button
         color="primary"
         variant="contained"
         style={{ margin: "5px" }}
         onClick={() => {
-         if (examType === "mains") {
-          if (nind !== 75) history.push(`/setexam/paper/${nind + 1}`);
-          else history.push(`/setexam/paper/1`);
-         } else if (examType === "neet") {
-          if (nind !== 180) history.push(`/setexam/paper/${nind + 1}`);
-          else history.push(`/setexam/paper/1`);
-         } else if (examType === "single-mains") {
-          if (nind !== 25) history.push(`/setexam/paper/${nind + 1}`);
-          else history.push(`/setexam/paper/1`);
-         }
+         if (nind === questions.length) history.push(`/setexam/paper/1`);
+         else history.push(`/setexam/paper/${nind + 1}`);
         }}
        >
         Next
@@ -437,9 +436,118 @@ function Question() {
          </div>
         ) : null}
        </div>
+      ) : examType.indexOf("advanced") !== -1 ? (
+       <div>
+        <label>{examType.indexOf("single") === -1 ? `Physics ${questions.length / 3} Ques: ` : `All ${questions.length / 3} Ques: `}</label>
+        <input
+         type="file"
+         name="file"
+         id="file"
+         multiple
+         onChange={(e) => {
+          let img = e.target.files;
+
+          if (img.length === questions.length / 3) {
+           for (let key = 0; key < img.length; key++) {
+            console.log(key, img[key], img);
+            let formData = new FormData();
+
+            formData.append("file", img[key], key);
+
+            setBackdrop(true);
+            axios.post("/upload", formData).then((res) => {
+             console.log(res.data.filename);
+             setQuestions((prev) => {
+              let dum = [...prev];
+              dum[key].image = res.data.file.filename;
+              return dum;
+             });
+             setBackdrop(false);
+            });
+           }
+          } else {
+           alert(`please select exactly ${questions.length / 3} images`);
+          }
+         }}
+        />
+
+        <br />
+        <br />
+        {examType.indexOf("single") === -1 ? (
+         <div>
+          <label>Chemistry {questions.length / 3} Ques: </label>
+          <input
+           type="file"
+           name="file"
+           id="file"
+           multiple
+           onChange={(e) => {
+            let img = e.target.files;
+
+            if (img.length === questions.length / 3) {
+             for (let key = 0; key < img.length; key++) {
+              console.log(key, img[key], img);
+              let formData = new FormData();
+
+              formData.append("file", img[key], key);
+
+              setBackdrop(true);
+              axios.post("/upload", formData).then((res) => {
+               console.log(res.data.filename);
+               setQuestions((prev) => {
+                let dum = [...prev];
+                dum[questions.length / 3 + key].image = res.data.file.filename;
+                return dum;
+               });
+               setBackdrop(false);
+              });
+             }
+            } else {
+             alert(`please select exactly ${questions.length / 3} images`);
+            }
+           }}
+          />
+
+          <br />
+          <br />
+          <label>Maths {questions.length / 3} Ques: </label>
+          <input
+           type="file"
+           name="file"
+           id="file"
+           multiple
+           onChange={(e) => {
+            let img = e.target.files;
+
+            if (img.length === questions.length / 3) {
+             for (let key = 0; key < img.length; key++) {
+              console.log(key, img[key], img);
+              let formData = new FormData();
+
+              formData.append("file", img[key], key);
+
+              setBackdrop(true);
+              axios.post("/upload", formData).then((res) => {
+               console.log(res.data.filename);
+               setQuestions((prev) => {
+                let dum = [...prev];
+                dum[(2 * questions.length) / 3 + key].image = res.data.file.filename;
+                return dum;
+               });
+               setBackdrop(false);
+              });
+             }
+            } else {
+             alert(`please select exactly ${questions.length / 3} images`);
+            }
+           }}
+          />
+         </div>
+        ) : null}
+       </div>
       ) : (
        <div>
-        <label>Physics 45 Ques: </label>
+        <label>{examType.indexOf("single") === -1 ? "Physics 45 Ques: " : "All 45 Ques: "}</label>
         <input
          type="file"
          name="file"
@@ -474,88 +582,100 @@ function Question() {
 
         <br />
         <br />
+        {examType.indexOf("single") === -1 ? (
+         <div>
+          <label>Chemistry 45 Ques: </label>
+          <input
+           type="file"
+           name="file"
+           id="file"
+           multiple
+           onChange={(e) => {
+            let img = e.target.files;
 
-        <label>Chemistry 45 Ques: </label>
-        <input
-         type="file"
-         name="file"
-         id="file"
-         multiple
-         onChange={(e) => {
-          let img = e.target.files;
+            if (img.length === 45) {
+             for (let key = 0; key < img.length; key++) {
+              console.log(key, img[key], img);
+              let formData = new FormData();
 
-          if (img.length === 45) {
-           for (let key = 0; key < img.length; key++) {
-            console.log(key, img[key], img);
-            let formData = new FormData();
+              formData.append("file", img[key], key);
 
-            formData.append("file", img[key], key);
+              setBackdrop(true);
+              axios.post("/upload", formData).then((res) => {
+               console.log(res.data.filename);
+               setQuestions((prev) => {
+                let dum = [...prev];
+                dum[45 + key].image = res.data.file.filename;
+                return dum;
+               });
+               setBackdrop(false);
+              });
+             }
+            } else {
+             alert("please select exactly 45 images");
+            }
+           }}
+          />
 
-            setBackdrop(true);
-            axios.post("/upload", formData).then((res) => {
-             console.log(res.data.filename);
-             setQuestions((prev) => {
-              let dum = [...prev];
-              dum[45 + key].image = res.data.file.filename;
-              return dum;
-             });
-             setBackdrop(false);
-            });
-           }
-          } else {
-           alert("please select exactly 45 images");
-          }
-         }}
-        />
+          <br />
+          <br />
+          <label>Biology 90 Ques: </label>
+          <input
+           type="file"
+           name="file"
+           id="file"
+           multiple
+           onChange={(e) => {
+            let img = e.target.files;
 
-        <br />
-        <br />
-        <label>Biology 90 Ques: </label>
-        <input
-         type="file"
-         name="file"
-         id="file"
-         multiple
-         onChange={(e) => {
-          let img = e.target.files;
+            if (img.length === 90) {
+             for (let key = 0; key < img.length; key++) {
+              console.log(key, img[key], img);
+              let formData = new FormData();
 
-          if (img.length === 90) {
-           for (let key = 0; key < img.length; key++) {
-            console.log(key, img[key], img);
-            let formData = new FormData();
+              formData.append("file", img[key], key);
 
-            formData.append("file", img[key], key);
-
-            setBackdrop(true);
-            axios.post("/upload", formData).then((res) => {
-             console.log(res.data.filename);
-             setQuestions((prev) => {
-              let dum = [...prev];
-              dum[90 + key].image = res.data.file.filename;
-              return dum;
-             });
-             setBackdrop(false);
-            });
-           }
-          } else {
-           alert("please select exactly 90 images");
-          }
-         }}
-        />
+              setBackdrop(true);
+              axios.post("/upload", formData).then((res) => {
+               console.log(res.data.filename);
+               setQuestions((prev) => {
+                let dum = [...prev];
+                dum[90 + key].image = res.data.file.filename;
+                return dum;
+               });
+               setBackdrop(false);
+              });
+             }
+            } else {
+             alert("please select exactly 90 images");
+            }
+           }}
+          />
+         </div>
+        ) : null}
        </div>
       )}
       <br />
 
-      {questions.map((tile, i) => (
-       <Button
-        style={{ margin: "5px" }}
-        variant="contained"
-        color={questions[i].image && questions[i].answer ? "primary" : "secondary"}
-        onClick={() => history.push(`/setexam/paper/${i + 1}`)}
-       >
-        {i + 1}
-       </Button>
-      ))}
+      {questions.map((tile, i) => {
+       let tcolor;
+       if (examType.indexOf("advanced") !== -1) {
+        if (questions[i].type === "multiple") {
+         if (questions[i].image && (questions[i].answer.one || questions[i].answer.two || questions[i].answer.three || questions[i].answer.four)) {
+          tcolor = "primary";
+         } else tcolor = "secondary";
+        } else {
+         tcolor = questions[i].image && questions[i].answer ? "primary" : "secondary";
+        }
+       } else {
+        tcolor = questions[i].image && questions[i].answer ? "primary" : "secondary";
+       }
+       return (
+        <Button style={{ margin: "5px" }} variant="contained" color={tcolor} onClick={() => history.push(`/setexam/paper/${i + 1}`)}>
+         {i + 1}
+        </Button>
+       );
+      })}
      </div>
      <br />
 

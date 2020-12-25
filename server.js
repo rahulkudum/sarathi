@@ -44,7 +44,7 @@ const storage = new GridFsStorage({
     if (err) {
      return reject(err);
     }
-    const filename = buf.toString("hex") + path.extname(file.originalname);
+    const filename = file.originalname;
     const fileInfo = {
      filename: filename,
      bucketName: "uploads",
@@ -75,8 +75,10 @@ app.get("/files", (req, res) => {
 
 app.get("/images/:filename", (req, res) => {
  gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-  const readstream = gfs.createReadStream(file.filename);
-  readstream.pipe(res);
+  if (!err) {
+   const readstream = gfs.createReadStream(file.filename);
+   readstream.pipe(res);
+  }
  });
 
  // gfs.files.find((err,file)=>{

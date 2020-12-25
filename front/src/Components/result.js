@@ -13,6 +13,7 @@ import {
  GridListTile,
  Grid,
  Link,
+ Checkbox,
 } from "@material-ui/core";
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
@@ -29,7 +30,6 @@ function Result() {
  let history = useHistory();
 
  let nind = Number(ind);
- let questionType;
 
  const [examName, setExamName] = useContext(ExamName);
  const [examType, setExamType] = useContext(ExamType);
@@ -46,42 +46,7 @@ function Result() {
  const [mode, setMode] = useContext(Mode);
  const [ctime, setCtime] = useContext(Ctime);
  const [switches, setSwitches] = useContext(Switches);
-
- if (examType.indexOf("mains") !== -1) {
-  if (examName === "2021WM7") {
-   if (nind === 21 || nind === 22 || nind === 23 || nind === 24 || nind === 25 || nind === 71 || nind === 72 || nind === 73 || nind === 74 || nind === 75) {
-    questionType = "integer";
-   } else {
-    questionType = "single";
-   }
-  } else {
-   if (
-    nind === 21 ||
-    nind === 22 ||
-    nind === 23 ||
-    nind === 24 ||
-    nind === 25 ||
-    nind === 46 ||
-    nind === 47 ||
-    nind === 48 ||
-    nind === 49 ||
-    nind === 50 ||
-    nind === 71 ||
-    nind === 72 ||
-    nind === 73 ||
-    nind === 74 ||
-    nind === 75
-   ) {
-    questionType = "integer";
-   } else {
-    questionType = "single";
-   }
-  }
- }
-
- if (examType === "neet") {
-  questionType = "single";
- }
+ const [questionType, setQuestionType] = useState("single");
 
  const useStyles = makeStyles((theme) => ({
   root1: {
@@ -138,10 +103,69 @@ function Result() {
     }
    });
   }
+  if (examType === "advanced") {
+   answers.map((val, i) => {
+    if (i < answers.length / 3) {
+     setTime3((prev) => {
+      let dum = { ...prev };
+      dum.physics = dum.physics + val.time;
+      return dum;
+     });
+    } else if (i < 2 * (answers.length / 3)) {
+     setTime3((prev) => {
+      let dum = { ...prev };
+      dum.chemistry = dum.chemistry + val.time;
+      return dum;
+     });
+    } else {
+     setTime3((prev) => {
+      let dum = { ...prev };
+      dum.maths = dum.maths + val.time;
+      return dum;
+     });
+    }
+   });
+  }
  }, []);
 
  useEffect(() => {
   setImageloading(true);
+
+  if (examType.indexOf("mains") !== -1) {
+   if (examName === "2021WM7") {
+    if (nind === 21 || nind === 22 || nind === 23 || nind === 24 || nind === 25 || nind === 71 || nind === 72 || nind === 73 || nind === 74 || nind === 75) {
+     setQuestionType("numerical");
+    } else {
+     setQuestionType("single");
+    }
+   } else {
+    if (
+     nind === 21 ||
+     nind === 22 ||
+     nind === 23 ||
+     nind === 24 ||
+     nind === 25 ||
+     nind === 46 ||
+     nind === 47 ||
+     nind === 48 ||
+     nind === 49 ||
+     nind === 50 ||
+     nind === 71 ||
+     nind === 72 ||
+     nind === 73 ||
+     nind === 74 ||
+     nind === 75
+    ) {
+     setQuestionType("numerical");
+    } else {
+     setQuestionType("single");
+    }
+   }
+  }
+
+  if (examType.indexOf("advanced") !== -1) {
+   setQuestionType(answers[nind - 1].type);
+  }
  }, [nind]);
 
  let corrected = 0;
@@ -237,7 +261,18 @@ function Result() {
          </RadioGroup>
         </FormControl>
        ) : (
-        <TextField id="standard-basic" label="Answer" style={{ marginBottom: "10px" }} value={answers[nind - 1].answer} />
+        <div>
+         {questionType === "multiple" ? (
+          <>
+           <FormControlLabel control={<Checkbox checked={answers[nind - 1].answer ? answers[nind - 1].answer.one : null} color="primary" />} label="1)" />
+           <FormControlLabel control={<Checkbox checked={answers[nind - 1].answer ? answers[nind - 1].answer.two : null} color="primary" />} label="2)" />
+           <FormControlLabel control={<Checkbox checked={answers[nind - 1].answer ? answers[nind - 1].answer.three : null} color="primary" />} label="3)" />
+           <FormControlLabel control={<Checkbox checked={answers[nind - 1].answer ? answers[nind - 1].answer.four : null} color="primary" />} label="4)" />
+          </>
+         ) : (
+          <TextField id="standard-basic" label="Answer" style={{ marginBottom: "10px" }} value={answers[nind - 1].answer} />
+         )}
+        </div>
        )}
 
        <br />
@@ -256,16 +291,8 @@ function Result() {
          variant="contained"
          style={{ margin: "5px", backgroundColor: "#e6e6e6", borderColor: "#adadad" }}
          onClick={() => {
-          if (examType === "mains") {
-           if (nind !== 1) history.push(`/writexam/${examName}_${examType}/result/${nind - 1}`);
-           else history.push(`/writexam/${examName}_${examType}/result/75`);
-          } else if (examType === "neet") {
-           if (nind !== 1) history.push(`/writexam/${examName}_${examType}/result/${nind - 1}`);
-           else history.push(`/writexam/${examName}_${examType}/result/180`);
-          } else if (examType === "single-mains") {
-           if (nind !== 25) history.push(`/writexam/${examName}_${examType}/result/${nind - 1}`);
-           else history.push(`/writexam/${examName}_${examType}/result/25`);
-          }
+          if (nind === 1) history.push(`/writexam/${examName}_${examType}/result/${answers.length}`);
+          else history.push(`/writexam/${examName}_${examType}/result/${nind - 1}`);
          }}
         >
          Back
@@ -275,16 +302,8 @@ function Result() {
          variant="contained"
          style={{ margin: "5px", backgroundColor: "#e6e6e6", borderColor: "#adadad" }}
          onClick={() => {
-          if (examType === "mains") {
-           if (nind !== 75) history.push(`/writexam/${examName}_${examType}/result/${nind + 1}`);
-           else history.push(`/writexam/${examName}_${examType}/result/1`);
-          } else if (examType === "neet") {
-           if (nind !== 180) history.push(`/writexam/${examName}_${examType}/result/${nind + 1}`);
-           else history.push(`/writexam/${examName}_${examType}/result/1`);
-          } else if (examType === "single-mains") {
-           if (nind !== 25) history.push(`/writexam/${examName}_${examType}/result/${nind + 1}`);
-           else history.push(`/writexam/${examName}_${examType}/result/1`);
-          }
+          if (nind === answers.length) history.push(`/writexam/${examName}_${examType}/result/1`);
+          else history.push(`/writexam/${examName}_${examType}/result/${nind + 1}`);
          }}
         >
          Next
@@ -385,7 +404,7 @@ function Result() {
         <p style={{ display: "inline-block", width: "140px" }}>Unattempted</p>
         <Chip size="large" label={`Total marks: ${marks.total}`} style={{ marginLeft: "15px", width: "180px" }} />
 
-        {examType === "mains" ? (
+        {examType !== "neet" ? (
          <>
           <Chip size="large" label={`Maths marks: ${marks.maths}`} color="primary" style={{ marginLeft: "15px", width: "190px" }} />
 

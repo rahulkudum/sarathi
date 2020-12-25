@@ -17,7 +17,7 @@ function Correction() {
  let history = useHistory();
 
  const [backdrop, setBackdrop] = useState(false);
- let examtypes = ["mains", "neet", "single-mains", "advanced"];
+ let examtypes = ["mains", "neet", "advanced", "single-mains", "single-neet"];
  const [examName, setExamName] = useContext(ExamName);
  const [examType, setExamType] = useContext(ExamType);
  const [texamName, setTexamName] = useState("");
@@ -28,7 +28,7 @@ function Correction() {
 
  const [mode, setMode] = useContext(Mode);
 
- const [sec, setSec] = useState([{ name: "single", answer: null, length: 0, correct: 0, wrong: 0 }]);
+ const [sec, setSec] = useState([{ name: "single", secname: "", answer: null, length: 0, correct: 0, wrong: 0 }]);
 
  const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -103,7 +103,6 @@ function Correction() {
             alert("Exam name should not contain underscores and slashes");
            } else {
             let done = false;
-
             examList.map((val, i) => {
              if (val) {
               if (texamName === val.examname && texamType === val.examtype) done = true;
@@ -155,8 +154,20 @@ function Correction() {
                 return dum;
                });
               }
+             } else if (texamType === "single-neet") {
+              for (let i = 0; i < 45; i++) {
+               setQuestions((prev) => {
+                let dum = [...prev];
+                dum.push({
+                 answer: "",
+                 correct: 4,
+                 wrong: -1,
+                 image: null,
+                });
+                return dum;
+               });
+              }
              }
-
              console.log(questions);
              setTexamName("");
 
@@ -172,7 +183,6 @@ function Correction() {
         >
          Next
         </Button>
-
         {examList ? <h2>Modify or Delete previous Exams</h2> : <h2>No Previous Exams Found</h2>}
         <p
          style={{
@@ -409,6 +419,8 @@ function Correction() {
          onClose={() => {
           setTexamType("mains");
          }}
+         fullWidth={true}
+         maxWidth="md"
          aria-labelledby="form-dialog-title"
         >
          <DialogTitle id="form-dialog-title">Pattern</DialogTitle>
@@ -444,6 +456,21 @@ function Correction() {
                </option>
               ))}
              </TextField>
+
+             <TextField
+              id="outlined-basic"
+              variant="outlined"
+              label="Name (optional)"
+              type="text"
+              value={val1.secname}
+              onChange={(e) => {
+               setSec((prev) => {
+                let dum = [...prev];
+                dum[i].secname = e.target.value;
+                return dum;
+               });
+              }}
+             />
 
              <TextField
               id="outlined-number"
@@ -503,7 +530,7 @@ function Correction() {
               onClick={() => {
                setSec((prev) => {
                 let dum = [...prev];
-                dum.push({ name: "single", length: 0, correct: 0, wrong: 0, answer: "" });
+                dum.push({ name: "single", secname: "", length: 0, correct: 0, wrong: 0, answer: "" });
                 return dum;
                });
                console.log(sec);
@@ -543,11 +570,12 @@ function Correction() {
                   setQuestions((prev) => {
                    let dum = [...prev];
                    dum.push({
-                    answer: val2.answer,
+                    answer: val2.name === "multiple" ? { ...val2.answer } : val2.answer,
                     correct: val2.correct,
                     wrong: val2.wrong,
                     image: null,
                     type: val2.name,
+                    secname: val2.secname ?? val2.name,
                    });
                    return dum;
                   });

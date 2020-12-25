@@ -80,7 +80,7 @@ function Login() {
      </Backdrop>
 
      <div style={{ border: "1px solid black" }}>
-      {examName === examname && examType === examtype ? (
+      {examName === examname && examType === examtype && mode !== "teacher" ? (
        <p>To resume {examname} please login through your G-mail</p>
       ) : (
        <p>To write {examname} please login through your G-mail</p>
@@ -90,6 +90,7 @@ function Login() {
        buttonText="Login through Gmail"
        onSuccess={(res) => {
         setBackdrop(true);
+
         axios.post("/user/find", { mail: res.profileObj.email }).then((resp) => {
          if (resp.data) {
           let exsists = false;
@@ -103,19 +104,38 @@ function Login() {
           }
 
           if (!exsists) {
-           if (examName === examname && examType === examtype) {
+           if (examName === examname && examType === examtype && mode === res.profileObj.email) {
             console.log("gv");
            } else {
+            setMode(res.profileObj.email);
             setExamName(examname);
             setExamType(examtype);
             setAnswers([]);
 
             questions.map((val, i) => {
-             setAnswers((prev) => {
-              let dum = [...prev];
-              dum.push({ answer: "", danswer: "", visited: false, review: false, status: "", correct: "", time: 0, image: val.image });
-              return dum;
-             });
+             if (examtype.indexOf("advanced") !== -1) {
+              setAnswers((prev) => {
+               let dum = [...prev];
+               dum.push({
+                answer: val.type === "multiple" ? { one: false, two: false, three: false, four: false } : "",
+                danswer: val.type === "multiple" ? { one: false, two: false, three: false, four: false } : "",
+                visited: false,
+                review: false,
+                status: "",
+                correct: "",
+                time: 0,
+                image: val.image,
+                type: val.type,
+               });
+               return dum;
+              });
+             } else {
+              setAnswers((prev) => {
+               let dum = [...prev];
+               dum.push({ answer: "", danswer: "", visited: false, review: false, status: "", correct: "", time: 0, image: val.image });
+               return dum;
+              });
+             }
             });
            }
 
@@ -126,8 +146,6 @@ function Login() {
            let ptime = resp.data.time;
 
            ptime.push({ examname: examname, examtype: examtype, stime: new Date().toLocaleTimeString("en-US"), dur: msToTime(time2 - time) });
-
-           setMode(res.profileObj.email);
 
            setTime3({ time: 0, physics: 0, chemistry: 0, maths: 0, on: 0, qon: 0, no: 0 });
            setSwitches(0);

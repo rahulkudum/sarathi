@@ -57,7 +57,11 @@ function Examselect() {
          let done = false;
 
          val.questions.map((valu, i) => {
-          if (valu.image === "" || valu.answer === "") done = true;
+          if (val.examtype.indexOf("advanced") !== -1 && valu.type === "multiple") {
+           if (!valu.image || !(valu.answer.one || valu.answer.two || valu.answer.three || valu.answer.four)) done = true;
+          } else {
+           if (!valu.image || !valu.answer) done = true;
+          }
          });
 
          if (!done) {
