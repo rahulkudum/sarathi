@@ -17,7 +17,7 @@ function Correction() {
  let history = useHistory();
 
  const [backdrop, setBackdrop] = useState(false);
- let examtypes = ["mains", "neet", "advanced", "single-mains", "single-neet"];
+ let examtypes = ["mains", "neet", "advanced", "single-mains", "single-neet", "single-advanced"];
  const [examName, setExamName] = useContext(ExamName);
  const [examType, setExamType] = useContext(ExamType);
  const [texamName, setTexamName] = useState("");
@@ -121,8 +121,25 @@ function Correction() {
                 let dum = [...prev];
                 dum.push({
                  answer: "",
-                 correct: "",
-                 wrong: "",
+                 correct: 4,
+                 wrong:
+                  i + 1 === 21 ||
+                  i + 1 === 22 ||
+                  i + 1 === 23 ||
+                  i + 1 === 24 ||
+                  i + 1 === 25 ||
+                  i + 1 === 46 ||
+                  i + 1 === 47 ||
+                  i + 1 === 48 ||
+                  i + 1 === 49 ||
+                  i + 1 === 50 ||
+                  i + 1 === 71 ||
+                  i + 1 === 72 ||
+                  i + 1 === 73 ||
+                  i + 1 === 74 ||
+                  i + 1 === 75
+                   ? 0
+                   : -1,
                  image: null,
                 });
                 return dum;
@@ -147,8 +164,8 @@ function Correction() {
                 let dum = [...prev];
                 dum.push({
                  answer: "",
-                 correct: "",
-                 wrong: "",
+                 correct: 4,
+                 wrong: i + 1 === 21 || i + 1 === 22 || i + 1 === 23 || i + 1 === 24 || i + 1 === 25 ? 0 : -1,
                  image: null,
                 });
                 return dum;
@@ -294,16 +311,27 @@ function Correction() {
                   let physics = 0;
                   let chemistry = 0;
 
-                  if (val.examtype.indexOf("mains") !== -1) {
+                  if (val.examtype.indexOf("neet") === -1) {
                    val.questions.map((val4, i) => {
-                    if (val3.answers[i].answer) {
-                     if (val4.answer === val3.answers[i].answer) {
-                      if (i < 25) {
-                       physics = physics + Number(val4.correct);
-                      } else if (i < 50) {
-                       chemistry = chemistry + Number(val4.correct);
-                      } else {
-                       maths = maths + Number(val4.correct);
+                    console.log(val4.correct, val4.wrong);
+                    if (
+                     val4.type === "multiple"
+                      ? val3.answers[i].answer.one ||
+                        val3.answers[i].answer.two ||
+                        val3.answers[i].answer.three ||
+                        val3.answers[i].answer.four ||
+                        val4.correct === val4.wrong
+                      : val3.answers[i].answer || val4.correct === val4.wrong
+                    ) {
+                     if (JSON.stringify(val4.answer) === JSON.stringify(val3.answers[i].answer) || val4.correct === val4.wrong) {
+                      if (val.examtype.indexOf("single") === -1) {
+                       if (i < val.questions.length / 3) {
+                        physics = physics + Number(val4.correct);
+                       } else if (i < 2 * (val.questions.length / 3)) {
+                        chemistry = chemistry + Number(val4.correct);
+                       } else {
+                        maths = maths + Number(val4.correct);
+                       }
                       }
 
                       marks = marks + Number(val4.correct);
@@ -312,12 +340,14 @@ function Correction() {
                       val3.answers[i].status = "correct";
                       val3.answers[i].correct = val4.answer;
                      } else {
-                      if (i < 25) {
-                       physics = physics + Number(val4.wrong);
-                      } else if (i < 50) {
-                       chemistry = chemistry + Number(val4.wrong);
-                      } else {
-                       maths = maths + Number(val4.wrong);
+                      if (val.examtype.indexOf("single") === -1) {
+                       if (i < val.questions.length / 3) {
+                        physics = physics + Number(val4.wrong);
+                       } else if (i < 2 * (val.questions.length / 3)) {
+                        chemistry = chemistry + Number(val4.wrong);
+                       } else {
+                        maths = maths + Number(val4.wrong);
+                       }
                       }
 
                       marks = marks + Number(val4.wrong);
@@ -331,16 +361,18 @@ function Correction() {
                      val3.answers[i].correct = val4.answer;
                     }
                    });
-                  } else if (val.examtype === "neet") {
+                  } else {
                    val.questions.map((val4, i) => {
                     if (val3.answers[i].answer) {
                      if (val4.answer === val3.answers[i].answer) {
-                      if (i < 45) {
-                       physics = physics + Number(val4.correct);
-                      } else if (i < 90) {
-                       chemistry = chemistry + Number(val4.correct);
-                      } else {
-                       maths = maths + Number(val4.correct);
+                      if (val.examtype.indexOf("single") == -1) {
+                       if (i < 45) {
+                        physics = physics + Number(val4.correct);
+                       } else if (i < 90) {
+                        chemistry = chemistry + Number(val4.correct);
+                       } else {
+                        maths = maths + Number(val4.correct);
+                       }
                       }
 
                       marks = marks + Number(val4.correct);
@@ -349,12 +381,14 @@ function Correction() {
                       val3.answers[i].status = "correct";
                       val3.answers[i].correct = val4.answer;
                      } else {
-                      if (i < 45) {
-                       physics = physics + Number(val4.wrong);
-                      } else if (i < 90) {
-                       chemistry = chemistry + Number(val4.wrong);
-                      } else {
-                       maths = maths + Number(val4.wrong);
+                      if (val.examtype.indexOf("single") === -1) {
+                       if (i < 45) {
+                        physics = physics + Number(val4.wrong);
+                       } else if (i < 90) {
+                        chemistry = chemistry + Number(val4.wrong);
+                       } else {
+                        maths = maths + Number(val4.wrong);
+                       }
                       }
 
                       marks = marks + Number(val4.wrong);
@@ -415,7 +449,7 @@ function Correction() {
         })}
 
         <Dialog
-         open={texamType === "advanced"}
+         open={texamType.indexOf("advanced") !== -1}
          onClose={() => {
           setTexamType("mains");
          }}
@@ -564,7 +598,26 @@ function Correction() {
 
                setExamName(texamName);
                setExamType(texamType);
-               [1, 2, 3].map(() => {
+               if (texamType.indexOf("single") === -1) {
+                [1, 2, 3].map(() => {
+                 sec.map((val2, i) => {
+                  for (let j = 0; j < val2.length; j++) {
+                   setQuestions((prev) => {
+                    let dum = [...prev];
+                    dum.push({
+                     answer: val2.name === "multiple" ? { ...val2.answer } : val2.answer,
+                     correct: val2.correct,
+                     wrong: val2.wrong,
+                     image: null,
+                     type: val2.name,
+                     secname: val2.secname !== "" ? val2.secname : val2.name,
+                    });
+                    return dum;
+                   });
+                  }
+                 });
+                });
+               } else {
                 sec.map((val2, i) => {
                  for (let j = 0; j < val2.length; j++) {
                   setQuestions((prev) => {
@@ -575,13 +628,13 @@ function Correction() {
                     wrong: val2.wrong,
                     image: null,
                     type: val2.name,
-                    secname: val2.secname ?? val2.name,
+                    secname: val2.secname !== "" ? val2.secname : val2.name,
                    });
                    return dum;
                   });
                  }
                 });
-               });
+               }
 
                console.log(questions);
                setTexamName("");

@@ -21,7 +21,7 @@ function Login() {
 
  const [examName, setExamName] = useContext(ExamName);
  const [examType, setExamType] = useContext(ExamType);
- const [questions, setQuestions] = useContext(Questions);
+ const [questions, setQuestions] = useState([]);
  const [answers, setAnswers] = useContext(Answers);
  const [mail, setMail] = useContext(UserName);
  const [backdrop, setBackdrop] = useState(false);
@@ -31,8 +31,6 @@ function Login() {
  const [mode, setMode] = useContext(Mode);
  const [switches, setSwitches] = useContext(Switches);
  const [finished, setFinished] = useState(false);
-
- // equestions=questions;
 
  let history = useHistory();
  const useStyles = makeStyles((theme) => ({
@@ -126,6 +124,9 @@ function Login() {
                 time: 0,
                 image: val.image,
                 type: val.type,
+                secname: val.secname,
+                cmarks: val.correct,
+                wmarks: val.wrong,
                });
                return dum;
               });

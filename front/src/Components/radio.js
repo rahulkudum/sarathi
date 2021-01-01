@@ -34,7 +34,6 @@ function Options() {
 
  let nind = Number(ind);
 
- const [questions, setQuestions] = useContext(Questions);
  const [examName, setExamName] = useContext(ExamName);
  const [examType, setExamType] = useContext(ExamType);
 
@@ -187,404 +186,349 @@ function Options() {
 
  useEffect(() => {
   if (submit) {
-   let marks = 0;
-   let positive = 0;
-   let negative = 0;
-   let maths = 0;
-   let physics = 0;
-   let chemistry = 0;
-
    setBackdrop(true);
 
-   let htime = JSON.parse(localStorage.getItem("time3"));
-   console.log(answers[nind - 1], htime.qon, Date.now(), "vb");
-
-   setAnswers((prev) => {
-    let dum = [...prev];
-    dum[nind - 1].time = dum[nind - 1].time + Date.now() - htime.qon;
-    return dum;
-   });
-   if (examType.indexOf("mains") !== -1) {
-    questions.map((val, i) => {
-     if (answers[i].answer) {
-      if (val.answer === answers[i].answer) {
-       if (i < 25) {
-        physics = physics + Number(val.correct);
-       } else if (i < 50) {
-        chemistry = chemistry + Number(val.correct);
-       } else {
-        maths = maths + Number(val.correct);
-       }
-
-       marks = marks + Number(val.correct);
-       positive = positive + Number(val.correct);
-       setAnswers((prev) => {
-        let dum = [...prev];
-        dum[i].status = "correct";
-        dum[i].correct = val.answer;
-        return dum;
-       });
-      } else {
-       if (i < 25) {
-        physics = physics + Number(val.wrong);
-       } else if (i < 50) {
-        chemistry = chemistry + Number(val.wrong);
-       } else {
-        maths = maths + Number(val.wrong);
-       }
-
-       marks = marks + Number(val.wrong);
-       negative = negative + Number(val.wrong);
-       setAnswers((prev) => {
-        let dum = [...prev];
-        dum[i].status = "wrong";
-        dum[i].correct = val.answer;
-        return dum;
-       });
-      }
-     } else {
-      setAnswers((prev) => {
-       let dum = [...prev];
-       dum[i].status = "left";
-       dum[i].correct = val.answer;
-       return dum;
-      });
-     }
-    });
-   } else if (examType.indexOf("neet") !== -1) {
-    questions.map((val, i) => {
-     if (answers[i].answer) {
-      if (val.answer === answers[i].answer) {
-       if (i < 45) {
-        physics = physics + Number(val.correct);
-       } else if (i < 90) {
-        chemistry = chemistry + Number(val.correct);
-       } else {
-        maths = maths + Number(val.correct);
-       }
-
-       marks = marks + Number(val.correct);
-       positive = positive + Number(val.correct);
-       setAnswers((prev) => {
-        let dum = [...prev];
-        dum[i].status = "correct";
-        dum[i].correct = val.answer;
-        return dum;
-       });
-      } else {
-       if (i < 45) {
-        physics = physics + Number(val.wrong);
-       } else if (i < 90) {
-        chemistry = chemistry + Number(val.wrong);
-       } else {
-        maths = maths + Number(val.wrong);
-       }
-
-       marks = marks + Number(val.wrong);
-       negative = negative + Number(val.wrong);
-       setAnswers((prev) => {
-        let dum = [...prev];
-        dum[i].status = "wrong";
-        dum[i].correct = val.answer;
-        return dum;
-       });
-      }
-     } else {
-      setAnswers((prev) => {
-       let dum = [...prev];
-       dum[i].status = "left";
-       dum[i].correct = val.answer;
-       return dum;
-      });
-     }
-    });
-   } else if (examType.indexOf("advanced") !== -1) {
-    questions.map((val, i) => {
-     if (val.type === "multiple" ? answers[i].answer.one || answers[i].answer.two || answers[i].answer.three || answers[i].answer.four : answers[i].answer) {
-      if (JSON.stringify(val.answer) === JSON.stringify(answers[i].answer)) {
-       if (i < questions.length / 3 || examType.indexOf("single") !== -1) {
-        physics = physics + Number(val.correct);
-       } else if (i < 2 * (questions.length / 3)) {
-        chemistry = chemistry + Number(val.correct);
-       } else {
-        maths = maths + Number(val.correct);
-       }
-
-       marks = marks + Number(val.correct);
-       positive = positive + Number(val.correct);
-       setAnswers((prev) => {
-        let dum = [...prev];
-        dum[i].status = "correct";
-        dum[i].correct = val.answer;
-        return dum;
-       });
-      } else {
-       if (i < questions.length / 3 || examType.indexOf("single") !== -1) {
-        physics = physics + Number(val.wrong);
-       } else if (i < 2 * (questions.length / 3)) {
-        chemistry = chemistry + Number(val.wrong);
-       } else {
-        maths = maths + Number(val.wrong);
-       }
-
-       marks = marks + Number(val.wrong);
-       negative = negative + Number(val.wrong);
-       setAnswers((prev) => {
-        let dum = [...prev];
-        dum[i].status = "wrong";
-        dum[i].correct = val.answer;
-        return dum;
-       });
-      }
-     } else {
-      setAnswers((prev) => {
-       let dum = [...prev];
-       dum[i].status = "left";
-       dum[i].correct = val.answer;
-       return dum;
-      });
-     }
-    });
-   }
-
-   setMarks((prev) => {
-    let dum = { ...prev };
-    dum.total = marks;
-    dum.positive = positive;
-    dum.negative = negative;
-    dum.physics = physics;
-    dum.chemistry = chemistry;
-    dum.maths = maths;
-    return dum;
-   });
-
    axios
-    .post("/user/find", { mail: mail })
+    .post("/exam/find", { examname: examName, examtype: examType })
     .then((res) => {
-     let exsists = false;
-     console.log(res, mail);
+     let marks = 0;
+     let positive = 0;
+     let negative = 0;
+     let maths = 0;
+     let physics = 0;
+     let chemistry = 0;
 
-     for (let i = 0; i < res.data.exams.length; i++) {
-      if (res.data.exams[i].examname === examName && res.data.exams[i].examtype === examType) exsists = true;
-     }
+     let htime = JSON.parse(localStorage.getItem("time3"));
+     let dums = [...answers];
+     dums[nind - 1].time = dums[nind - 1].time + Date.now() - htime.qon;
+     let questions = [...res.data.questions];
 
-     if (exsists) {
-      setBackdrop(false);
-      alert("sorry you have already submitted answers for this exam");
-      history.push(`/writexam/${examName}_${examType}/result/1`);
-     } else {
-      let exams = res.data.exams;
+     if (examType.indexOf("neet") === -1) {
+      questions.map((val, i) => {
+       if (val.type === "multiple" ? answers[i].answer.one || answers[i].answer.two || answers[i].answer.three || answers[i].answer.four : answers[i].answer) {
+        if (JSON.stringify(val.answer) === JSON.stringify(answers[i].answer)) {
+         if (examType.indexOf("single") === -1) {
+          if (i < questions.length / 3) {
+           physics = physics + Number(val.correct);
+          } else if (i < 2 * (questions.length / 3)) {
+           chemistry = chemistry + Number(val.correct);
+          } else {
+           maths = maths + Number(val.correct);
+          }
+         }
 
-      exams.push({
-       examname: examName,
-       examtype: examType,
-       answers: answers,
-       marks: { total: marks, positive: positive, negative: negative, physics: physics, chemistry: chemistry, maths: maths },
-       time: { totaltime: msToTime(time2 - time), actualtime: msToTime(time3.time + Date.now() - time3.on), physics: 0, chemistry: 0, maths: 0 },
-       switches: switches,
+         marks = marks + Number(val.correct);
+         positive = positive + Number(val.correct);
+
+         dums[i].status = "correct";
+         dums[i].correct = val.answer;
+        } else {
+         if (examType.indexOf("single") === -1) {
+          if (i < questions.length / 3) {
+           physics = physics + Number(val.wrong);
+          } else if (i < 2 * (questions.length / 3)) {
+           chemistry = chemistry + Number(val.wrong);
+          } else {
+           maths = maths + Number(val.wrong);
+          }
+         }
+
+         marks = marks + Number(val.wrong);
+         negative = negative + Number(val.wrong);
+
+         dums[i].status = "wrong";
+         dums[i].correct = val.answer;
+        }
+       } else {
+        dums[i].status = "left";
+        dums[i].correct = val.answer;
+       }
       });
+     } else {
+      questions.map((val, i) => {
+       if (answers[i].answer) {
+        if (JSON.stringify(val.answer) === JSON.stringify(answers[i].answer)) {
+         if (examType.indexOf("single") === -1) {
+          if (i < 45) {
+           physics = physics + Number(val.correct);
+          } else if (i < 90) {
+           chemistry = chemistry + Number(val.correct);
+          } else {
+           maths = maths + Number(val.correct);
+          }
+         }
 
-      let ptime = res.data.time;
-      ptime.push({ examname: examName, examtype: examType, stime: new Date().toLocaleTimeString("en-US"), dur: msToTime(time2 - time) });
+         marks = marks + Number(val.correct);
+         positive = positive + Number(val.correct);
 
-      axios
-       .post("/user/updat", { mail: mail, exams: exams, time: ptime })
-       .then((res) => {
-        console.log(res);
+         dums[i].status = "correct";
+         dums[i].correct = val.answer;
+        } else {
+         if (examType.indexOf("single") === -1) {
+          if (i < 45) {
+           physics = physics + Number(val.wrong);
+          } else if (i < 90) {
+           chemistry = chemistry + Number(val.wrong);
+          } else {
+           maths = maths + Number(val.wrong);
+          }
+         }
 
-        setTime3((prev) => {
-         let dum = { ...prev };
-         dum.physics = 0;
-         dum.chemistry = 0;
-         dum.maths = 0;
-         dum.time = msToTime(dum.time + Date.now() - dum.on);
-         return dum;
-        });
-        setAnswers((prev) => {
-         let dum = [...prev];
-         dum[nind - 1].time = dum[nind - 1].time - (Date.now() - htime.qon) / 2;
-         return dum;
-        });
+         marks = marks + Number(val.wrong);
+         negative = negative + Number(val.wrong);
 
-        setBackdrop(false);
-
-        alert("Your answers got sucessfully submitted");
-        history.push(`/writexam/${examName}_${examType}/result/1`);
-       })
-       .catch((err) => {
-        console.log(err.message);
-        setErrText(err.message);
-        setDialog2(1);
-       });
+         dums[i].status = "wrong";
+         dums[i].correct = val.answer;
+        }
+       } else {
+        dums[i].status = "left";
+        dums[i].correct = val.answer;
+       }
+      });
      }
+
+     axios
+      .post("/user/find", { mail: mail })
+      .then((res) => {
+       let exsists = false;
+       console.log(res, mail);
+
+       for (let i = 0; i < res.data.exams.length; i++) {
+        if (res.data.exams[i].examname === examName && res.data.exams[i].examtype === examType) exsists = true;
+       }
+
+       if (exsists) {
+        setBackdrop(false);
+        alert("sorry you have already submitted answers for this exam");
+        history.push(`/writexam/${examName}_${examType}/result/1`);
+       } else {
+        let exams = res.data.exams;
+
+        exams.push({
+         examname: examName,
+         examtype: examType,
+         answers: dums,
+         marks: { total: marks, positive: positive, negative: negative, physics: physics, chemistry: chemistry, maths: maths },
+         time: { totaltime: msToTime(time2 - time), actualtime: msToTime(time3.time + Date.now() - time3.on), physics: 0, chemistry: 0, maths: 0 },
+         switches: switches,
+        });
+
+        let ptime = res.data.time;
+        ptime.push({ examname: examName, examtype: examType, stime: new Date().toLocaleTimeString("en-US"), dur: msToTime(time2 - time) });
+
+        axios
+         .post("/user/updat", { mail: mail, exams: exams, time: ptime })
+         .then((res) => {
+          setAnswers(dums);
+          console.log(res);
+
+          setTime3((prev) => {
+           let dum = { ...prev };
+           dum.physics = 0;
+           dum.chemistry = 0;
+           dum.maths = 0;
+           dum.time = msToTime(dum.time + Date.now() - dum.on);
+           return dum;
+          });
+
+          setMarks((prev) => {
+           let dum = { ...prev };
+           dum.total = marks;
+           dum.positive = positive;
+           dum.negative = negative;
+           dum.physics = physics;
+           dum.chemistry = chemistry;
+           dum.maths = maths;
+           return dum;
+          });
+          setAnswers((prev) => {
+           let dum = [...prev];
+           dum[nind - 1].time = dum[nind - 1].time - (Date.now() - htime.qon) / 2;
+           return dum;
+          });
+
+          setBackdrop(false);
+
+          alert("Your answers got sucessfully submitted");
+          history.push(`/writexam/${examName}_${examType}/result/1`);
+         })
+         .catch((err) => {
+          console.log(err.message);
+          setErrText(err.message);
+          setDialog2(1);
+         });
+       }
+      })
+      .catch((err) => {
+       console.log(err.message);
+       setErrText(err.message);
+       setDialog2(1);
+      });
     })
     .catch((err) => {
      console.log(err.message);
-     let htime = JSON.parse(localStorage.getItem("time3"));
-     console.log(answers[nind - 1], htime.qon, Date.now(), "vb");
-
-     setAnswers((prev) => {
-      let dum = [...prev];
-      dum[nind - 1].time = dum[nind - 1].time - (Date.now() - htime.qon) / 2;
-      return dum;
-     });
-
-     if (examType.indexOf("mains") !== -1) {
-      questions.map((val, i) => {
-       if (answers[i].answer) {
-        if (val.answer === answers[i].answer) {
-         if (i < 25) {
-          physics = physics - Number(val.correct);
-         } else if (i < 50) {
-          chemistry = chemistry - Number(val.correct);
-         } else {
-          maths = maths - Number(val.correct);
-         }
-
-         marks = marks - Number(val.correct);
-         positive = positive - Number(val.correct);
-         setAnswers((prev) => {
-          let dum = [...prev];
-          dum[i].status = "correct";
-          dum[i].correct = val.answer;
-          return dum;
-         });
-        } else {
-         if (i < 25) {
-          physics = physics - Number(val.wrong);
-         } else if (i < 50) {
-          chemistry = chemistry - Number(val.wrong);
-         } else {
-          maths = maths - Number(val.wrong);
-         }
-
-         marks = marks - Number(val.wrong);
-         negative = negative - Number(val.wrong);
-         setAnswers((prev) => {
-          let dum = [...prev];
-          dum[i].status = "wrong";
-          dum[i].correct = val.answer;
-          return dum;
-         });
-        }
-       } else {
-        setAnswers((prev) => {
-         let dum = [...prev];
-         dum[i].status = "left";
-         dum[i].correct = val.answer;
-         return dum;
-        });
-       }
-      });
-     } else if (examType.indexOf("neet") !== -1) {
-      questions.map((val, i) => {
-       if (answers[i].answer) {
-        if (val.answer === answers[i].answer) {
-         if (i < 45) {
-          physics = physics - Number(val.correct);
-         } else if (i < 90) {
-          chemistry = chemistry - Number(val.correct);
-         } else {
-          maths = maths - Number(val.correct);
-         }
-
-         marks = marks - Number(val.correct);
-         positive = positive - Number(val.correct);
-         setAnswers((prev) => {
-          let dum = [...prev];
-          dum[i].status = "correct";
-          dum[i].correct = val.answer;
-          return dum;
-         });
-        } else {
-         if (i < 45) {
-          physics = physics - Number(val.wrong);
-         } else if (i < 90) {
-          chemistry = chemistry - Number(val.wrong);
-         } else {
-          maths = maths - Number(val.wrong);
-         }
-
-         marks = marks - Number(val.wrong);
-         negative = negative - Number(val.wrong);
-         setAnswers((prev) => {
-          let dum = [...prev];
-          dum[i].status = "wrong";
-          dum[i].correct = val.answer;
-          return dum;
-         });
-        }
-       } else {
-        setAnswers((prev) => {
-         let dum = [...prev];
-         dum[i].status = "left";
-         dum[i].correct = val.answer;
-         return dum;
-        });
-       }
-      });
-     } else if (examType.indexOf("advanced") !== -1) {
-      questions.map((val, i) => {
-       if (answers[i].answer) {
-        if (val.answer === answers[i].answer) {
-         if (i < questions.length / 3 || examType.indexOf("single") !== -1) {
-          physics = physics - Number(val.correct);
-         } else if (i < 2 * (questions.length / 3)) {
-          chemistry = chemistry - Number(val.correct);
-         } else {
-          maths = maths - Number(val.correct);
-         }
-
-         marks = marks - Number(val.correct);
-         positive = positive - Number(val.correct);
-         setAnswers((prev) => {
-          let dum = [...prev];
-          dum[i].status = "correct";
-          dum[i].correct = val.answer;
-          return dum;
-         });
-        } else {
-         if (i < questions.length / 3 || examType.indexOf("single") !== -1) {
-          physics = physics - Number(val.wrong);
-         } else if (i < 2 * (questions.length / 3)) {
-          chemistry = chemistry - Number(val.wrong);
-         } else {
-          maths = maths - Number(val.wrong);
-         }
-
-         marks = marks - Number(val.wrong);
-         negative = negative - Number(val.wrong);
-         setAnswers((prev) => {
-          let dum = [...prev];
-          dum[i].status = "wrong";
-          dum[i].correct = val.answer;
-          return dum;
-         });
-        }
-       } else {
-        setAnswers((prev) => {
-         let dum = [...prev];
-         dum[i].status = "left";
-         dum[i].correct = val.answer;
-         return dum;
-        });
-       }
-      });
-     }
-
-     setMarks((prev) => {
-      let dum = { ...prev };
-      dum.total = marks;
-      dum.positive = positive;
-      dum.negative = negative;
-      dum.physics = physics;
-      dum.chemistry = chemistry;
-      dum.maths = maths;
-      return dum;
-     });
      setErrText(err.message);
      setDialog2(1);
     });
+
+   //  setAnswers((prev) => {
+   //   let dum = [...prev];
+   //   dum[nind - 1].time = dum[nind - 1].time + Date.now() - htime.qon;
+   //   return dum;
+   //  });
+   //  if (examType.indexOf("mains") !== -1) {
+   //   questions.map((val, i) => {
+   //    if (answers[i].answer) {
+   //     if (val.answer === answers[i].answer) {
+   //      if (i < 25) {
+   //       physics = physics + Number(val.correct);
+   //      } else if (i < 50) {
+   //       chemistry = chemistry + Number(val.correct);
+   //      } else {
+   //       maths = maths + Number(val.correct);
+   //      }
+
+   //      marks = marks + Number(val.correct);
+   //      positive = positive + Number(val.correct);
+   //      setAnswers((prev) => {
+   //       let dum = [...prev];
+   //       dum[i].status = "correct";
+   //       dum[i].correct = val.answer;
+   //       return dum;
+   //      });
+   //     } else {
+   //      if (i < 25) {
+   //       physics = physics + Number(val.wrong);
+   //      } else if (i < 50) {
+   //       chemistry = chemistry + Number(val.wrong);
+   //      } else {
+   //       maths = maths + Number(val.wrong);
+   //      }
+
+   //      marks = marks + Number(val.wrong);
+   //      negative = negative + Number(val.wrong);
+   //      setAnswers((prev) => {
+   //       let dum = [...prev];
+   //       dum[i].status = "wrong";
+   //       dum[i].correct = val.answer;
+   //       return dum;
+   //      });
+   //     }
+   //    } else {
+   //     setAnswers((prev) => {
+   //      let dum = [...prev];
+   //      dum[i].status = "left";
+   //      dum[i].correct = val.answer;
+   //      return dum;
+   //     });
+   //    }
+   //   });
+   //  } else if (examType.indexOf("neet") !== -1) {
+   //   questions.map((val, i) => {
+   //    if (answers[i].answer) {
+   //     if (val.answer === answers[i].answer) {
+   //      if (i < 45) {
+   //       physics = physics + Number(val.correct);
+   //      } else if (i < 90) {
+   //       chemistry = chemistry + Number(val.correct);
+   //      } else {
+   //       maths = maths + Number(val.correct);
+   //      }
+
+   //      marks = marks + Number(val.correct);
+   //      positive = positive + Number(val.correct);
+   //      setAnswers((prev) => {
+   //       let dum = [...prev];
+   //       dum[i].status = "correct";
+   //       dum[i].correct = val.answer;
+   //       return dum;
+   //      });
+   //     } else {
+   //      if (i < 45) {
+   //       physics = physics + Number(val.wrong);
+   //      } else if (i < 90) {
+   //       chemistry = chemistry + Number(val.wrong);
+   //      } else {
+   //       maths = maths + Number(val.wrong);
+   //      }
+
+   //      marks = marks + Number(val.wrong);
+   //      negative = negative + Number(val.wrong);
+   //      setAnswers((prev) => {
+   //       let dum = [...prev];
+   //       dum[i].status = "wrong";
+   //       dum[i].correct = val.answer;
+   //       return dum;
+   //      });
+   //     }
+   //    } else {
+   //     setAnswers((prev) => {
+   //      let dum = [...prev];
+   //      dum[i].status = "left";
+   //      dum[i].correct = val.answer;
+   //      return dum;
+   //     });
+   //    }
+   //   });
+   //  } else if (examType.indexOf("advanced") !== -1) {
+   //   questions.map((val, i) => {
+   //    if (val.type === "multiple" ? answers[i].answer.one || answers[i].answer.two || answers[i].answer.three || answers[i].answer.four : answers[i].answer) {
+   //     if (JSON.stringify(val.answer) === JSON.stringify(answers[i].answer)) {
+   //      if (i < questions.length / 3 ) {
+   //       physics = physics + Number(val.correct);
+   //      } else if (i < 2 * (questions.length / 3)) {
+   //       chemistry = chemistry + Number(val.correct);
+   //      } else {
+   //       maths = maths + Number(val.correct);
+   //      }
+
+   //      marks = marks + Number(val.correct);
+   //      positive = positive + Number(val.correct);
+   //      setAnswers((prev) => {
+   //       let dum = [...prev];
+   //       dum[i].status = "correct";
+   //       dum[i].correct = val.answer;
+   //       return dum;
+   //      });
+   //     } else {
+   //      if (i < questions.length / 3 ) {
+   //       physics = physics + Number(val.wrong);
+   //      } else if (i < 2 * (questions.length / 3)) {
+   //       chemistry = chemistry + Number(val.wrong);
+   //      } else {
+   //       maths = maths + Number(val.wrong);
+   //      }
+
+   //      marks = marks + Number(val.wrong);
+   //      negative = negative + Number(val.wrong);
+   //      setAnswers((prev) => {
+   //       let dum = [...prev];
+   //       dum[i].status = "wrong";
+   //       dum[i].correct = val.answer;
+   //       return dum;
+   //      });
+   //     }
+   //    } else {
+   //     setAnswers((prev) => {
+   //      let dum = [...prev];
+   //      dum[i].status = "left";
+   //      dum[i].correct = val.answer;
+   //      return dum;
+   //     });
+   //    }
+   //   });
+   //  }
+
+   //  setMarks((prev) => {
+   //   let dum = { ...prev };
+   //   dum.total = marks;
+   //   dum.positive = positive;
+   //   dum.negative = negative;
+   //   dum.physics = physics;
+   //   dum.chemistry = chemistry;
+   //   dum.maths = maths;
+   //   return dum;
+   //  });
   }
  }, [submit]);
 
@@ -923,6 +867,64 @@ function Options() {
 
       <p style={{ display: "inline-block" }}>Answered & Marked for Review </p>
      </div>
+     {examType.indexOf("advanced") !== -1 ? (
+      <div
+       style={{
+        width: "100%",
+        height: "200px",
+
+        overflowX: "scroll",
+        overflowY: "scroll",
+        whiteSpace: "nowrap",
+        border: "1px solid black",
+
+        marginTop: "10px",
+        marginBottom: "10px",
+        lineHeight: "0.1",
+       }}
+      >
+       <p style={{ display: "inline-block", width: "200px", margin: "10px", fontWeight: "bold" }}>Section Name</p>
+       <p style={{ display: "inline-block", width: "100px", textAlign: "center", fontWeight: "bold" }}>Starts At</p>
+       <p style={{ display: "inline-block", width: "100px", textAlign: "center", fontWeight: "bold" }}>Marks</p>
+       <br />
+
+       {answers.map((val, i) => {
+        if (i === 0) {
+         return (
+          <>
+           {examType.indexOf("single") === -1 ? <p style={{ fontWeight: "bold", margin: "5px" }}>Physics: </p> : ""}
+           <p style={{ display: "inline-block", width: "200px", margin: "10px" }}>{val.secname}</p>
+           <p style={{ display: "inline-block", width: "100px", textAlign: "center" }}>{i + 1}</p>
+           <p style={{ display: "inline-block", width: "100px", textAlign: "center" }}>
+            {val.cmarks}, {val.wmarks}
+           </p>
+          </>
+         );
+        } else {
+         if (
+          answers[i - 1].secname !== val.secname ||
+          answers[i - 1].cmarks !== val.cmarks ||
+          answers[i - 1].wmarks !== val.wmarks ||
+          answers[i - 1].type !== val.type
+         ) {
+          return (
+           <>
+            <p style={{ fontWeight: "bold", margin: "5px" }}>{i === answers.length / 3 ? (examType.indexOf("single") === -1 ? "Chemistry: " : null) : null}</p>
+            <p style={{ fontWeight: "bold", margin: "5px" }}>
+             {i === (2 * answers.length) / 3 ? (examType.indexOf("single") === -1 ? "Maths: " : null) : null}
+            </p>
+            <p style={{ display: "inline-block", width: "200px", margin: "10px" }}>{val.secname}</p>
+            <p style={{ display: "inline-block", width: "100px", textAlign: "center" }}>{i + 1}</p>
+            <p style={{ display: "inline-block", width: "100px", textAlign: "center" }}>
+             {val.cmarks}, {val.wmarks}
+            </p>
+           </>
+          );
+         }
+        }
+       })}
+      </div>
+     ) : null}
      <br />
      <div
       style={{
@@ -933,7 +935,7 @@ function Options() {
        margin: "auto",
       }}
      >
-      {questions.map((tile, i) => {
+      {answers.map((tile, i) => {
        if (examType.indexOf("advanced") !== -1 && answers[i].type === "multiple") {
         if ((answers[i].answer.one || answers[i].answer.two || answers[i].answer.three || answers[i].answer.four) && answers[i].review) bcolor = "#52057b";
         else if ((answers[i].answer.one || answers[i].answer.two || answers[i].answer.three || answers[i].answer.four) && answers[i].answer) bcolor = "#43d001";

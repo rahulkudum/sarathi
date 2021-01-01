@@ -8,10 +8,11 @@ import {
  FormControl,
  FormLabel,
  Radio,
- GridList,
- GridListTile,
+ Switch,
  Grid,
  Checkbox,
+ Box,
+ Typography,
 } from "@material-ui/core";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
@@ -19,6 +20,7 @@ import { Route, useHistory, useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { ExamName, ExamType, Modify, Questions } from "./storage";
 import ScrollToTop from "./scroll";
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
  root1: {
@@ -42,9 +44,11 @@ function Question() {
  const [examName, setExamName] = useContext(ExamName);
  const [examType, setExamType] = useContext(ExamType);
  const [modify, setModify] = useContext(Modify);
+ const [check, setCheck] = useState(true);
 
  const classes = useStyles();
  const [questionType, setQuestionType] = useState("single");
+ const [progress, setProgress] = useState({ phy: 0, che: 0, mat: 0, single: true });
 
  useEffect(() => {
   setImageloading(true);
@@ -105,38 +109,77 @@ function Question() {
          let img = e.target.files[0];
          let found = false;
 
+         setProgress((prev) => {
+          let dum = { ...prev };
+          dum.single = false;
+          return dum;
+         });
          if (img) {
-          setQuestions((prev) => {
-           let dum = [...prev];
-           dum[nind - 1].image = img.lastModified;
-           return dum;
-          });
-          axios.get("/files").then((res) => {
-           res.data.map((val, i) => {
-            if (Number(val.filename) === img.lastModified) {
-             console.log("found image", img.lastModified);
-             found = true;
+          if (check) {
+           axios.get("/files").then((res) => {
+            for (let val = 0; val < res.data.length; val++) {
+             if (Number(res.data[val].filename) === img.lastModified) {
+              console.log("found image", img.lastModified);
+              found = true;
+              setQuestions((prev) => {
+               let dum = [...prev];
+               dum[nind - 1].image = img.lastModified;
+               return dum;
+              });
+              setProgress((prev) => {
+               let dum = { ...prev };
+               dum.single = true;
+               return dum;
+              });
+              break;
+             }
+            }
+
+            if (!found) {
+             console.log("uploading new image", img.lastModified);
+             const formData = new FormData();
+
+             formData.append("file", img, img.lastModified);
+
+             axios.post("/upload", formData).then((res) => {
+              setQuestions((prev) => {
+               let dum = [...prev];
+               dum[nind - 1].image = img.lastModified;
+               return dum;
+              });
+              setProgress((prev) => {
+               let dum = { ...prev };
+               dum.single = true;
+               return dum;
+              });
+             });
             }
            });
+          } else {
+           const formData = new FormData();
 
-           if (!found) {
-            console.log("uploading new image", img.lastModified);
-            const formData = new FormData();
+           formData.append("file", img, img.lastModified);
 
-            formData.append("file", img, img.lastModified);
-
-            axios.post("/upload", formData).then((res) => {
-             console.log(res);
+           axios.post("/upload", formData).then((res) => {
+            setQuestions((prev) => {
+             let dum = [...prev];
+             dum[nind - 1].image = img.lastModified;
+             return dum;
             });
-           }
-          });
+            setProgress((prev) => {
+             let dum = { ...prev };
+             dum.single = true;
+             return dum;
+            });
+           });
+          }
          }
         }}
        />
       </div>
       <br />
       <br />
-
+      {progress.single ? null : <p style={{ textAlign: "center" }}>Image is uploading...</p>}
       {!questions[nind - 1].image ? null : (
        <div>
         <div
@@ -169,32 +212,54 @@ function Question() {
         </div>
 
         <br />
+        <FormControlLabel
+         control={
+          <Switch
+           checked={questions[nind - 1].correct === questions[nind - 1].wrong}
+           onChange={(e) => {
+            setQuestions((prev) => {
+             let dum = [...prev];
+             if (questions[nind - 1].correct === questions[nind - 1].wrong) {
+              dum[nind - 1].wrong = dum[nind - 1].dwrong;
+             } else {
+              dum[nind - 1].dwrong = dum[nind - 1].wrong;
+              dum[nind - 1].wrong = dum[nind - 1].correct;
+             }
+
+             return dum;
+            });
+           }}
+           name="checkedB"
+           color="primary"
+          />
+         }
+         label="Bonus"
+        />
         <div style={{ textAlign: "center" }}>
          {questionType === "single" ? (
-          <FormControl component="fieldset">
-           <FormLabel component="legend">Correct Option</FormLabel>
-           <RadioGroup
-            row
-            aria-label="options"
-            name="options"
-            value={questions[nind - 1].answer}
-            onChange={(e) => {
-             setQuestions((prev) => {
-              let dum = [...prev];
-              dum[nind - 1].answer = e.target.value;
-              dum[nind - 1].correct = 4;
-              dum[nind - 1].wrong = -1;
-
-              return dum;
-             });
-            }}
-           >
-            <FormControlLabel value="1" control={<Radio />} label="1)" />
-            <FormControlLabel value="2" control={<Radio />} label="2)" />
-            <FormControlLabel value="3" control={<Radio />} label="3)" />
-            <FormControlLabel value="4" control={<Radio />} label="4)" />
-           </RadioGroup>
-          </FormControl>
+          <>
+           <FormControl component="fieldset">
+            <FormLabel component="legend">Correct Option</FormLabel>
+            <RadioGroup
+             row
+             aria-label="options"
+             name="options"
+             value={questions[nind - 1].answer}
+             onChange={(e) => {
+              setQuestions((prev) => {
+               let dum = [...prev];
+               dum[nind - 1].answer = e.target.value;
+               return dum;
+              });
+             }}
+            >
+             <FormControlLabel value="1" control={<Radio />} label="1)" />
+             <FormControlLabel value="2" control={<Radio />} label="2)" />
+             <FormControlLabel value="3" control={<Radio />} label="3)" />
+             <FormControlLabel value="4" control={<Radio />} label="4)" />
+            </RadioGroup>
+           </FormControl>
+          </>
          ) : (
           <div>
            {questionType === "multiple" ? (
@@ -271,22 +336,11 @@ function Question() {
               label="Answer"
               value={questions[nind - 1].answer}
               onChange={(e) => {
-               if (examType.indexOf("mains") !== -1) {
-                setQuestions((prev) => {
-                 let dum = [...prev];
-                 dum[nind - 1].answer = e.target.value;
-                 dum[nind - 1].correct = 4;
-                 dum[nind - 1].wrong = 0;
-                 return dum;
-                });
-               } else if (examType.indexOf("advanced") !== -1) {
-                setQuestions((prev) => {
-                 let dum = [...prev];
-                 dum[nind - 1].answer = e.target.value;
-
-                 return dum;
-                });
-               }
+               setQuestions((prev) => {
+                let dum = [...prev];
+                dum[nind - 1].answer = e.target.value;
+                return dum;
+               });
               }}
              />
              <p>round-off the value to TWO decimal places; e.g. 23 as 23, 5.2 as 5.2, 5.48913 as 5.49</p>
@@ -327,9 +381,22 @@ function Question() {
 
     <Grid item xl={4} lg={4} md={12} sm={12} xs={12} style={{ marginTop: "auto", marginBottom: "auto" }}>
      <div style={{ width: "100%", height: "700px", overflowY: "scroll", margin: "auto" }}>
-      {examType.indexOf("mains") !== -1 ? (
+      <FormControlLabel
+       control={
+        <Switch
+         checked={check}
+         onChange={(e) => {
+          setCheck(e.target.checked);
+         }}
+         name="checkedB"
+         color="primary"
+        />
+       }
+       label="Reuse Images"
+      />
+      {examType.indexOf("neet") === -1 ? (
        <div>
-        <label>{examType.indexOf("single") === -1 ? "Physics 25 Ques: " : "All 25 Ques: "}</label>
+        <label>{examType.indexOf("single") === -1 ? `Physics ${questions.length / 3} Ques: ` : `All ${questions.length} Ques: `}</label>
         <input
          type="file"
          name="file"
@@ -338,140 +405,86 @@ function Question() {
          onChange={(e) => {
           let img = e.target.files;
 
-          if (img.length === 25) {
-           for (let key = 0; key < img.length; key++) {
-            console.log(key, img[key], img);
-            let formData = new FormData();
+          if (examType.indexOf("single") === -1 ? img.length === questions.length / 3 : img.length === questions.length) {
+           let prog = 0;
+           setProgress((prev) => {
+            let dum = { ...prev };
+            dum.phy = 100;
+            return dum;
+           });
+           console.log(progress, check, prog);
+           if (check) {
+            axios.get("/files").then((res) => {
+             for (let key = 0; key < img.length; key++) {
+              let found = false;
 
-            formData.append("file", img[key], key);
+              for (let val = 0; val < res.data.length; val++) {
+               if (Number(res.data[val].filename) === img[key].lastModified) {
+                console.log("found image", img[key].lastModified);
+                found = true;
+                setQuestions((prev) => {
+                 let dum = [...prev];
+                 dum[key].image = img[key].lastModified;
+                 return dum;
+                });
+                prog = prog + 1;
+                setProgress((prev) => {
+                 let dum = { ...prev };
+                 dum.phy = prog;
+                 return dum;
+                });
+                break;
+               }
+              }
+              if (!found) {
+               let formData = new FormData();
 
-            setBackdrop(true);
-            axios.post("/upload", formData).then((res) => {
-             console.log(res.data.filename);
-             setQuestions((prev) => {
-              let dum = [...prev];
-              dum[key].image = res.data.file.filename;
-              return dum;
-             });
-             setBackdrop(false);
+               formData.append("file", img[key], img[key].lastModified);
+
+               axios.post("/upload", formData).then((res) => {
+                setQuestions((prev) => {
+                 let dum = [...prev];
+                 dum[key].image = img[key].lastModified;
+                 return dum;
+                });
+                prog = prog + 1;
+                setProgress((prev) => {
+                 let dum = { ...prev };
+                 dum.phy = prog;
+                 return dum;
+                });
+               });
+              }
+             }
             });
+           } else {
+            for (let key = 0; key < img.length; key++) {
+             let formData = new FormData();
+
+             formData.append("file", img[key], img[key].lastModified);
+
+             axios.post("/upload", formData).then((res) => {
+              setQuestions((prev) => {
+               let dum = [...prev];
+               dum[key].image = img[key].lastModified;
+               return dum;
+              });
+              prog = prog + 1;
+              setProgress((prev) => {
+               let dum = { ...prev };
+               dum.phy = prog;
+               return dum;
+              });
+             });
+            }
            }
           } else {
-           alert("please select exactly 25 images");
+           alert(`please select exactly ${examType.indexOf("single") === -1 ? questions.length / 3 : questions.length} images`);
           }
          }}
         />
+        <p style={{ display: "inline-block" }}>{progress.phy === 100 ? "uploading..." : `uploads: ${progress.phy}`} </p>
 
-        <br />
-        <br />
-        {examType.indexOf("single") === -1 ? (
-         <div>
-          <label>Chemistry 25 Ques: </label>
-          <input
-           type="file"
-           name="file"
-           id="file"
-           multiple
-           onChange={(e) => {
-            let img = e.target.files;
-
-            if (img.length === 25) {
-             for (let key = 0; key < img.length; key++) {
-              console.log(key, img[key], img);
-              let formData = new FormData();
-
-              formData.append("file", img[key], key);
-
-              setBackdrop(true);
-              axios.post("/upload", formData).then((res) => {
-               console.log(res.data.filename);
-               setQuestions((prev) => {
-                let dum = [...prev];
-                dum[25 + key].image = res.data.file.filename;
-                return dum;
-               });
-               setBackdrop(false);
-              });
-             }
-            } else {
-             alert("please select exactly 25 images");
-            }
-           }}
-          />
-
-          <br />
-          <br />
-          <label>Maths 25 Ques: </label>
-          <input
-           type="file"
-           name="file"
-           id="file"
-           multiple
-           onChange={(e) => {
-            let img = e.target.files;
-
-            if (img.length === 25) {
-             for (let key = 0; key < img.length; key++) {
-              console.log(key, img[key], img);
-              let formData = new FormData();
-
-              formData.append("file", img[key], key);
-
-              setBackdrop(true);
-              axios.post("/upload", formData).then((res) => {
-               console.log(res.data.filename);
-               setQuestions((prev) => {
-                let dum = [...prev];
-                dum[50 + key].image = res.data.file.filename;
-                return dum;
-               });
-               setBackdrop(false);
-              });
-             }
-            } else {
-             alert("please select exactly 25 images");
-            }
-           }}
-          />
-         </div>
-        ) : null}
-       </div>
-      ) : examType.indexOf("advanced") !== -1 ? (
-       <div>
-        <label>{examType.indexOf("single") === -1 ? `Physics ${questions.length / 3} Ques: ` : `All ${questions.length / 3} Ques: `}</label>
-        <input
-         type="file"
-         name="file"
-         id="file"
-         multiple
-         onChange={(e) => {
-          let img = e.target.files;
-
-          if (img.length === questions.length / 3) {
-           for (let key = 0; key < img.length; key++) {
-            console.log(key, img[key], img);
-            let formData = new FormData();
-
-            formData.append("file", img[key], key);
-
-            setBackdrop(true);
-            axios.post("/upload", formData).then((res) => {
-             console.log(res.data.filename);
-             setQuestions((prev) => {
-              let dum = [...prev];
-              dum[key].image = res.data.file.filename;
-              return dum;
-             });
-             setBackdrop(false);
-            });
-           }
-          } else {
-           alert(`please select exactly ${questions.length / 3} images`);
-          }
-         }}
-        />
-
-        <br />
         <br />
         {examType.indexOf("single") === -1 ? (
          <div>
@@ -485,30 +498,85 @@ function Question() {
             let img = e.target.files;
 
             if (img.length === questions.length / 3) {
-             for (let key = 0; key < img.length; key++) {
-              console.log(key, img[key], img);
-              let formData = new FormData();
+             let prog = 0;
+             setProgress((prev) => {
+              let dum = { ...prev };
+              dum.che = 100;
+              return dum;
+             });
+             console.log(progress, check, prog);
+             if (check) {
+              axios.get("/files").then((res) => {
+               for (let key = 0; key < img.length; key++) {
+                let found = false;
 
-              formData.append("file", img[key], key);
+                for (let val = 0; val < res.data.length; val++) {
+                 if (Number(res.data[val].filename) === img[key].lastModified) {
+                  console.log("found image", img[key].lastModified);
+                  found = true;
+                  setQuestions((prev) => {
+                   let dum = [...prev];
+                   dum[questions.length / 3 + key].image = img[key].lastModified;
+                   return dum;
+                  });
+                  prog = prog + 1;
+                  setProgress((prev) => {
+                   let dum = { ...prev };
+                   dum.che = prog;
+                   return dum;
+                  });
+                  break;
+                 }
+                }
+                if (!found) {
+                 let formData = new FormData();
 
-              setBackdrop(true);
-              axios.post("/upload", formData).then((res) => {
-               console.log(res.data.filename);
-               setQuestions((prev) => {
-                let dum = [...prev];
-                dum[questions.length / 3 + key].image = res.data.file.filename;
-                return dum;
-               });
-               setBackdrop(false);
+                 formData.append("file", img[key], img[key].lastModified);
+
+                 axios.post("/upload", formData).then((res) => {
+                  setQuestions((prev) => {
+                   let dum = [...prev];
+                   dum[questions.length / 3 + key].image = img[key].lastModified;
+                   return dum;
+                  });
+                  prog = prog + 1;
+                  setProgress((prev) => {
+                   let dum = { ...prev };
+                   dum.che = prog;
+                   return dum;
+                  });
+                 });
+                }
+               }
               });
+             } else {
+              for (let key = 0; key < img.length; key++) {
+               let formData = new FormData();
+
+               formData.append("file", img[key], img[key].lastModified);
+
+               axios.post("/upload", formData).then((res) => {
+                setQuestions((prev) => {
+                 let dum = [...prev];
+                 dum[questions.length / 3 + key].image = img[key].lastModified;
+                 return dum;
+                });
+                prog = prog + 1;
+                setProgress((prev) => {
+                 let dum = { ...prev };
+                 dum.che = prog;
+                 return dum;
+                });
+               });
+              }
              }
             } else {
              alert(`please select exactly ${questions.length / 3} images`);
             }
            }}
           />
+          <p style={{ display: "inline-block" }}>{progress.che === 100 ? "uploading..." : `uploads: ${progress.che}`} </p>
 
-          <br />
           <br />
           <label>Maths {questions.length / 3} Ques: </label>
           <input
@@ -520,28 +588,84 @@ function Question() {
             let img = e.target.files;
 
             if (img.length === questions.length / 3) {
-             for (let key = 0; key < img.length; key++) {
-              console.log(key, img[key], img);
-              let formData = new FormData();
+             let prog = 0;
+             setProgress((prev) => {
+              let dum = { ...prev };
+              dum.mat = 100;
+              return dum;
+             });
+             console.log(progress, check, prog);
+             if (check) {
+              axios.get("/files").then((res) => {
+               for (let key = 0; key < img.length; key++) {
+                let found = false;
 
-              formData.append("file", img[key], key);
+                for (let val = 0; val < res.data.length; val++) {
+                 if (Number(res.data[val].filename) === img[key].lastModified) {
+                  console.log("found image", img[key].lastModified);
+                  found = true;
+                  setQuestions((prev) => {
+                   let dum = [...prev];
+                   dum[2 * (questions.length / 3) + key].image = img[key].lastModified;
+                   return dum;
+                  });
+                  prog = prog + 1;
+                  setProgress((prev) => {
+                   let dum = { ...prev };
+                   dum.mat = prog;
+                   return dum;
+                  });
+                  break;
+                 }
+                }
+                if (!found) {
+                 let formData = new FormData();
 
-              setBackdrop(true);
-              axios.post("/upload", formData).then((res) => {
-               console.log(res.data.filename);
-               setQuestions((prev) => {
-                let dum = [...prev];
-                dum[(2 * questions.length) / 3 + key].image = res.data.file.filename;
-                return dum;
-               });
-               setBackdrop(false);
+                 formData.append("file", img[key], img[key].lastModified);
+
+                 axios.post("/upload", formData).then((res) => {
+                  setQuestions((prev) => {
+                   let dum = [...prev];
+                   dum[2 * (questions.length / 3) + key].image = img[key].lastModified;
+                   return dum;
+                  });
+                  prog = prog + 1;
+                  setProgress((prev) => {
+                   let dum = { ...prev };
+                   dum.mat = prog;
+                   return dum;
+                  });
+                 });
+                }
+               }
               });
+             } else {
+              for (let key = 0; key < img.length; key++) {
+               let formData = new FormData();
+
+               formData.append("file", img[key], img[key].lastModified);
+
+               axios.post("/upload", formData).then((res) => {
+                setQuestions((prev) => {
+                 let dum = [...prev];
+                 dum[2 * (questions.length / 3) + key].image = img[key].lastModified;
+                 return dum;
+                });
+                prog = prog + 1;
+                setProgress((prev) => {
+                 let dum = { ...prev };
+                 dum.mat = prog;
+                 return dum;
+                });
+               });
+              }
              }
             } else {
              alert(`please select exactly ${questions.length / 3} images`);
             }
            }}
           />
+          <p style={{ display: "inline-block" }}>{progress.mat === 100 ? "uploading..." : `uploads: ${progress.mat}`} </p>
          </div>
         ) : null}
        </div>
@@ -557,22 +681,77 @@ function Question() {
           let img = e.target.files;
 
           if (img.length === 45) {
-           for (let key = 0; key < img.length; key++) {
-            console.log(key, img[key], img);
-            let formData = new FormData();
+           let prog = 0;
+           setProgress((prev) => {
+            let dum = { ...prev };
+            dum.phy = 100;
+            return dum;
+           });
+           console.log(progress, check, prog);
+           if (check) {
+            axios.get("/files").then((res) => {
+             for (let key = 0; key < img.length; key++) {
+              let found = false;
 
-            formData.append("file", img[key], key);
+              for (let val = 0; val < res.data.length; val++) {
+               if (Number(res.data[val].filename) === img[key].lastModified) {
+                console.log("found image", img[key].lastModified);
+                found = true;
+                setQuestions((prev) => {
+                 let dum = [...prev];
+                 dum[key].image = img[key].lastModified;
+                 return dum;
+                });
+                prog = prog + 1;
+                setProgress((prev) => {
+                 let dum = { ...prev };
+                 dum.phy = prog;
+                 return dum;
+                });
+                break;
+               }
+              }
+              if (!found) {
+               let formData = new FormData();
 
-            setBackdrop(true);
-            axios.post("/upload", formData).then((res) => {
-             console.log(res.data.filename);
-             setQuestions((prev) => {
-              let dum = [...prev];
-              dum[key].image = res.data.file.filename;
-              return dum;
-             });
-             setBackdrop(false);
+               formData.append("file", img[key], img[key].lastModified);
+
+               axios.post("/upload", formData).then((res) => {
+                setQuestions((prev) => {
+                 let dum = [...prev];
+                 dum[key].image = img[key].lastModified;
+                 return dum;
+                });
+                prog = prog + 1;
+                setProgress((prev) => {
+                 let dum = { ...prev };
+                 dum.phy = prog;
+                 return dum;
+                });
+               });
+              }
+             }
             });
+           } else {
+            for (let key = 0; key < img.length; key++) {
+             let formData = new FormData();
+
+             formData.append("file", img[key], img[key].lastModified);
+
+             axios.post("/upload", formData).then((res) => {
+              setQuestions((prev) => {
+               let dum = [...prev];
+               dum[key].image = img[key].lastModified;
+               return dum;
+              });
+              prog = prog + 1;
+              setProgress((prev) => {
+               let dum = { ...prev };
+               dum.phy = prog;
+               return dum;
+              });
+             });
+            }
            }
           } else {
            alert("please select exactly 45 images");
@@ -580,7 +759,8 @@ function Question() {
          }}
         />
 
-        <br />
+        <p style={{ display: "inline-block" }}>{progress.phy === 100 ? "uploading..." : `uploads: ${progress.phy}`} </p>
+
         <br />
         {examType.indexOf("single") === -1 ? (
          <div>
@@ -594,22 +774,77 @@ function Question() {
             let img = e.target.files;
 
             if (img.length === 45) {
-             for (let key = 0; key < img.length; key++) {
-              console.log(key, img[key], img);
-              let formData = new FormData();
+             let prog = 0;
+             setProgress((prev) => {
+              let dum = { ...prev };
+              dum.che = 100;
+              return dum;
+             });
+             console.log(progress, check, prog);
+             if (check) {
+              axios.get("/files").then((res) => {
+               for (let key = 0; key < img.length; key++) {
+                let found = false;
 
-              formData.append("file", img[key], key);
+                for (let val = 0; val < res.data.length; val++) {
+                 if (Number(res.data[val].filename) === img[key].lastModified) {
+                  console.log("found image", img[key].lastModified);
+                  found = true;
+                  setQuestions((prev) => {
+                   let dum = [...prev];
+                   dum[45 + key].image = img[key].lastModified;
+                   return dum;
+                  });
+                  prog = prog + 1;
+                  setProgress((prev) => {
+                   let dum = { ...prev };
+                   dum.che = prog;
+                   return dum;
+                  });
+                  break;
+                 }
+                }
+                if (!found) {
+                 let formData = new FormData();
 
-              setBackdrop(true);
-              axios.post("/upload", formData).then((res) => {
-               console.log(res.data.filename);
-               setQuestions((prev) => {
-                let dum = [...prev];
-                dum[45 + key].image = res.data.file.filename;
-                return dum;
-               });
-               setBackdrop(false);
+                 formData.append("file", img[key], img[key].lastModified);
+
+                 axios.post("/upload", formData).then((res) => {
+                  setQuestions((prev) => {
+                   let dum = [...prev];
+                   dum[45 + key].image = img[key].lastModified;
+                   return dum;
+                  });
+                  prog = prog + 1;
+                  setProgress((prev) => {
+                   let dum = { ...prev };
+                   dum.che = prog;
+                   return dum;
+                  });
+                 });
+                }
+               }
               });
+             } else {
+              for (let key = 0; key < img.length; key++) {
+               let formData = new FormData();
+
+               formData.append("file", img[key], img[key].lastModified);
+
+               axios.post("/upload", formData).then((res) => {
+                setQuestions((prev) => {
+                 let dum = [...prev];
+                 dum[45 + key].image = img[key].lastModified;
+                 return dum;
+                });
+                prog = prog + 1;
+                setProgress((prev) => {
+                 let dum = { ...prev };
+                 dum.che = prog;
+                 return dum;
+                });
+               });
+              }
              }
             } else {
              alert("please select exactly 45 images");
@@ -617,7 +852,7 @@ function Question() {
            }}
           />
 
-          <br />
+          <p style={{ display: "inline-block" }}>{progress.che === 100 ? "uploading..." : `uploads: ${progress.che}`} </p>
           <br />
           <label>Biology 90 Ques: </label>
           <input
@@ -629,34 +864,89 @@ function Question() {
             let img = e.target.files;
 
             if (img.length === 90) {
-             for (let key = 0; key < img.length; key++) {
-              console.log(key, img[key], img);
-              let formData = new FormData();
+             let prog = 0;
+             setProgress((prev) => {
+              let dum = { ...prev };
+              dum.mat = 100;
+              return dum;
+             });
+             console.log(progress, check, prog);
+             if (check) {
+              axios.get("/files").then((res) => {
+               for (let key = 0; key < img.length; key++) {
+                let found = false;
 
-              formData.append("file", img[key], key);
+                for (let val = 0; val < res.data.length; val++) {
+                 if (Number(res.data[val].filename) === img[key].lastModified) {
+                  console.log("found image", img[key].lastModified);
+                  found = true;
+                  setQuestions((prev) => {
+                   let dum = [...prev];
+                   dum[90 + key].image = img[key].lastModified;
+                   return dum;
+                  });
+                  prog = prog + 1;
+                  setProgress((prev) => {
+                   let dum = { ...prev };
+                   dum.mat = prog;
+                   return dum;
+                  });
+                  break;
+                 }
+                }
+                if (!found) {
+                 let formData = new FormData();
 
-              setBackdrop(true);
-              axios.post("/upload", formData).then((res) => {
-               console.log(res.data.filename);
-               setQuestions((prev) => {
-                let dum = [...prev];
-                dum[90 + key].image = res.data.file.filename;
-                return dum;
-               });
-               setBackdrop(false);
+                 formData.append("file", img[key], img[key].lastModified);
+
+                 axios.post("/upload", formData).then((res) => {
+                  setQuestions((prev) => {
+                   let dum = [...prev];
+                   dum[90 + key].image = img[key].lastModified;
+                   return dum;
+                  });
+                  prog = prog + 1;
+                  setProgress((prev) => {
+                   let dum = { ...prev };
+                   dum.mat = prog;
+                   return dum;
+                  });
+                 });
+                }
+               }
               });
+             } else {
+              for (let key = 0; key < img.length; key++) {
+               let formData = new FormData();
+
+               formData.append("file", img[key], img[key].lastModified);
+
+               axios.post("/upload", formData).then((res) => {
+                setQuestions((prev) => {
+                 let dum = [...prev];
+                 dum[90 + key].image = img[key].lastModified;
+                 return dum;
+                });
+                prog = prog + 1;
+                setProgress((prev) => {
+                 let dum = { ...prev };
+                 dum.mat = prog;
+                 return dum;
+                });
+               });
+              }
              }
             } else {
              alert("please select exactly 90 images");
             }
            }}
           />
+          <p style={{ display: "inline-block" }}>{progress.mat === 100 ? "uploading..." : `uploads: ${progress.mat}`} </p>
          </div>
         ) : null}
        </div>
       )}
       <br />
-
       {questions.map((tile, i) => {
        let tcolor;
        if (examType.indexOf("advanced") !== -1) {

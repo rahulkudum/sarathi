@@ -58,73 +58,75 @@ function Result() {
  let bcolor;
 
  useEffect(() => {
-  if (examType === "mains") {
-   answers.map((val, i) => {
-    if (i < 25) {
-     setTime3((prev) => {
-      let dum = { ...prev };
-      dum.physics = dum.physics + val.time;
-      return dum;
-     });
-    } else if (i < 50) {
-     setTime3((prev) => {
-      let dum = { ...prev };
-      dum.chemistry = dum.chemistry + val.time;
-      return dum;
-     });
-    } else {
-     setTime3((prev) => {
-      let dum = { ...prev };
-      dum.maths = dum.maths + val.time;
-      return dum;
-     });
-    }
-   });
-  } else if (examType === "neet") {
-   answers.map((val, i) => {
-    if (i < 45) {
-     setTime3((prev) => {
-      let dum = { ...prev };
-      dum.physics = dum.physics + val.time;
-      return dum;
-     });
-    } else if (i < 90) {
-     setTime3((prev) => {
-      let dum = { ...prev };
-      dum.chemistry = dum.chemistry + val.time;
-      return dum;
-     });
-    } else {
-     setTime3((prev) => {
-      let dum = { ...prev };
-      dum.maths = dum.maths + val.time;
-      return dum;
-     });
-    }
-   });
-  }
-  if (examType === "advanced") {
-   answers.map((val, i) => {
-    if (i < answers.length / 3) {
-     setTime3((prev) => {
-      let dum = { ...prev };
-      dum.physics = dum.physics + val.time;
-      return dum;
-     });
-    } else if (i < 2 * (answers.length / 3)) {
-     setTime3((prev) => {
-      let dum = { ...prev };
-      dum.chemistry = dum.chemistry + val.time;
-      return dum;
-     });
-    } else {
-     setTime3((prev) => {
-      let dum = { ...prev };
-      dum.maths = dum.maths + val.time;
-      return dum;
-     });
-    }
-   });
+  if (time3.physics === 0) {
+   if (examType === "mains") {
+    answers.map((val, i) => {
+     if (i < 25) {
+      setTime3((prev) => {
+       let dum = { ...prev };
+       dum.physics = dum.physics + val.time;
+       return dum;
+      });
+     } else if (i < 50) {
+      setTime3((prev) => {
+       let dum = { ...prev };
+       dum.chemistry = dum.chemistry + val.time;
+       return dum;
+      });
+     } else {
+      setTime3((prev) => {
+       let dum = { ...prev };
+       dum.maths = dum.maths + val.time;
+       return dum;
+      });
+     }
+    });
+   } else if (examType === "neet") {
+    answers.map((val, i) => {
+     if (i < 45) {
+      setTime3((prev) => {
+       let dum = { ...prev };
+       dum.physics = dum.physics + val.time;
+       return dum;
+      });
+     } else if (i < 90) {
+      setTime3((prev) => {
+       let dum = { ...prev };
+       dum.chemistry = dum.chemistry + val.time;
+       return dum;
+      });
+     } else {
+      setTime3((prev) => {
+       let dum = { ...prev };
+       dum.maths = dum.maths + val.time;
+       return dum;
+      });
+     }
+    });
+   }
+   if (examType === "advanced") {
+    answers.map((val, i) => {
+     if (i < answers.length / 3) {
+      setTime3((prev) => {
+       let dum = { ...prev };
+       dum.physics = dum.physics + val.time;
+       return dum;
+      });
+     } else if (i < 2 * (answers.length / 3)) {
+      setTime3((prev) => {
+       let dum = { ...prev };
+       dum.chemistry = dum.chemistry + val.time;
+       return dum;
+      });
+     } else {
+      setTime3((prev) => {
+       let dum = { ...prev };
+       dum.maths = dum.maths + val.time;
+       return dum;
+      });
+     }
+    });
+   }
   }
  }, []);
 
@@ -279,7 +281,17 @@ function Result() {
        <div style={{ display: "flex", justifyContent: "space-around" }}>
         <Chip size="large" label={msToTime(answers[nind - 1].time)} color="primary" />
 
-        <Chip size="large" label={`Correct Answer: ${answers[nind - 1].correct}`} color="primary" />
+        {questionType === "multiple" ? (
+         <Chip
+          size="large"
+          label={`Correct Answer: ${answers[nind - 1].correct.one ? "1" : ""} ${answers[nind - 1].correct.two ? "2" : ""} ${
+           answers[nind - 1].correct.three ? "3" : ""
+          } ${answers[nind - 1].correct.four ? "4" : ""}`}
+          color="primary"
+         />
+        ) : (
+         <Chip size="large" label={`Correct Answer: ${answers[nind - 1].correct}`} color="primary" />
+        )}
 
         <Chip size="large" label={answers[nind - 1].status} color={butcolor} />
        </div>
@@ -420,6 +432,64 @@ function Result() {
        </div>
       )}
      </div>
+     {examType.indexOf("advanced") !== -1 ? (
+      <div
+       style={{
+        width: "100%",
+        height: "200px",
+
+        overflowX: "scroll",
+        overflowY: "scroll",
+        whiteSpace: "nowrap",
+        border: "1px solid black",
+
+        marginTop: "10px",
+        marginBottom: "10px",
+        lineHeight: "0.1",
+       }}
+      >
+       <p style={{ display: "inline-block", width: "200px", margin: "10px", fontWeight: "bold" }}>Section Name</p>
+       <p style={{ display: "inline-block", width: "100px", textAlign: "center", fontWeight: "bold" }}>Starts At</p>
+       <p style={{ display: "inline-block", width: "100px", textAlign: "center", fontWeight: "bold" }}>Marks</p>
+       <br />
+
+       {answers.map((val, i) => {
+        if (i === 0) {
+         return (
+          <>
+           {examType.indexOf("single") === -1 ? <p style={{ fontWeight: "bold", margin: "5px" }}>Physics: </p> : ""}
+           <p style={{ display: "inline-block", width: "200px", margin: "10px" }}>{val.secname}</p>
+           <p style={{ display: "inline-block", width: "100px", textAlign: "center" }}>{i + 1}</p>
+           <p style={{ display: "inline-block", width: "100px", textAlign: "center" }}>
+            {val.cmarks}, {val.wmarks}
+           </p>
+          </>
+         );
+        } else {
+         if (
+          answers[i - 1].secname !== val.secname ||
+          answers[i - 1].cmarks !== val.cmarks ||
+          answers[i - 1].wmarks !== val.wmarks ||
+          answers[i - 1].type !== val.type
+         ) {
+          return (
+           <>
+            <p style={{ fontWeight: "bold", margin: "5px" }}>{i === answers.length / 3 ? (examType.indexOf("single") === -1 ? "Chemistry: " : null) : null}</p>
+            <p style={{ fontWeight: "bold", margin: "5px" }}>
+             {i === (2 * answers.length) / 3 ? (examType.indexOf("single") === -1 ? "Maths: " : null) : null}
+            </p>
+            <p style={{ display: "inline-block", width: "200px", margin: "10px" }}>{val.secname}</p>
+            <p style={{ display: "inline-block", width: "100px", textAlign: "center" }}>{i + 1}</p>
+            <p style={{ display: "inline-block", width: "100px", textAlign: "center" }}>
+             {val.cmarks}, {val.wmarks}
+            </p>
+           </>
+          );
+         }
+        }
+       })}
+      </div>
+     ) : null}
 
      {mode === "teacher" ? (
       <div

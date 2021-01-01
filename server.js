@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+
 const path = require("path");
 const multer = require("multer");
 const GridFsStorage = require("multer-gridfs-storage");
@@ -23,6 +24,8 @@ app.use(cors());
 app.use(methodOverride("_method"));
 
 const uri = "mongodb+srv://rahul:xz7bpTm8ILa2Vwdb@cluster0.zkzfs.mongodb.net/trial3?retryWrites=true&w=majority";
+
+//const uri2= "mongodb+srv://rahul:<password>@cluster0.owpi4.mongodb.net/<dbname>?retryWrites=true&w=majority"
 
 mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 const connection = mongoose.connection;
