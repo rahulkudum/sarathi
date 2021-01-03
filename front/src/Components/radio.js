@@ -248,7 +248,7 @@ function Options() {
       questions.map((val, i) => {
        if (answers[i].answer) {
         if (JSON.stringify(val.answer) === JSON.stringify(answers[i].answer)) {
-         if (examType.indexOf("single") === -1) {
+         if (examType.indexOf("single") !== -1) {
           if (i < 45) {
            physics = physics + Number(val.correct);
           } else if (i < 90) {
@@ -264,7 +264,7 @@ function Options() {
          dums[i].status = "correct";
          dums[i].correct = val.answer;
         } else {
-         if (examType.indexOf("single") === -1) {
+         if (examType.indexOf("single") !== -1) {
           if (i < 45) {
            physics = physics + Number(val.wrong);
           } else if (i < 90) {

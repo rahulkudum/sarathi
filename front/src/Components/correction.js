@@ -324,7 +324,7 @@ function Correction() {
                       : val3.answers[i].answer || val4.correct === val4.wrong
                     ) {
                      if (JSON.stringify(val4.answer) === JSON.stringify(val3.answers[i].answer) || val4.correct === val4.wrong) {
-                      if (val.examtype.indexOf("single") === -1) {
+                      if (val.examtype.indexOf("single") !== -1) {
                        if (i < val.questions.length / 3) {
                         physics = physics + Number(val4.correct);
                        } else if (i < 2 * (val.questions.length / 3)) {
@@ -340,7 +340,7 @@ function Correction() {
                       val3.answers[i].status = "correct";
                       val3.answers[i].correct = val4.answer;
                      } else {
-                      if (val.examtype.indexOf("single") === -1) {
+                      if (val.examtype.indexOf("single") !== -1) {
                        if (i < val.questions.length / 3) {
                         physics = physics + Number(val4.wrong);
                        } else if (i < 2 * (val.questions.length / 3)) {
@@ -365,7 +365,7 @@ function Correction() {
                    val.questions.map((val4, i) => {
                     if (val3.answers[i].answer) {
                      if (val4.answer === val3.answers[i].answer) {
-                      if (val.examtype.indexOf("single") == -1) {
+                      if (val.examtype.indexOf("single") !== -1) {
                        if (i < 45) {
                         physics = physics + Number(val4.correct);
                        } else if (i < 90) {
@@ -381,7 +381,7 @@ function Correction() {
                       val3.answers[i].status = "correct";
                       val3.answers[i].correct = val4.answer;
                      } else {
-                      if (val.examtype.indexOf("single") === -1) {
+                      if (val.examtype.indexOf("single") !== -1) {
                        if (i < 45) {
                         physics = physics + Number(val4.wrong);
                        } else if (i < 90) {
