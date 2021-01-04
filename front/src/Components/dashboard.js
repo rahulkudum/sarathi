@@ -153,7 +153,7 @@ export default function Dashboard() {
              onClick={() => {
               var tempInput = document.createElement("input");
               tempInput.style = "position: absolute; left: -1000px; top: -1000px";
-              tempInput.value = encodeURI(`http://www.sarathikgptest.com${url}/${val.mail}`);
+              tempInput.value = encodeURI(`http://www.sarathikgptest.in${url}/${val.mail}`);
               document.body.appendChild(tempInput);
               tempInput.select();
               document.execCommand("copy");
