@@ -88,7 +88,7 @@ function Examselect() {
              onClick={() => {
               var tempInput = document.createElement("input");
               tempInput.style = "position: absolute; left: -1000px; top: -1000px";
-              tempInput.value = encodeURI(`https://sarathikgptest.herokuapp.com${url}/${val.examname}_${val.examtype}`);
+              tempInput.value = encodeURI(`http://www.sarathikgptest.com${url}/${val.examname}_${val.examtype}`);
               document.body.appendChild(tempInput);
               tempInput.select();
               document.execCommand("copy");

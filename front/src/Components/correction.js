@@ -151,8 +151,8 @@ function Correction() {
                 let dum = [...prev];
                 dum.push({
                  answer: "",
-                 correct: "",
-                 wrong: "",
+                 correct: 4,
+                 wrong: -1,
                  image: null,
                 });
                 return dum;
