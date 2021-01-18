@@ -4,7 +4,7 @@ import axios from "axios";
 import { Route, useHistory, useRouteMatch, Switch } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Question from "./question";
-import { ExamName, ExamType, Questions, Modify, Mode } from "./storage";
+import { ExamName, ExamType, Questions, Modify, Mode, ExamTime } from "./storage";
 import Examresult from "./examresult";
 import AddIcon from "@material-ui/icons/Add";
 function Correction() {
@@ -22,6 +22,7 @@ function Correction() {
  const [examType, setExamType] = useContext(ExamType);
  const [texamName, setTexamName] = useState("");
  const [texamType, setTexamType] = useState("mains");
+ const [examTime, setExamTime] = useContext(ExamTime);
 
  const [examList, setExamList] = useState([]);
  const [modify, setModify] = useContext(Modify);
@@ -46,6 +47,14 @@ function Correction() {
    setBackdrop(false);
   });
  }, []);
+
+ useEffect(() => {
+  if (texamType.indexOf("single-advanced") !== -1) {
+   setExamTime(60);
+  } else {
+   setExamTime("defined");
+  }
+ }, [texamType]);
 
  return (
   <Switch>
@@ -187,7 +196,7 @@ function Correction() {
              }
              console.log(questions);
              setTexamName("");
-
+             setExamTime("defined");
              history.push(`${url}/paper/1`);
             } else {
              alert("This Exam already exists");
@@ -579,6 +588,22 @@ function Correction() {
           })}
          </DialogContent>
          <DialogActions>
+          {texamType.indexOf("advanced") !== -1 ? (
+           <TextField
+            id="outlined-number"
+            label="duration"
+            type="number"
+            style={{ width: "75px" }}
+            value={examTime}
+            InputLabelProps={{
+             shrink: true,
+            }}
+            onChange={(e) => {
+             setExamTime(e.target.value);
+            }}
+            variant="outlined"
+           />
+          ) : null}
           <Button
            onClick={() => {
             if (texamName) {

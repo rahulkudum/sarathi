@@ -22,7 +22,7 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Route, useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { Answers, Ctime, ExamName, ExamType, Marks, Questions, Time, Time2, Time3, UserName, Switches } from "./storage";
+import { Answers, Answers2, Ctime, ExamName, ExamType, Marks, Questions, Time, Time2, Time3, UserName, Switches, ExamTime } from "./storage";
 import CheckCircleOutlineRoundedIcon from "@material-ui/icons/CheckCircleOutlineRounded";
 import ScrollToTop from "./scroll";
 import { usePageVisibility } from "./visible";
@@ -36,8 +36,9 @@ function Options() {
 
  const [examName, setExamName] = useContext(ExamName);
  const [examType, setExamType] = useContext(ExamType);
-
- const [answers, setAnswers] = useContext(Answers);
+ const [examTime, setExamTime] = useContext(ExamTime);
+ const [answers, setAnswers] = useContext(Answers2);
+ const [answers2, setAnswers2] = useContext(Answers);
  const [mail, setMail] = useContext(UserName);
  const [time, setTime] = useContext(Time);
  const [time2, setTime2] = useContext(Time2);
@@ -153,7 +154,7 @@ function Options() {
  useEffect(() => {
   let rtime = setInterval(() => {
    setTime2(Date.now());
-   if (Date.now() - time >= (examType.indexOf("single") !== -1 ? 3600000 : 10800000)) {
+   if (Date.now() - time >= (examType.indexOf("single-advanced") !== -1 ? examTime : examType.indexOf("single") !== -1 ? 3600000 : 10800000)) {
     setSubmit(1);
     clearInterval(rtime);
    }
@@ -320,6 +321,7 @@ function Options() {
          .post("/user/updat", { mail: mail, exams: exams, time: ptime })
          .then((res) => {
           setAnswers(dums);
+          setAnswers2(dums);
           console.log(res);
 
           setTime3((prev) => {
@@ -342,6 +344,11 @@ function Options() {
            return dum;
           });
           setAnswers((prev) => {
+           let dum = [...prev];
+           dum[nind - 1].time = dum[nind - 1].time - (Date.now() - htime.qon) / 2;
+           return dum;
+          });
+          setAnswers2((prev) => {
            let dum = [...prev];
            dum[nind - 1].time = dum[nind - 1].time - (Date.now() - htime.qon) / 2;
            return dum;
@@ -547,7 +554,11 @@ function Options() {
      <div style={{ display: "flex", justifyContent: "space-around" }}>
       <Chip size="large" label={`${examName}`} color="primary" style={{ marginRight: "5px", width: "150px" }} />
       <h3 style={{ textAlign: "center", display: "inline-block", marginTop: "0px" }}>Question {nind}</h3>
-      <Chip size="large" label={msToTime((examType.indexOf("single") !== -1 ? 3600000 : 10800000) - (time2 - time))} color="primary" />
+      <Chip
+       size="large"
+       label={msToTime((examType.indexOf("single-advanced") !== -1 ? examTime : examType.indexOf("single") !== -1 ? 3600000 : 10800000) - (time2 - time))}
+       color="primary"
+      />
      </div>
     </Grid>
     <Grid item xl={8} lg={8} md={12} sm={12} xs={12}>

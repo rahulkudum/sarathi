@@ -18,9 +18,8 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Route, useHistory, useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { ExamName, ExamType, Modify, Questions } from "./storage";
+import { ExamName, ExamType, Modify, Questions, ExamTime } from "./storage";
 import ScrollToTop from "./scroll";
-import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
  root1: {
@@ -45,7 +44,7 @@ function Question() {
  const [examType, setExamType] = useContext(ExamType);
  const [modify, setModify] = useContext(Modify);
  const [check, setCheck] = useState(true);
-
+ const [examTime, setExamTime] = useContext(ExamTime);
  const classes = useStyles();
  const [questionType, setQuestionType] = useState("single");
  const [progress, setProgress] = useState({ phy: 0, che: 0, mat: 0, single: true });
@@ -977,7 +976,7 @@ function Question() {
         if (!modify) {
          setBackdrop(true);
          axios
-          .post("/exam/add/", { examname: examName, examtype: examType, questions: questions })
+          .post("/exam/add/", { examname: examName, examtype: examType, questions: questions, time: examTime })
           .then((res) => {
            console.log(res);
 

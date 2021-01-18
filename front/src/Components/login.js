@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Route, useHistory, useParams, Switch, useRouteMatch } from "react-router-dom";
 import axios from "axios";
-import { Answers, ExamName, ExamType, Questions, UserName, Time, Time2, Mode, Time3, Switches } from "./storage";
+import { Answers2, ExamName2, ExamType2, ExamName, ExamType, Questions, UserName, Time, Time2, Mode, Time3, Switches, ExamTime } from "./storage";
 
 import { Backdrop, CircularProgress, Grid } from "@material-ui/core";
 import Options from "./radio";
@@ -19,10 +19,13 @@ function Login() {
  let examname = examdetails.slice(0, examdetails.indexOf("_"));
  let examtype = examdetails.slice(examdetails.indexOf("_") + 1);
 
- const [examName, setExamName] = useContext(ExamName);
- const [examType, setExamType] = useContext(ExamType);
+ const [examName, setExamName] = useContext(ExamName2);
+ const [examType, setExamType] = useContext(ExamType2);
+ const [examName2, setExamName2] = useContext(ExamName);
+ const [examType2, setExamType2] = useContext(ExamType);
+ const [examTime, setExamTime] = useContext(ExamTime);
  const [questions, setQuestions] = useState([]);
- const [answers, setAnswers] = useContext(Answers);
+ const [answers, setAnswers] = useContext(Answers2);
  const [mail, setMail] = useContext(UserName);
  const [backdrop, setBackdrop] = useState(false);
  const [time, setTime] = useContext(Time);
@@ -48,6 +51,12 @@ function Login() {
    console.log(res);
 
    setQuestions(res.data.questions);
+   if (res.data.time && !isNaN(res.data.time)) {
+    setExamTime(Number(res.data.time) * 60000);
+   } else {
+    console.log("fine2");
+    setExamTime("defined");
+   }
    setBackdrop(false);
   });
  }, []);
@@ -103,11 +112,15 @@ function Login() {
 
           if (!exsists) {
            if (examName === examname && examType === examtype && mode === res.profileObj.email) {
+            setExamName2(examname);
+            setExamType2(examtype);
             console.log("gv");
            } else {
             setMode(res.profileObj.email);
             setExamName(examname);
             setExamType(examtype);
+            setExamName2(examname);
+            setExamType2(examtype);
             setAnswers([]);
 
             questions.map((val, i) => {

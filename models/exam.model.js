@@ -1,27 +1,28 @@
-const mongoose=require("mongoose");
+const mongoose = require("mongoose");
 
-const Schema=mongoose.Schema;
+const Schema = mongoose.Schema;
 
-const examSchema=new Schema({
-examname:{
-    type:String,required:true
-},
-examtype:{
-    type:String,required:true
-},
-questions:{
-    type:Array,
-    required:true
-
-},
-time:{
-    type:Array
-    
-}
-
-},{timestamps:true}
+const examSchema = new Schema(
+ {
+  examname: {
+   type: String,
+   required: true,
+  },
+  examtype: {
+   type: String,
+   required: true,
+  },
+  questions: {
+   type: Array,
+   required: true,
+  },
+  time: {
+   type: String,
+  },
+ },
+ { timestamps: true }
 );
 
-const Exam=mongoose.model("Exam",examSchema);
+const Exam = mongoose.model("Exam", examSchema);
 
-module.exports=Exam;
+module.exports = Exam;
