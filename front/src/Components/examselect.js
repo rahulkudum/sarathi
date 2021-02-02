@@ -127,7 +127,7 @@ function Examselect() {
          variant="contained"
          color="primary"
          onClick={() => {
-          if (pasword === "sarathi") {
+          if (pasword === "sarathi@sp123") {
            setMode("teacher");
            setShow2(true);
           } else {

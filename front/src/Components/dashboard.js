@@ -242,7 +242,7 @@ export default function Dashboard() {
          variant="contained"
          color="primary"
          onClick={() => {
-          if (pasword === "sarathi") {
+          if (pasword === "sarathi@sp123") {
            setShow2(true);
            setMode("teacher");
           } else {

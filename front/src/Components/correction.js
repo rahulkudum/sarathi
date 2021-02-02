@@ -588,7 +588,7 @@ function Correction() {
           })}
          </DialogContent>
          <DialogActions>
-          {texamType.indexOf("advanced") !== -1 ? (
+          {texamType.indexOf("single") !== -1 ? (
            <TextField
             id="outlined-number"
             label="duration"
@@ -751,7 +751,7 @@ function Correction() {
          variant="contained"
          color="primary"
          onClick={() => {
-          if (pasword === "sarathi") {
+          if (pasword === "sarathi@sp123") {
            setMode("teacher");
            setShow2(true);
           } else {

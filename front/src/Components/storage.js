@@ -37,7 +37,7 @@ export function TotalStorage({ children }) {
 
  const [marks, setMarks] = useLocal("marks", { total: 0, positive: -1, negative: 0 });
  const [ctime, setCtime] = useLocal("ctime", []);
- const [mode, setMode] = useLocal("mode", "");
+ const [mode, setMode] = useLocal("mode2", "");
  const [switches, setSwitches] = useLocal("switches", 0);
 
  return (
