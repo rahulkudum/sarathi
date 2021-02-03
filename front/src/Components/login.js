@@ -159,7 +159,13 @@ function Login() {
 
            let ptime = resp.data.time;
 
-           ptime.push({ examname: examname, examtype: examtype, stime: new Date().toLocaleTimeString("en-US"), dur: msToTime(time2 - time) });
+           ptime.push({
+            examname: examname,
+            examtype: examtype,
+            stime: new Date().toLocaleTimeString("en-US"),
+            date: new Date().toLocaleDateString(),
+            dur: msToTime(time2 - time),
+           });
 
            setTime3({ time: 0, physics: 0, chemistry: 0, maths: 0, on: 0, qon: 0, no: 0 });
            setSwitches(0);
@@ -177,7 +183,7 @@ function Login() {
             .then((res) => {
              console.log(res);
              setTime(Date.now());
-             setTime2(Date.now() + 10800000);
+             setTime2(Date.now());
              setBackdrop(false);
              history.push(`${url}/paper/1`);
             })

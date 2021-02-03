@@ -315,7 +315,13 @@ function Options() {
         });
 
         let ptime = res.data.time;
-        ptime.push({ examname: examName, examtype: examType, stime: new Date().toLocaleTimeString("en-US"), dur: msToTime(time2 - time) });
+        ptime.push({
+         examname: examName,
+         examtype: examType,
+         stime: new Date().toLocaleTimeString("en-US"),
+         date: new Date().toLocaleDateString(),
+         dur: msToTime(time2 - time),
+        });
 
         axios
          .post("/user/updat", { mail: mail, exams: exams, time: ptime })

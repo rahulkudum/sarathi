@@ -4,6 +4,7 @@ import axios from "axios";
 import { Route, useHistory, useParams, Switch, useRouteMatch } from "react-router-dom";
 import { Button, Backdrop, CircularProgress, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import "./styles.css";
 
 function Examresult() {
  let history = useHistory();
@@ -39,27 +40,44 @@ function Examresult() {
  useEffect(() => {
   setBackdrop(true);
   axios.get("/user/").then((res) => {
-   console.log(res);
    setStudentsList(res.data);
    setBackdrop(false);
   });
  }, []);
 
  let result = [];
+ let login = [];
 
  studentsList.map((valu, j) => {
-  valu.exams.map((val, i) => {
-   if (val.examname === examname && val.examtype === examtype) {
-    let smarks = { ...val.marks };
-    smarks.name = valu.name;
-    smarks.mail = valu.mail;
-    smarks.answers = val.answers;
-    smarks.marks = val.marks;
-    smarks.timelist = valu.time;
-    smarks.time = val.time;
-    smarks.switches = val.switches;
+  let submitted = "";
+  valu.time.map((valt, i) => {
+   if (submitted !== "done") {
+    if (valt.examname === examname && valt.examtype === examtype) {
+     if (submitted !== "not done") {
+      valu.exams.map((val, i) => {
+       if (val.examname === examname && val.examtype === examtype) {
+        let smarks = { ...val.marks };
+        smarks.name = valu.name;
+        smarks.mail = valu.mail;
+        smarks.answers = val.answers;
+        smarks.marks = val.marks;
+        smarks.timelist = valu.time;
+        smarks.time = val.time;
+        smarks.switches = val.switches;
+        submitted = "done";
+        result.push(smarks);
+       }
+      });
+     }
 
-    result.push(smarks);
+     if (submitted !== "done") {
+      let slogin = { ...valt };
+      slogin.name = valu.name;
+      slogin.mail = valu.mail;
+      submitted = "not done";
+      login.push(slogin);
+     }
+    }
    }
   });
  });
@@ -93,7 +111,7 @@ function Examresult() {
 
  result.sort(compare);
 
- console.log(result);
+ console.log(login);
 
  return (
   <div>
@@ -123,81 +141,113 @@ function Examresult() {
      ))}
     </TextField>
    ) : null}
+
    <br />
    <br />
 
-   <p style={{ margin: "10px", display: "inline-block", width: "100px" }}>S.NO</p>
-   <p style={{ width: "250px", display: "inline-block" }}>Name</p>
-   <p style={{ width: "450px", display: "inline-block" }}>MailId</p>
+   <table id="customers">
+    <thead>
+     <tr>
+      <th style={{ textAlign: "center" }} colspan="7">
+       Sarathi Academy Results: {examname}
+      </th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr>
+      <th>S.NO</th>
+      <th>Name</th>
+      <th>MailId</th>
 
-   <p style={{ margin: "10px", display: "inline-block", width: "100px" }}>Total</p>
-   {examtype.indexOf("single") === -1 ? (
-    <>
-     <p style={{ margin: "10px", display: "inline-block", width: "100px" }}>Physics</p>
-     <p style={{ margin: "10px", display: "inline-block", width: "100px" }}>Chemistry</p>
-     {examtype === "neet" ? (
-      <p style={{ margin: "10px", display: "inline-block", width: "100px" }}>Biology</p>
-     ) : (
-      <p style={{ margin: "10px", display: "inline-block", width: "100px" }}>Maths</p>
-     )}
-    </>
-   ) : null}
-   {result.map((val, i) => {
-    return (
-     <div>
-      <p style={{ margin: "10px", display: "inline-block", width: "100px" }}>{i + 1}</p>
-      <p style={{ width: "250px", display: "inline-block" }}>{val.name}</p>
-      <p style={{ width: "450px", display: "inline-block" }}>{val.mail}</p>
-
-      <p style={{ margin: "10px", display: "inline-block", width: "100px" }}>{val.total}</p>
+      <th>Total</th>
       {examtype.indexOf("single") === -1 ? (
        <>
-        <p style={{ margin: "10px", display: "inline-block", width: "100px" }}>{val.physics}</p>
-        <p style={{ margin: "10px", display: "inline-block", width: "100px" }}>{val.chemistry}</p>
-        <p style={{ margin: "10px", display: "inline-block", width: "100px" }}>{val.maths}</p>
+        <th>Physics</th>
+        <th>Chemistry</th>
+        {examtype === "neet" ? <th>Biology</th> : <th>Maths</th>}
        </>
       ) : null}
-      <Button
-       variant="contained"
-       color="primary"
-       onClick={() => {
-        setMode("teacher");
-        setMail(val.mail);
-        setExamName(examname);
-        setExamType(examtype);
-        setAnswers(val.answers);
-        setMarks(val.marks);
+     </tr>
 
-        val.answers.map((val, i) => {
-         if (val.image) {
-          axios.get(`/images/${val.image}`);
-         }
-        });
+     {result.map((val, i) => {
+      return (
+       <tr
+        onClick={() => {
+         setMode("teacher");
+         setMail(val.mail);
+         setExamName(examname);
+         setExamType(examtype);
+         setAnswers(val.answers);
+         setMarks(val.marks);
 
-        let etime = [];
+         val.answers.map((val, i) => {
+          if (val.image) {
+           axios.get(`/images/${val.image}`);
+          }
+         });
 
-        val.timelist.map((value, i) => {
-         if (value.examname === examname && value.examtype === examtype) {
-          etime.push({ stime: value.stime, dur: value.dur });
-         }
-        });
+         let etime = [];
 
-        setCtime(etime);
-        if (val.time) {
-         setTime3(val.time);
-        } else setTime3({});
-        if (val.switches) {
-         setSwitches(val.switches);
-        } else setSwitches(0);
+         val.timelist.map((value, i) => {
+          if (value.examname === examname && value.examtype === examtype) {
+           etime.push({ stime: value.stime, dur: value.dur });
+          }
+         });
 
-        history.push(`/writexam/${examname}_${examtype}/result/1`);
-       }}
-      >
-       Responses
-      </Button>
-     </div>
-    );
-   })}
+         setCtime(etime);
+         if (val.time) {
+          setTime3(val.time);
+         } else setTime3({});
+         if (val.switches) {
+          setSwitches(val.switches);
+         } else setSwitches(0);
+
+         history.push(`/writexam/${examname}_${examtype}/result/1`);
+        }}
+       >
+        <td>{i + 1}</td>
+        <td>{val.name}</td>
+        <td>{val.mail}</td>
+
+        <td>{val.total}</td>
+        {examtype.indexOf("single") === -1 ? (
+         <>
+          <td>{val.physics}</td>
+          <td>{val.chemistry}</td>
+          <td>{val.maths}</td>
+         </>
+        ) : null}
+       </tr>
+      );
+     })}
+    </tbody>
+   </table>
+   <br />
+   <br />
+   <br />
+   <br />
+   <p>Logged in but not Submitted</p>
+   <table>
+    <tr>
+     <td>Name</td>
+     <td>MailId</td>
+     <td>Logged in time</td>
+     <td>Logged in Date</td>
+     <td>Duration</td>
+    </tr>
+
+    {login.map((val, i) => {
+     return (
+      <tr>
+       <th>{val.name}</th>
+       <th>{val.mail}</th>
+       <th>{val.stime}</th>
+       <th>{val.date}</th>
+       <th> {i < login.length - 1 ? login[i + 1].dur : "not known"}</th>
+      </tr>
+     );
+    })}
+   </table>
   </div>
  );
 }

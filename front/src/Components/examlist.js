@@ -5,6 +5,7 @@ import { Route, useHistory, useParams, Switch, useRouteMatch } from "react-route
 import { Button, Backdrop, CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { GoogleLogin } from "react-google-login";
+import "./styles.css";
 function Examlist() {
  let { ind } = useParams();
  let history = useHistory();
@@ -55,27 +56,17 @@ function Examlist() {
      <Backdrop className={classes.backdrop} open={backdrop}>
       <CircularProgress color="inherit" />
      </Backdrop>
-     {examList ? (
-      <div>
-       <h1>Select an Exam</h1>
-       <p style={{ display: "inline-block", width: "40px", margin: "10px" }}>S.No</p>
-       <p style={{ display: "inline-block", width: "200px" }}>Exam Name</p>
-      </div>
-     ) : (
-      <h1>You haven't written any exam yet</h1>
-     )}
 
-     {examList.map((val, i) => {
-      if (val) {
-       console.log(val.examname, val.examtype);
-       return (
-        <div>
-         <p style={{ display: "inline-block", width: "30px", margin: "10px" }}>{i + 1}</p>
-         <p style={{ display: "inline-block", width: "200px" }}>{val.examname}</p>
-
-         <Button
-          variant="contained"
-          color="primary"
+     <table id="customers">
+      <tr>
+       <th>S.No</th>
+       <th>Exam Name</th>
+       <th>Total</th>
+      </tr>
+      {examList.map((val, i) => {
+       if (val) {
+        return (
+         <tr
           onClick={() => {
            setExamName(val.examname);
            setExamType(val.examtype);
@@ -107,12 +98,14 @@ function Examlist() {
            history.push(`/writexam/${val.examname}_${val.examtype}/result/1`);
           }}
          >
-          Go
-         </Button>
-        </div>
-       );
-      }
-     })}
+          <td>{i + 1}</td>
+          <td>{val.examname}</td>
+          <td>{val.marks.total}</td>
+         </tr>
+        );
+       }
+      })}
+     </table>
     </div>
    ) : (
     <div style={{ textAlign: "center" }}>
