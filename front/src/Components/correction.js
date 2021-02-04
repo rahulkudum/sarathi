@@ -125,30 +125,14 @@ function Correction() {
              setExamType(texamType);
 
              if (texamType === "mains") {
-              for (let i = 0; i < 75; i++) {
+              for (let i = 0; i < 90; i++) {
                setQuestions((prev) => {
                 let dum = [...prev];
                 dum.push({
                  answer: "",
                  correct: 4,
-                 wrong:
-                  i + 1 === 21 ||
-                  i + 1 === 22 ||
-                  i + 1 === 23 ||
-                  i + 1 === 24 ||
-                  i + 1 === 25 ||
-                  i + 1 === 46 ||
-                  i + 1 === 47 ||
-                  i + 1 === 48 ||
-                  i + 1 === 49 ||
-                  i + 1 === 50 ||
-                  i + 1 === 71 ||
-                  i + 1 === 72 ||
-                  i + 1 === 73 ||
-                  i + 1 === 74 ||
-                  i + 1 === 75
-                   ? 0
-                   : -1,
+                 wrong: (i >= 20 && i < 30) || (i >= 50 && i < 60) || (i >= 80 && i < 90) ? 0 : -1,
+                 type: (i >= 20 && i < 30) || (i >= 50 && i < 60) || (i >= 80 && i < 90) ? "numerical" : "single",
                  image: null,
                 });
                 return dum;
@@ -162,19 +146,22 @@ function Correction() {
                  answer: "",
                  correct: 4,
                  wrong: -1,
+                 type: "single",
                  image: null,
                 });
                 return dum;
                });
               }
              } else if (texamType === "single-mains") {
-              for (let i = 0; i < 25; i++) {
+              for (let i = 0; i < 30; i++) {
                setQuestions((prev) => {
                 let dum = [...prev];
                 dum.push({
                  answer: "",
                  correct: 4,
-                 wrong: i + 1 === 21 || i + 1 === 22 || i + 1 === 23 || i + 1 === 24 || i + 1 === 25 ? 0 : -1,
+                 wrong: i >= 20 && i < 30 ? 0 : -1,
+                 type: i >= 20 && i < 30 ? "numerical" : "single",
+
                  image: null,
                 });
                 return dum;
@@ -188,6 +175,7 @@ function Correction() {
                  answer: "",
                  correct: 4,
                  wrong: -1,
+                 type: "single",
                  image: null,
                 });
                 return dum;

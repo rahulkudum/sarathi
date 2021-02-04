@@ -12,8 +12,6 @@ import {
  FormControl,
  FormLabel,
  Radio,
- GridList,
- GridListTile,
  Grid,
  DialogContent,
  Checkbox,
@@ -79,7 +77,7 @@ function Options() {
  useEffect(() => {
   setImageloading(true);
 
-  if (examType.indexOf("mains") !== -1) {
+  if (examType.indexOf("mains") !== -1 && !answers[nind - 1].type) {
    if (examName === "2021WM7") {
     if (nind === 21 || nind === 22 || nind === 23 || nind === 24 || nind === 25 || nind === 71 || nind === 72 || nind === 73 || nind === 74 || nind === 75) {
      setQuestionType("numerical");
@@ -111,7 +109,7 @@ function Options() {
    }
   }
 
-  if (examType.indexOf("advanced") !== -1) {
+  if (answers[nind - 1].type) {
    setQuestionType(answers[nind - 1].type);
   }
   setAnswers((prev) => {
@@ -198,6 +196,7 @@ function Options() {
      let maths = 0;
      let physics = 0;
      let chemistry = 0;
+     let integerCorrect = 0;
 
      let htime = JSON.parse(localStorage.getItem("time3"));
      let dums = [...answers];
@@ -206,22 +205,32 @@ function Options() {
 
      if (examType.indexOf("neet") === -1) {
       questions.map((val, i) => {
+       if (i === 30 || i === 60 || i === 90) integerCorrect = 0;
        if (val.type === "multiple" ? answers[i].answer.one || answers[i].answer.two || answers[i].answer.three || answers[i].answer.four : answers[i].answer) {
         if (JSON.stringify(val.answer) === JSON.stringify(answers[i].answer)) {
-         if (examType.indexOf("single") === -1) {
-          if (i < questions.length / 3) {
-           physics = physics + Number(val.correct);
-          } else if (i < 2 * (questions.length / 3)) {
-           chemistry = chemistry + Number(val.correct);
-          } else {
-           maths = maths + Number(val.correct);
+         if (examType.indexOf("mains") !== -1 && val.type === "numerical") {
+          integerCorrect++;
+
+          if (integerCorrect > 5) {
+           dums[i].status = "extra-correct";
           }
          }
+         if (integerCorrect <= 5) {
+          if (examType.indexOf("single") === -1) {
+           if (i < questions.length / 3) {
+            physics = physics + Number(val.correct);
+           } else if (i < 2 * (questions.length / 3)) {
+            chemistry = chemistry + Number(val.correct);
+           } else {
+            maths = maths + Number(val.correct);
+           }
+          }
 
-         marks = marks + Number(val.correct);
-         positive = positive + Number(val.correct);
+          marks = marks + Number(val.correct);
+          positive = positive + Number(val.correct);
 
-         dums[i].status = "correct";
+          dums[i].status = "correct";
+         }
          dums[i].correct = val.answer;
         } else {
          if (examType.indexOf("single") === -1) {
@@ -383,165 +392,6 @@ function Options() {
      setErrText(err.message);
      setDialog2(1);
     });
-
-   //  setAnswers((prev) => {
-   //   let dum = [...prev];
-   //   dum[nind - 1].time = dum[nind - 1].time + Date.now() - htime.qon;
-   //   return dum;
-   //  });
-   //  if (examType.indexOf("mains") !== -1) {
-   //   questions.map((val, i) => {
-   //    if (answers[i].answer) {
-   //     if (val.answer === answers[i].answer) {
-   //      if (i < 25) {
-   //       physics = physics + Number(val.correct);
-   //      } else if (i < 50) {
-   //       chemistry = chemistry + Number(val.correct);
-   //      } else {
-   //       maths = maths + Number(val.correct);
-   //      }
-
-   //      marks = marks + Number(val.correct);
-   //      positive = positive + Number(val.correct);
-   //      setAnswers((prev) => {
-   //       let dum = [...prev];
-   //       dum[i].status = "correct";
-   //       dum[i].correct = val.answer;
-   //       return dum;
-   //      });
-   //     } else {
-   //      if (i < 25) {
-   //       physics = physics + Number(val.wrong);
-   //      } else if (i < 50) {
-   //       chemistry = chemistry + Number(val.wrong);
-   //      } else {
-   //       maths = maths + Number(val.wrong);
-   //      }
-
-   //      marks = marks + Number(val.wrong);
-   //      negative = negative + Number(val.wrong);
-   //      setAnswers((prev) => {
-   //       let dum = [...prev];
-   //       dum[i].status = "wrong";
-   //       dum[i].correct = val.answer;
-   //       return dum;
-   //      });
-   //     }
-   //    } else {
-   //     setAnswers((prev) => {
-   //      let dum = [...prev];
-   //      dum[i].status = "left";
-   //      dum[i].correct = val.answer;
-   //      return dum;
-   //     });
-   //    }
-   //   });
-   //  } else if (examType.indexOf("neet") !== -1) {
-   //   questions.map((val, i) => {
-   //    if (answers[i].answer) {
-   //     if (val.answer === answers[i].answer) {
-   //      if (i < 45) {
-   //       physics = physics + Number(val.correct);
-   //      } else if (i < 90) {
-   //       chemistry = chemistry + Number(val.correct);
-   //      } else {
-   //       maths = maths + Number(val.correct);
-   //      }
-
-   //      marks = marks + Number(val.correct);
-   //      positive = positive + Number(val.correct);
-   //      setAnswers((prev) => {
-   //       let dum = [...prev];
-   //       dum[i].status = "correct";
-   //       dum[i].correct = val.answer;
-   //       return dum;
-   //      });
-   //     } else {
-   //      if (i < 45) {
-   //       physics = physics + Number(val.wrong);
-   //      } else if (i < 90) {
-   //       chemistry = chemistry + Number(val.wrong);
-   //      } else {
-   //       maths = maths + Number(val.wrong);
-   //      }
-
-   //      marks = marks + Number(val.wrong);
-   //      negative = negative + Number(val.wrong);
-   //      setAnswers((prev) => {
-   //       let dum = [...prev];
-   //       dum[i].status = "wrong";
-   //       dum[i].correct = val.answer;
-   //       return dum;
-   //      });
-   //     }
-   //    } else {
-   //     setAnswers((prev) => {
-   //      let dum = [...prev];
-   //      dum[i].status = "left";
-   //      dum[i].correct = val.answer;
-   //      return dum;
-   //     });
-   //    }
-   //   });
-   //  } else if (examType.indexOf("advanced") !== -1) {
-   //   questions.map((val, i) => {
-   //    if (val.type === "multiple" ? answers[i].answer.one || answers[i].answer.two || answers[i].answer.three || answers[i].answer.four : answers[i].answer) {
-   //     if (JSON.stringify(val.answer) === JSON.stringify(answers[i].answer)) {
-   //      if (i < questions.length / 3 ) {
-   //       physics = physics + Number(val.correct);
-   //      } else if (i < 2 * (questions.length / 3)) {
-   //       chemistry = chemistry + Number(val.correct);
-   //      } else {
-   //       maths = maths + Number(val.correct);
-   //      }
-
-   //      marks = marks + Number(val.correct);
-   //      positive = positive + Number(val.correct);
-   //      setAnswers((prev) => {
-   //       let dum = [...prev];
-   //       dum[i].status = "correct";
-   //       dum[i].correct = val.answer;
-   //       return dum;
-   //      });
-   //     } else {
-   //      if (i < questions.length / 3 ) {
-   //       physics = physics + Number(val.wrong);
-   //      } else if (i < 2 * (questions.length / 3)) {
-   //       chemistry = chemistry + Number(val.wrong);
-   //      } else {
-   //       maths = maths + Number(val.wrong);
-   //      }
-
-   //      marks = marks + Number(val.wrong);
-   //      negative = negative + Number(val.wrong);
-   //      setAnswers((prev) => {
-   //       let dum = [...prev];
-   //       dum[i].status = "wrong";
-   //       dum[i].correct = val.answer;
-   //       return dum;
-   //      });
-   //     }
-   //    } else {
-   //     setAnswers((prev) => {
-   //      let dum = [...prev];
-   //      dum[i].status = "left";
-   //      dum[i].correct = val.answer;
-   //      return dum;
-   //     });
-   //    }
-   //   });
-   //  }
-
-   //  setMarks((prev) => {
-   //   let dum = { ...prev };
-   //   dum.total = marks;
-   //   dum.positive = positive;
-   //   dum.negative = negative;
-   //   dum.physics = physics;
-   //   dum.chemistry = chemistry;
-   //   dum.maths = maths;
-   //   return dum;
-   //  });
   }
  }, [submit]);
 

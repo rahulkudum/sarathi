@@ -146,7 +146,7 @@ function Login() {
              } else {
               setAnswers((prev) => {
                let dum = [...prev];
-               dum.push({ answer: "", danswer: "", visited: false, review: false, status: "", correct: "", time: 0, image: val.image });
+               dum.push({ answer: "", danswer: "", visited: false, review: false, status: "", correct: "", type: val.type, time: 0, image: val.image });
                return dum;
               });
              }

@@ -52,41 +52,7 @@ function Question() {
  useEffect(() => {
   setImageloading(true);
 
-  if (examType.indexOf("mains") !== -1) {
-   if (examName === "2021WM7") {
-    if (nind === 21 || nind === 22 || nind === 23 || nind === 24 || nind === 25 || nind === 71 || nind === 72 || nind === 73 || nind === 74 || nind === 75) {
-     setQuestionType("numerical");
-    } else {
-     setQuestionType("single");
-    }
-   } else {
-    if (
-     nind === 21 ||
-     nind === 22 ||
-     nind === 23 ||
-     nind === 24 ||
-     nind === 25 ||
-     nind === 46 ||
-     nind === 47 ||
-     nind === 48 ||
-     nind === 49 ||
-     nind === 50 ||
-     nind === 71 ||
-     nind === 72 ||
-     nind === 73 ||
-     nind === 74 ||
-     nind === 75
-    ) {
-     setQuestionType("numerical");
-    } else {
-     setQuestionType("single");
-    }
-   }
-  }
-
-  if (examType.indexOf("advanced") !== -1) {
-   setQuestionType(questions[nind - 1].type);
-  }
+  setQuestionType(questions[nind - 1].type);
  }, [nind]);
 
  return (

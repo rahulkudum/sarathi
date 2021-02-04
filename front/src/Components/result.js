@@ -133,7 +133,7 @@ function Result() {
  useEffect(() => {
   setImageloading(true);
 
-  if (examType.indexOf("mains") !== -1) {
+  if (examType.indexOf("mains") !== -1 && !answers[nind - 1].type) {
    if (examName === "2021WM7") {
     if (nind === 21 || nind === 22 || nind === 23 || nind === 24 || nind === 25 || nind === 71 || nind === 72 || nind === 73 || nind === 74 || nind === 75) {
      setQuestionType("numerical");
@@ -165,7 +165,7 @@ function Result() {
    }
   }
 
-  if (examType.indexOf("advanced") !== -1) {
+  if (answers[nind - 1].type) {
    setQuestionType(answers[nind - 1].type);
   }
  }, [nind]);

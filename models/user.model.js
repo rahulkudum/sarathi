@@ -1,30 +1,25 @@
-const mongoose=require("mongoose");
+const mongoose = require("mongoose");
 
-const Schema=mongoose.Schema;
+const Schema = mongoose.Schema;
 
-const studentSchema=new Schema({
+const studentSchema = new Schema({
+ name: {
+  type: String,
+  required: true,
+ },
+ mail: {
+  type: String,
+  required: true,
+ },
+ exams: {
+  type: Array,
+  required: true,
+ },
+ time: {
+  type: Array,
+ },
+});
 
-name:{
-    type:String,
-    required:true,
-   
-},
-mail:{
-    type:String,
-    required:true,
-},
-exams:{
-    type:Array,
-    required:true
-},
-time:{
-    type:Array
-    
-}
+const User = mongoose.model("Student", studentSchema);
 
-},{timestamps:true,}
-);
-
-const User=mongoose.model("Student",studentSchema);
-
-module.exports=User;
+module.exports = User;
