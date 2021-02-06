@@ -64,6 +64,7 @@ function Examlist() {
        <th>Total</th>
       </tr>
       {examList.map((val, i) => {
+       console.log(val);
        if (val) {
         return (
          <tr

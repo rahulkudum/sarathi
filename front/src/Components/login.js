@@ -167,7 +167,7 @@ function Login() {
             dur: msToTime(time2 - time),
            });
 
-           setTime3({ time: 0, physics: 0, chemistry: 0, maths: 0, on: 0, qon: 0, no: 0 });
+           setTime3({ time: 0, physics: 0, chemistry: 0, maths: 0, on: 0, qon: 0, no: 0, subtime: 0 });
            setSwitches(0);
 
            questions.map((val, i) => {

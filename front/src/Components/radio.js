@@ -319,7 +319,14 @@ function Options() {
          examtype: examType,
          answers: dums,
          marks: { total: marks, positive: positive, negative: negative, physics: physics, chemistry: chemistry, maths: maths },
-         time: { totaltime: msToTime(time2 - time), actualtime: msToTime(time3.time + Date.now() - time3.on), physics: 0, chemistry: 0, maths: 0 },
+         time: {
+          totaltime: msToTime(time2 - time),
+          actualtime: msToTime(time3.time + Date.now() - time3.on),
+          physics: 0,
+          chemistry: 0,
+          maths: 0,
+          subtime: Date.now(),
+         },
          switches: switches,
         });
 
@@ -328,6 +335,7 @@ function Options() {
          examname: examName,
          examtype: examType,
          stime: new Date().toLocaleTimeString("en-US"),
+
          date: new Date().toLocaleDateString(),
          dur: msToTime(time2 - time),
         });
@@ -345,6 +353,7 @@ function Options() {
            dum.chemistry = 0;
            dum.maths = 0;
            dum.time = msToTime(dum.time + Date.now() - dum.on);
+           dum.subtime = Date.now();
            return dum;
           });
 
