@@ -12,6 +12,11 @@ require("dotenv").config();
 
 const app = express();
 app.use(helmet());
+app.use(
+ helmet({
+  contentSecurityPolicy: false,
+ })
+);
 var bodyParser = require("body-parser");
 
 app.use(bodyParser.json({ limit: "50mb" }));
