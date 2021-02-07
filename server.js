@@ -1,19 +1,17 @@
 const express = require("express");
+const helmet = require("helmet");
 const cors = require("cors");
 const mongoose = require("mongoose");
-
 const path = require("path");
 const multer = require("multer");
 const GridFsStorage = require("multer-gridfs-storage");
 const Grid = require("gridfs-stream");
 const methodOverride = require("method-override");
-
 const crypto = require("crypto");
-
 require("dotenv").config();
 
 const app = express();
-
+app.use(helmet());
 var bodyParser = require("body-parser");
 
 app.use(bodyParser.json({ limit: "50mb" }));
