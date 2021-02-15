@@ -86,7 +86,7 @@ function Login() {
       </div>
      </Backdrop>
 
-     <div>
+     <div style={{ border: "1px solid black" }}>
       {examName === examname && examType === examtype && mode !== "teacher" ? (
        <p>To resume {examname} please login through your G-mail</p>
       ) : (
@@ -201,12 +201,36 @@ function Login() {
        }}
        onFailure={(res) => {
         setBackdrop(false);
-        alert("You have failed to login in, Please try once again");
        }}
        cookiePolicy={"single_host_origin"}
       />
       <br />
-
+      <br />
+      <br />
+      <p>To see your Dashboard please login through your G-mail </p>
+      <GoogleLogin
+       clientId="526565895378-erq5sbu7kkpeonhqgjvdemgtncbpep42.apps.googleusercontent.com"
+       buttonText="Login through Gmail"
+       onSuccess={(res) => {
+        setBackdrop(true);
+        axios.post("/user/find", { mail: res.profileObj.email }).then((resp) => {
+         if (resp.data) {
+          setMode(res.profileObj.email);
+          setBackdrop(false);
+          history.push(`/studentsdashboard/${res.profileObj.email}`);
+         } else {
+          setBackdrop(false);
+          alert("Sorry You are not eligible to write Exams");
+         }
+        });
+       }}
+       onFailure={(res) => {
+        setBackdrop(false);
+        alert("You have failed to login in, Please try again");
+       }}
+       cookiePolicy={"single_host_origin"}
+      />
+      <p>(you may see it after writing the exam)</p>
       {questions.length > 0 ? (
        <img
         style={{ position: "absolute", opacity: 0 }}
