@@ -201,8 +201,8 @@ function Login() {
        }}
        onFailure={(res) => {
         setBackdrop(false);
+        alert("You have failed to login in, Please try once again");
        }}
-       cookiePolicy={"single_host_origin"}
       />
       <br />
       <br />
@@ -228,7 +228,6 @@ function Login() {
         setBackdrop(false);
         alert("You have failed to login in, Please try again");
        }}
-       cookiePolicy={"single_host_origin"}
       />
       <p>(you may see it after writing the exam)</p>
       {questions.length > 0 ? (

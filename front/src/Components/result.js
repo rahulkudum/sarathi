@@ -538,6 +538,9 @@ function Result() {
          })}
         </div>
        ) : null}
+
+       {mode === "teacher" ? <div></div> : <div>student</div>}
+
        <div
         style={{
          width: "100%",
