@@ -65,29 +65,7 @@ function Result() {
 
  useEffect(() => {
   if (time3.physics === 0) {
-   if (examType === "mains") {
-    answers.map((val, i) => {
-     if (i < 25) {
-      setTime3((prev) => {
-       let dum = { ...prev };
-       dum.physics = dum.physics + val.time;
-       return dum;
-      });
-     } else if (i < 50) {
-      setTime3((prev) => {
-       let dum = { ...prev };
-       dum.chemistry = dum.chemistry + val.time;
-       return dum;
-      });
-     } else {
-      setTime3((prev) => {
-       let dum = { ...prev };
-       dum.maths = dum.maths + val.time;
-       return dum;
-      });
-     }
-    });
-   } else if (examType === "neet") {
+   if (examType === "neet") {
     answers.map((val, i) => {
      if (i < 45) {
       setTime3((prev) => {
@@ -109,8 +87,7 @@ function Result() {
       });
      }
     });
-   }
-   if (examType === "advanced") {
+   } else if (examType === "advanced" || examType === "mains") {
     answers.map((val, i) => {
      if (i < answers.length / 3) {
       setTime3((prev) => {

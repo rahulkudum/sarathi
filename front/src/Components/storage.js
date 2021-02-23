@@ -13,6 +13,7 @@ export const ExamName = createContext();
 export const ExamType = createContext();
 export const ExamName2 = createContext();
 export const ExamType2 = createContext();
+export const StudentList = createContext();
 export const ExamTime = createContext();
 export const Modify = createContext();
 export const Marks = createContext();
@@ -29,6 +30,7 @@ export function TotalStorage({ children }) {
  const [examType, setExamType] = useLocal("examtype", "");
  const [examName2, setExamName2] = useLocal("examname2", "");
  const [examType2, setExamType2] = useLocal("examtype2", "");
+ const [studentsList, setStudentsList] = useState([]);
  const [modify, setModify] = useState(false);
  const [time, setTime] = useLocal("time", null);
  const [time2, setTime2] = useLocal("time2", null);
@@ -49,23 +51,25 @@ export function TotalStorage({ children }) {
        <ExamType.Provider value={[examType, setExamType]}>
         <ExamName2.Provider value={[examName2, setExamName2]}>
          <ExamType2.Provider value={[examType2, setExamType2]}>
-          <Modify.Provider value={[modify, setModify]}>
-           <Time.Provider value={[time, setTime]}>
-            <Time2.Provider value={[time2, setTime2]}>
-             <Time3.Provider value={[time3, setTime3]}>
-              <ExamTime.Provider value={[examTime, setExamTime]}>
-               <Marks.Provider value={[marks, setMarks]}>
-                <Ctime.Provider value={[ctime, setCtime]}>
-                 <Mode.Provider value={[mode, setMode]}>
-                  <Switches.Provider value={[switches, setSwitches]}>{children}</Switches.Provider>
-                 </Mode.Provider>
-                </Ctime.Provider>
-               </Marks.Provider>
-              </ExamTime.Provider>
-             </Time3.Provider>
-            </Time2.Provider>
-           </Time.Provider>
-          </Modify.Provider>
+          <StudentList.Provider value={[studentsList, setStudentsList]}>
+           <Modify.Provider value={[modify, setModify]}>
+            <Time.Provider value={[time, setTime]}>
+             <Time2.Provider value={[time2, setTime2]}>
+              <Time3.Provider value={[time3, setTime3]}>
+               <ExamTime.Provider value={[examTime, setExamTime]}>
+                <Marks.Provider value={[marks, setMarks]}>
+                 <Ctime.Provider value={[ctime, setCtime]}>
+                  <Mode.Provider value={[mode, setMode]}>
+                   <Switches.Provider value={[switches, setSwitches]}>{children}</Switches.Provider>
+                  </Mode.Provider>
+                 </Ctime.Provider>
+                </Marks.Provider>
+               </ExamTime.Provider>
+              </Time3.Provider>
+             </Time2.Provider>
+            </Time.Provider>
+           </Modify.Provider>
+          </StudentList.Provider>
          </ExamType2.Provider>
         </ExamName2.Provider>
        </ExamType.Provider>

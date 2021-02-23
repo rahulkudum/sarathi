@@ -4,7 +4,7 @@ import axios from "axios";
 import { Route, useHistory, useRouteMatch, Switch } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Question from "./question";
-import { ExamName, ExamType, Questions, Modify, Mode, ExamTime } from "./storage";
+import { ExamName, ExamType, Questions, Modify, Mode, ExamTime, StudentList } from "./storage";
 import Examresult from "./examresult";
 import AddIcon from "@material-ui/icons/Add";
 function Correction() {
@@ -23,7 +23,7 @@ function Correction() {
  const [texamName, setTexamName] = useState("");
  const [texamType, setTexamType] = useState("mains");
  const [examTime, setExamTime] = useContext(ExamTime);
-
+ const [studentsList, setStudentsList] = useContext(StudentList);
  const [examList, setExamList] = useState([]);
  const [modify, setModify] = useContext(Modify);
 
@@ -39,12 +39,18 @@ function Correction() {
  }));
 
  const classes = useStyles();
+
  useEffect(() => {
   setBackdrop(true);
-
   axios.get("/exam/").then((res) => {
    setExamList(res.data);
    setBackdrop(false);
+  });
+ }, []);
+
+ useEffect(() => {
+  axios.get("/user/").then((res) => {
+   setStudentsList(res.data);
   });
  }, []);
 
@@ -280,6 +286,8 @@ function Correction() {
              variant="contained"
              color="primary"
              onClick={() => {
+              setExamName("");
+              setExamType("");
               history.push(`${url}/result/${val.examname}_${val.examtype}`);
              }}
             >

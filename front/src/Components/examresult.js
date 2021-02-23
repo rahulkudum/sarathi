@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { UserName, ExamName, ExamType, Answers, Marks, Ctime, Time3, Switches, Mode } from "./storage";
+import { UserName, ExamName, ExamType, Answers, Marks, Ctime, Time3, Switches, Mode, StudentList } from "./storage";
 import axios from "axios";
 import { Route, useHistory, useParams, Switch, useRouteMatch } from "react-router-dom";
 import { Button, Backdrop, CircularProgress, TextField } from "@material-ui/core";
@@ -13,7 +13,7 @@ function Examresult() {
  let examname = examdetails.slice(0, examdetails.indexOf("_"));
  let examtype = examdetails.slice(examdetails.indexOf("_") + 1);
 
- const [studentsList, setStudentsList] = useState([]);
+ const [studentsList, setStudentsList] = useContext(StudentList);
  const [mail, setMail] = useContext(UserName);
  const [examList, setExamList] = useState([]);
  const [examName, setExamName] = useContext(ExamName);
@@ -38,11 +38,13 @@ function Examresult() {
  const classes = useStyles();
 
  useEffect(() => {
-  setBackdrop(true);
-  axios.get("/user/").then((res) => {
-   setStudentsList(res.data);
-   setBackdrop(false);
-  });
+  if (studentsList.length === 0) {
+   setBackdrop(true);
+   axios.get("/user/").then((res) => {
+    setStudentsList(res.data);
+    setBackdrop(false);
+   });
+  }
  }, []);
 
  let result = [];
