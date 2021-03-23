@@ -211,8 +211,8 @@ function Options() {
          val.type === "numerical" && val.answer.indexOf("_") !== -1
           ? answers[i].answer === val.answer.slice(0, val.answer.indexOf("_")) ||
             answers[i].answer === val.answer.slice(val.answer.indexOf("_") + 1) ||
-            (Number(answers[i].answer) > Number(val.answer.slice(0, val.answer.indexOf("_"))) &&
-             Number(answers[i].answer) < Number(val.answer.slice(val.answer.indexOf("_") + 1)))
+            (Number(answers[i].answer) >= Number(val.answer.slice(0, val.answer.indexOf("_"))) &&
+             Number(answers[i].answer) <= Number(val.answer.slice(val.answer.indexOf("_") + 1)))
           : JSON.stringify(val.answer) === JSON.stringify(answers[i].answer)
         ) {
          if (examType.indexOf("mains") !== -1 && val.type === "numerical") {

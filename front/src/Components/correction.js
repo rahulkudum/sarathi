@@ -27,7 +27,6 @@ function Correction() {
  const [examList, setExamList] = useState([]);
  const [modify, setModify] = useContext(Modify);
  const [mode, setMode] = useContext(Mode);
- 
 
  const [sec, setSec] = useState([{ name: "single", secname: "", answer: null, length: 0, correct: 0, wrong: 0 }]);
 
@@ -47,8 +46,6 @@ function Correction() {
    setBackdrop(false);
   });
  }, []);
-
- 
 
  useEffect(() => {
   if (texamType.indexOf("single-advanced") !== -1) {
@@ -324,7 +321,14 @@ function Correction() {
                         val4.correct === val4.wrong
                       : val3.answers[i].answer || val4.correct === val4.wrong
                     ) {
-                     if (JSON.stringify(val4.answer) === JSON.stringify(val3.answers[i].answer) || val4.correct === val4.wrong) {
+                     if (
+                      val4.type === "numerical" && val4.answer.indexOf("_") !== -1
+                       ? val3.answers[i].answer === val4.answer.slice(0, val4.answer.indexOf("_")) ||
+                         val3.answers[i].answer === val4.answer.slice(val4.answer.indexOf("_") + 1) ||
+                         (Number(val3.answers[i].answer) >= Number(val4.answer.slice(0, val4.answer.indexOf("_"))) &&
+                          Number(val3.answers[i].answer) <= Number(val4.answer.slice(val4.answer.indexOf("_") + 1)))
+                       : JSON.stringify(val4.answer) === JSON.stringify(val3.answers[i].answer) || val4.correct === val4.wrong
+                     ) {
                       if (val.examtype.indexOf("single") === -1) {
                        if (i < val.questions.length / 3) {
                         physics = physics + Number(val4.correct);
