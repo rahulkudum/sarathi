@@ -191,7 +191,7 @@ function Result() {
  return (
   <div>
    {" "}
-   {display ? (
+   {display || mode === "teacher" ? (
     <div className={classes.root1}>
      <ScrollToTop />
      <Backdrop className={classes.backdrop} open={backdrop}>
@@ -276,7 +276,17 @@ function Result() {
             color="primary"
            />
           ) : (
-           <Chip size="large" label={`Correct Answer: ${answers[nind - 1].correct}`} color="primary" />
+           <Chip
+            size="large"
+            label={
+             answers[nind - 1].type === "numerical" && answers[nind - 1].correct.indexOf("_") !== -1
+              ? `Correct Answer: from ${answers[nind - 1].correct.slice(0, answers[nind - 1].correct.indexOf("_"))} to ${answers[nind - 1].correct.slice(
+                 answers[nind - 1].correct.indexOf("_") + 1
+                )}`
+              : `Correct Answer: ${answers[nind - 1].correct}`
+            }
+            color="primary"
+           />
           )}
 
           <Chip size="large" label={answers[nind - 1].status} color={butcolor} />

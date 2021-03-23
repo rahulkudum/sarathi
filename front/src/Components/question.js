@@ -48,11 +48,14 @@ function Question() {
  const classes = useStyles();
  const [questionType, setQuestionType] = useState("single");
  const [progress, setProgress] = useState({ phy: 0, che: 0, mat: 0, single: true });
+ const [range, setRange] = useState(false);
 
  useEffect(() => {
   setImageloading(true);
 
   setQuestionType(questions[nind - 1].type);
+  if (!questions[nind - 1].answer || (questions[nind - 1].type === "numerical" && questions[nind - 1].answer.indexOf("_") === -1)) setRange(false);
+  else setRange(true);
  }, [nind]);
 
  return (
@@ -296,19 +299,70 @@ function Question() {
             </d>
            ) : (
             <div>
-             <TextField
-              id="standard-basic"
-              label="Answer"
-              value={questions[nind - 1].answer}
-              onChange={(e) => {
-               setQuestions((prev) => {
-                let dum = [...prev];
-                dum[nind - 1].answer = e.target.value;
-                return dum;
-               });
-              }}
+             {range ? (
+              <div>
+               <TextField
+                style={{ marginRight: "30px" }}
+                id="standard-basic"
+                label="Starting"
+                value={questions[nind - 1].answer.slice(0, questions[nind - 1].answer.indexOf("_"))}
+                onChange={(e) => {
+                 setQuestions((prev) => {
+                  let dum = [...prev];
+                  dum[nind - 1].answer = e.target.value + "_" + questions[nind - 1].answer.slice(questions[nind - 1].answer.indexOf("_") + 1);
+                  return dum;
+                 });
+                }}
+               />
+               <TextField
+                id="standard-basic"
+                label="Ending"
+                value={questions[nind - 1].answer.slice(questions[nind - 1].answer.indexOf("_") + 1)}
+                onChange={(e) => {
+                 setQuestions((prev) => {
+                  let dum = [...prev];
+                  dum[nind - 1].answer = questions[nind - 1].answer.slice(0, questions[nind - 1].answer.indexOf("_")) + "_" + e.target.value;
+                  return dum;
+                 });
+                }}
+               />
+              </div>
+             ) : (
+              <div>
+               <TextField
+                id="standard-basic"
+                label="Exact Answer"
+                value={questions[nind - 1].answer}
+                onChange={(e) => {
+                 setQuestions((prev) => {
+                  let dum = [...prev];
+                  dum[nind - 1].answer = e.target.value;
+                  return dum;
+                 });
+                }}
+               />
+              </div>
+             )}
+             <br />
+             <FormControlLabel
+              control={
+               <Switch
+                checked={range}
+                onChange={(e) => {
+                 setRange(e.target.checked);
+                 setQuestions((prev) => {
+                  let dum = [...prev];
+                  dum[nind - 1].answer = "";
+
+                  return dum;
+                 });
+                }}
+                name="checkedB"
+                color="primary"
+               />
+              }
+              label="Answer with Range"
              />
-             <p>round-off the value to TWO decimal places; e.g. 23 as 23, 5.2 as 5.2, 5.48913 as 5.49</p>
             </div>
            )}
           </div>

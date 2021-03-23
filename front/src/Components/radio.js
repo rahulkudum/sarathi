@@ -207,7 +207,14 @@ function Options() {
       questions.map((val, i) => {
        if (i === 30 || i === 60 || i === 90) integerCorrect = 0;
        if (val.type === "multiple" ? answers[i].answer.one || answers[i].answer.two || answers[i].answer.three || answers[i].answer.four : answers[i].answer) {
-        if (JSON.stringify(val.answer) === JSON.stringify(answers[i].answer)) {
+        if (
+         val.type === "numerical" && val.answer.indexOf("_") !== -1
+          ? answers[i].answer === val.answer.slice(0, val.answer.indexOf("_")) ||
+            answers[i].answer === val.answer.slice(val.answer.indexOf("_") + 1) ||
+            (Number(answers[i].answer) > Number(val.answer.slice(0, val.answer.indexOf("_"))) &&
+             Number(answers[i].answer) < Number(val.answer.slice(val.answer.indexOf("_") + 1)))
+          : JSON.stringify(val.answer) === JSON.stringify(answers[i].answer)
+        ) {
          if (examType.indexOf("mains") !== -1 && val.type === "numerical") {
           integerCorrect++;
 
@@ -563,7 +570,6 @@ function Options() {
            });
           }}
          />{" "}
-         <p>round-off the value to TWO decimal places; e.g. 23 as 23, 5.2 as 5.2, 5.48913 as 5.49</p>
         </div>
        )}
 

@@ -26,8 +26,8 @@ function Correction() {
  const [studentsList, setStudentsList] = useContext(StudentList);
  const [examList, setExamList] = useState([]);
  const [modify, setModify] = useContext(Modify);
-
  const [mode, setMode] = useContext(Mode);
+ 
 
  const [sec, setSec] = useState([{ name: "single", secname: "", answer: null, length: 0, correct: 0, wrong: 0 }]);
 
@@ -48,11 +48,7 @@ function Correction() {
   });
  }, []);
 
- useEffect(() => {
-  axios.get("/user/").then((res) => {
-   setStudentsList(res.data);
-  });
- }, []);
+ 
 
  useEffect(() => {
   if (texamType.indexOf("single-advanced") !== -1) {
