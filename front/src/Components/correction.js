@@ -313,7 +313,7 @@ function Correction() {
                    val.questions.map((val4, i) => {
                     console.log(val4.correct, val4.wrong);
                     if (
-                     val4.type === "multiple"
+                     val4.type.indexOf("multiple") !== -1
                       ? val3.answers[i].answer.one ||
                         val3.answers[i].answer.two ||
                         val3.answers[i].answer.three ||
@@ -345,21 +345,84 @@ function Correction() {
                       val3.answers[i].status = "correct";
                       val3.answers[i].correct = val4.answer;
                      } else {
-                      if (val.examtype.indexOf("single") === -1) {
-                       if (i < val.questions.length / 3) {
-                        physics = physics + Number(val4.wrong);
-                       } else if (i < 2 * (val.questions.length / 3)) {
-                        chemistry = chemistry + Number(val4.wrong);
-                       } else {
-                        maths = maths + Number(val4.wrong);
+                      if (val4.type === "partial-multiple") {
+                       let partial_marks = 0;
+                       if (val3.answers[i].answer.one === val4.answer.one && val3.answers[i].answer.one) {
+                        partial_marks = partial_marks + 1;
                        }
+                       if (val3.answers[i].answer.two === val4.answer.two && val3.answers[i].answer.two) {
+                        partial_marks = partial_marks + 1;
+                       }
+                       if (val3.answers[i].answer.three === val4.answer.three && val3.answers[i].answer.three) {
+                        partial_marks = partial_marks + 1;
+                       }
+                       if (val3.answers[i].answer.four === val4.answer.four && val3.answers[i].answer.four) {
+                        partial_marks = partial_marks + 1;
+                       }
+
+                       if (val3.answers[i].answer.one !== val4.answer.one && val3.answers[i].answer.one) {
+                        partial_marks = -10;
+                       }
+                       if (val3.answers[i].answer.two !== val4.answer.two && val3.answers[i].answer.two) {
+                        partial_marks = -10;
+                       }
+                       if (val3.answers[i].answer.three !== val4.answer.three && val3.answers[i].answer.three) {
+                        partial_marks = -10;
+                       }
+                       if (val3.answers[i].answer.four !== val4.answer.four && val3.answers[i].answer.four) {
+                        partial_marks = -10;
+                       }
+
+                       if (partial_marks < 0) {
+                        if (val.examtype.indexOf("single") === -1) {
+                         if (i < val.questions.length / 3) {
+                          physics = physics + Number(val4.wrong);
+                         } else if (i < 2 * (val.questions.length / 3)) {
+                          chemistry = chemistry + Number(val4.wrong);
+                         } else {
+                          maths = maths + Number(val4.wrong);
+                         }
+                        }
+
+                        marks = marks + Number(val4.wrong);
+                        negative = negative + Number(val4.wrong);
+
+                        val3.answers[i].status = "wrong";
+                        val3.answers[i].correct = val4.answer;
+                       } else {
+                        if (val.examtype.indexOf("single") === -1) {
+                         if (i < val.questions.length / 3) {
+                          physics = physics + partial_marks;
+                         } else if (i < 2 * (val.questions.length / 3)) {
+                          chemistry = chemistry + partial_marks;
+                         } else {
+                          maths = maths + partial_marks;
+                         }
+                        }
+
+                        marks = marks + partial_marks;
+                        positive = positive + partial_marks;
+
+                        val3.answers[i].status = "partial-correct";
+                        val3.answers[i].correct = val4.answer;
+                       }
+                      } else {
+                       if (val.examtype.indexOf("single") === -1) {
+                        if (i < val.questions.length / 3) {
+                         physics = physics + Number(val4.wrong);
+                        } else if (i < 2 * (val.questions.length / 3)) {
+                         chemistry = chemistry + Number(val4.wrong);
+                        } else {
+                         maths = maths + Number(val4.wrong);
+                        }
+                       }
+
+                       marks = marks + Number(val4.wrong);
+                       negative = negative + Number(val4.wrong);
+
+                       val3.answers[i].status = "wrong";
+                       val3.answers[i].correct = val4.answer;
                       }
-
-                      marks = marks + Number(val4.wrong);
-                      negative = negative + Number(val4.wrong);
-
-                      val3.answers[i].status = "wrong";
-                      val3.answers[i].correct = val4.answer;
                      }
                     } else {
                      val3.answers[i].status = "left";
@@ -476,7 +539,7 @@ function Correction() {
                setSec((prev) => {
                 let dum = [...prev];
                 dum[i].name = e.target.value;
-                if (e.target.value === "multiple") {
+                if (e.target.value.indexOf("multiple") !== -1) {
                  dum[i].answer = { one: false, two: false, three: false, four: false };
                 } else {
                  dum[i].answer = "";
@@ -489,7 +552,7 @@ function Correction() {
               }}
               variant="outlined"
              >
-              {["single", "multiple", "numerical"].map((option) => (
+              {["single", "multiple", "numerical", "partial-multiple"].map((option) => (
                <option key={option} value={option}>
                 {option}
                </option>
@@ -626,7 +689,7 @@ function Correction() {
                    setQuestions((prev) => {
                     let dum = [...prev];
                     dum.push({
-                     answer: val2.name === "multiple" ? { ...val2.answer } : val2.answer,
+                     answer: val2.name.indexOf("multiple") !== -1 ? { ...val2.answer } : val2.answer,
                      correct: val2.correct,
                      wrong: val2.wrong,
                      image: null,
@@ -644,7 +707,7 @@ function Correction() {
                   setQuestions((prev) => {
                    let dum = [...prev];
                    dum.push({
-                    answer: val2.name === "multiple" ? { ...val2.answer } : val2.answer,
+                    answer: val2.name.indexOf("multiple") !== -1 ? { ...val2.answer } : val2.answer,
                     correct: val2.correct,
                     wrong: val2.wrong,
                     image: null,

@@ -1,37 +1,26 @@
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
+function getSaved(key, init) {
+ const savedValue = JSON.parse(localStorage.getItem(key));
 
+ if (savedValue) return savedValue;
 
-
-
-
-function getSaved(key,init){
-    
-    const savedValue=JSON.parse(localStorage.getItem(key));
-
-    if(savedValue) return savedValue;
-    
-    return init;
+ return init;
 }
 
+export function useLocal(key, init) {
+ //const realVal=localStorage.getItem(key) ?? init;
+ const [val, setVal] = useState(() => {
+  return getSaved(key, init);
+ });
 
+ useEffect(() => {
+  localStorage.setItem(key, JSON.stringify(val));
+ }, [val]);
 
-
-
-export function useLocal(key, init){
-//const realVal=localStorage.getItem(key) ?? init;    
-const [val,setVal]=useState(()=>{
-    return getSaved(key,init);
-});
-
-useEffect(()=>{
-    
-    localStorage.setItem(key,JSON.stringify(val));
-},[val])
-
-// const save=(nVal) => {
-//     setVal(nVal);
-//     localStorage.setItem(key,nVal);
-// };
-return [val,setVal];
+ // const save=(nVal) => {
+ //     setVal(nVal);
+ //     localStorage.setItem(key,nVal);
+ // };
+ return [val, setVal];
 }

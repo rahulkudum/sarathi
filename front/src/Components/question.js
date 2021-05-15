@@ -230,7 +230,7 @@ function Question() {
           </>
          ) : (
           <div>
-           {questionType === "multiple" ? (
+           {questionType.indexOf("multiple") !== -1 ? (
             <d>
              <FormControlLabel
               control={
@@ -969,7 +969,7 @@ function Question() {
       {questions.map((tile, i) => {
        let tcolor;
        if (examType.indexOf("advanced") !== -1) {
-        if (questions[i].type === "multiple") {
+        if (questions[i].type.indexOf("multiple") !== -1) {
          if (questions[i].image && (questions[i].answer.one || questions[i].answer.two || questions[i].answer.three || questions[i].answer.four)) {
           tcolor = "primary";
          } else tcolor = "secondary";

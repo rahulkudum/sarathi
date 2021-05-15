@@ -206,7 +206,11 @@ function Options() {
      if (examType.indexOf("neet") === -1) {
       questions.map((val, i) => {
        if (i === 30 || i === 60 || i === 90) integerCorrect = 0;
-       if (val.type === "multiple" ? answers[i].answer.one || answers[i].answer.two || answers[i].answer.three || answers[i].answer.four : answers[i].answer) {
+       if (
+        val.type.indexOf("multiple") !== -1
+         ? answers[i].answer.one || answers[i].answer.two || answers[i].answer.three || answers[i].answer.four
+         : answers[i].answer
+       ) {
         if (
          val.type === "numerical" && val.answer.indexOf("_") !== -1
           ? answers[i].answer === val.answer.slice(0, val.answer.indexOf("_")) ||
@@ -240,21 +244,84 @@ function Options() {
          }
          dums[i].correct = val.answer;
         } else {
-         if (examType.indexOf("single") === -1) {
-          if (i < questions.length / 3) {
-           physics = physics + Number(val.wrong);
-          } else if (i < 2 * (questions.length / 3)) {
-           chemistry = chemistry + Number(val.wrong);
-          } else {
-           maths = maths + Number(val.wrong);
+         if (val.type === "partial-multiple") {
+          let partial_marks = 0;
+          if (answers[i].answer.one === val.answer.one && answers[i].answer.one) {
+           partial_marks = partial_marks + 1;
           }
+          if (answers[i].answer.two === val.answer.two && answers[i].answer.two) {
+           partial_marks = partial_marks + 1;
+          }
+          if (answers[i].answer.three === val.answer.three && answers[i].answer.three) {
+           partial_marks = partial_marks + 1;
+          }
+          if (answers[i].answer.four === val.answer.four && answers[i].answer.four) {
+           partial_marks = partial_marks + 1;
+          }
+
+          if (answers[i].answer.one !== val.answer.one && answers[i].answer.one) {
+           partial_marks = -10;
+          }
+          if (answers[i].answer.two !== val.answer.two && answers[i].answer.two) {
+           partial_marks = -10;
+          }
+          if (answers[i].answer.three !== val.answer.three && answers[i].answer.three) {
+           partial_marks = -10;
+          }
+          if (answers[i].answer.four !== val.answer.four && answers[i].answer.four) {
+           partial_marks = -10;
+          }
+
+          if (partial_marks < 0) {
+           if (examType.indexOf("single") === -1) {
+            if (i < questions.length / 3) {
+             physics = physics + Number(val.wrong);
+            } else if (i < 2 * (questions.length / 3)) {
+             chemistry = chemistry + Number(val.wrong);
+            } else {
+             maths = maths + Number(val.wrong);
+            }
+           }
+
+           marks = marks + Number(val.wrong);
+           negative = negative + Number(val.wrong);
+
+           dums[i].status = "wrong";
+           dums[i].correct = val.answer;
+          } else {
+           if (examType.indexOf("single") === -1) {
+            if (i < questions.length / 3) {
+             physics = physics + partial_marks;
+            } else if (i < 2 * (questions.length / 3)) {
+             chemistry = chemistry + partial_marks;
+            } else {
+             maths = maths + partial_marks;
+            }
+           }
+
+           marks = marks + partial_marks;
+           positive = positive + partial_marks;
+
+           dums[i].status = "partial-correct";
+           dums[i].correct = val.answer;
+          }
+         } else {
+          if (examType.indexOf("single") === -1) {
+           if (i < questions.length / 3) {
+            physics = physics + Number(val.wrong);
+           } else if (i < 2 * (questions.length / 3)) {
+            chemistry = chemistry + Number(val.wrong);
+           } else {
+            maths = maths + Number(val.wrong);
+           }
+          }
+
+          marks = marks + Number(val.wrong);
+          negative = negative + Number(val.wrong);
+
+          dums[i].status = "wrong";
+          dums[i].correct = val.answer;
          }
-
-         marks = marks + Number(val.wrong);
-         negative = negative + Number(val.wrong);
-
-         dums[i].status = "wrong";
-         dums[i].correct = val.answer;
         }
        } else {
         dums[i].status = "left";
@@ -488,7 +555,7 @@ function Options() {
           <FormControlLabel value="4" control={<Radio />} label="4)" />
          </RadioGroup>
         </FormControl>
-       ) : questionType === "multiple" ? (
+       ) : questionType.indexOf("multiple") !== -1 ? (
         <>
          <FormControlLabel
           control={
@@ -583,7 +650,7 @@ function Options() {
           setAnswers((prev) => {
            let dum = [...prev];
            dum[nind - 1].answer =
-            examType.indexOf("advanced") !== -1 && dum[nind - 1].type === "multiple" ? { ...dum[nind - 1].danswer } : dum[nind - 1].danswer;
+            examType.indexOf("advanced") !== -1 && dum[nind - 1].type.indexOf("multiple") !== -1 ? { ...dum[nind - 1].danswer } : dum[nind - 1].danswer;
 
            return dum;
           });
@@ -605,9 +672,9 @@ function Options() {
          setAnswers((prev) => {
           let dum = [...prev];
           dum[nind - 1].answer =
-           examType.indexOf("advanced") !== -1 && dum[nind - 1].type === "multiple" ? { one: false, two: false, three: false, four: false } : "";
+           examType.indexOf("advanced") !== -1 && dum[nind - 1].type.indexOf("multiple") !== -1 ? { one: false, two: false, three: false, four: false } : "";
           dum[nind - 1].danswer =
-           examType.indexOf("advanced") !== -1 && dum[nind - 1].type === "multiple" ? { one: false, two: false, three: false, four: false } : "";
+           examType.indexOf("advanced") !== -1 && dum[nind - 1].type.indexOf("multiple") !== -1 ? { one: false, two: false, three: false, four: false } : "";
 
           return dum;
          });
@@ -624,7 +691,7 @@ function Options() {
           setAnswers((prev) => {
            let dum = [...prev];
            dum[nind - 1].answer =
-            examType.indexOf("advanced") !== -1 && dum[nind - 1].type === "multiple" ? { ...dum[nind - 1].danswer } : dum[nind - 1].danswer;
+            examType.indexOf("advanced") !== -1 && dum[nind - 1].type.indexOf("multiple") !== -1 ? { ...dum[nind - 1].danswer } : dum[nind - 1].danswer;
 
            dum[nind - 1].review = true;
            return dum;
@@ -818,7 +885,7 @@ function Options() {
       }}
      >
       {answers.map((tile, i) => {
-       if (examType.indexOf("advanced") !== -1 && answers[i].type === "multiple") {
+       if (examType.indexOf("advanced") !== -1 && answers[i].type.indexOf("multiple") !== -1) {
         if ((answers[i].answer.one || answers[i].answer.two || answers[i].answer.three || answers[i].answer.four) && answers[i].review) bcolor = "#52057b";
         else if ((answers[i].answer.one || answers[i].answer.two || answers[i].answer.three || answers[i].answer.four) && answers[i].answer) bcolor = "#43d001";
         else if (answers[i].review) bcolor = "#52057b";

@@ -250,7 +250,7 @@ function Result() {
           </FormControl>
          ) : (
           <div>
-           {questionType === "multiple" ? (
+           {questionType.indexOf("multiple") !== -1 ? (
             <>
              <FormControlLabel control={<Checkbox checked={answers[nind - 1].answer ? answers[nind - 1].answer.one : null} color="primary" />} label="1)" />
              <FormControlLabel control={<Checkbox checked={answers[nind - 1].answer ? answers[nind - 1].answer.two : null} color="primary" />} label="2)" />
@@ -267,7 +267,7 @@ function Result() {
          <div style={{ display: "flex", justifyContent: "space-around" }}>
           <Chip size="large" label={msToTime(answers[nind - 1].time)} color="primary" />
 
-          {questionType === "multiple" ? (
+          {questionType.indexOf("multiple") !== -1 ? (
            <Chip
             size="large"
             label={`Correct Answer: ${answers[nind - 1].correct.one ? "1" : ""} ${answers[nind - 1].correct.two ? "2" : ""} ${

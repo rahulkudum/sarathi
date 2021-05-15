@@ -93,7 +93,7 @@ function Login() {
        <p>To write {examname} please login through your G-mail</p>
       )}
       <GoogleLogin
-       clientId="526565895378-erq5sbu7kkpeonhqgjvdemgtncbpep42.apps.googleusercontent.com"
+       clientId="526565895378-md97pueiv8m2t3c682eamv293tt4gaa6.apps.googleusercontent.com"
        buttonText="Login through Gmail"
        onSuccess={(res) => {
         setBackdrop(true);
@@ -128,8 +128,8 @@ function Login() {
               setAnswers((prev) => {
                let dum = [...prev];
                dum.push({
-                answer: val.type === "multiple" ? { one: false, two: false, three: false, four: false } : "",
-                danswer: val.type === "multiple" ? { one: false, two: false, three: false, four: false } : "",
+                answer: val.type.indexOf("multiple") !== -1 ? { one: false, two: false, three: false, four: false } : "",
+                danswer: val.type.indexOf("multiple") !== -1 ? { one: false, two: false, three: false, four: false } : "",
                 visited: false,
                 review: false,
                 status: "",
@@ -209,7 +209,7 @@ function Login() {
       <br />
       <p>To see your Dashboard please login through your G-mail </p>
       <GoogleLogin
-       clientId="526565895378-erq5sbu7kkpeonhqgjvdemgtncbpep42.apps.googleusercontent.com"
+       clientId="526565895378-md97pueiv8m2t3c682eamv293tt4gaa6.apps.googleusercontent.com"
        buttonText="Login through Gmail"
        onSuccess={(res) => {
         setBackdrop(true);
