@@ -205,6 +205,7 @@ function Options() {
 
      if (examType.indexOf("neet") === -1) {
       questions.map((val, i) => {
+       if (!val.type) val.type = "single";
        if (i === 30 || i === 60 || i === 90) integerCorrect = 0;
        if (
         val.type.indexOf("multiple") !== -1
