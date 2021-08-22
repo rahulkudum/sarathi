@@ -83,10 +83,10 @@ function Options() {
    let zs2 = 0;
 
    answers.map((val, i) => {
-    if (i >= 30 && i <= 44 && val.answer) ps2++;
-    else if (i >= 75 && i <= 89 && val.answer) cs2++;
-    else if (i >= 120 && i <= 134 && val.answer) bs2++;
-    else if (i >= 165 && i <= 179 && val.answer) zs2++;
+    if (i >= 35 && i <= 49 && val.answer) ps2++;
+    else if (i >= 85 && i <= 99 && val.answer) cs2++;
+    else if (i >= 135 && i <= 149 && val.answer) bs2++;
+    else if (i >= 185 && i <= 199 && val.answer) zs2++;
    });
 
    setNeetSection2((prev) => {
@@ -357,9 +357,9 @@ function Options() {
        if (answers[i].answer) {
         if (JSON.stringify(val.answer) === JSON.stringify(answers[i].answer)) {
          if (examType.indexOf("single") === -1) {
-          if (i < 45) {
+          if (i < 50) {
            physics = physics + Number(val.correct);
-          } else if (i < 90) {
+          } else if (i < 100) {
            chemistry = chemistry + Number(val.correct);
           } else {
            maths = maths + Number(val.correct);
@@ -373,9 +373,9 @@ function Options() {
          dums[i].correct = val.answer;
         } else {
          if (examType.indexOf("single") === -1) {
-          if (i < 45) {
+          if (i < 50) {
            physics = physics + Number(val.wrong);
-          } else if (i < 90) {
+          } else if (i < 100) {
            chemistry = chemistry + Number(val.wrong);
           } else {
            maths = maths + Number(val.wrong);
@@ -666,10 +666,10 @@ function Options() {
          if (answers[nind - 1].danswer) {
           if (
            examType.indexOf("neet") !== -1 &&
-           ((nind >= 30 && nind <= 44 && neetSection2.physics === 10) ||
-            (nind >= 75 && nind <= 89 && neetSection2.chemistry === 10) ||
-            (nind >= 120 && nind <= 134 && neetSection2.botany === 10) ||
-            (nind >= 165 && nind <= 179 && neetSection2.zoology === 10))
+           ((nind >= 35 && nind <= 49 && neetSection2.physics === 10) ||
+            (nind >= 85 && nind <= 99 && neetSection2.chemistry === 10) ||
+            (nind >= 135 && nind <= 149 && neetSection2.botany === 10) ||
+            (nind >= 185 && nind <= 199 && neetSection2.zoology === 10))
           ) {
            alert(
             "You cannot attempt more than 10 questions in section II of each subject in Neet exam. So please clear any previous question in the section II to save this question"
@@ -683,25 +683,25 @@ function Options() {
            });
 
            if (examType.indexOf("neet") !== -1) {
-            if (nind >= 30 && nind <= 44) {
+            if (nind >= 35 && nind <= 49) {
              setNeetSection2((prev) => {
               let dum = { ...prev };
               dum.physics++;
               return dum;
              });
-            } else if (nind >= 75 && nind <= 89) {
+            } else if (nind >= 85 && nind <= 99) {
              setNeetSection2((prev) => {
               let dum = { ...prev };
               dum.chemistry++;
               return dum;
              });
-            } else if (nind >= 120 && nind <= 134) {
+            } else if (nind >= 135 && nind <= 149) {
              setNeetSection2((prev) => {
               let dum = { ...prev };
               dum.botany++;
               return dum;
              });
-            } else if (nind >= 165 && nind <= 179) {
+            } else if (nind >= 185 && nind <= 199) {
              setNeetSection2((prev) => {
               let dum = { ...prev };
               dum.zoology++;
@@ -735,25 +735,25 @@ function Options() {
          });
 
          if (examType.indexOf("neet") !== -1) {
-          if (nind >= 30 && nind <= 44) {
+          if (nind >= 35 && nind <= 49) {
            setNeetSection2((prev) => {
             let dum = { ...prev };
             dum.physics--;
             return dum;
            });
-          } else if (nind >= 75 && nind <= 89) {
+          } else if (nind >= 85 && nind <= 99) {
            setNeetSection2((prev) => {
             let dum = { ...prev };
             dum.chemistry--;
             return dum;
            });
-          } else if (nind >= 120 && nind <= 134) {
+          } else if (nind >= 135 && nind <= 149) {
            setNeetSection2((prev) => {
             let dum = { ...prev };
             dum.botany--;
             return dum;
            });
-          } else if (nind >= 165 && nind <= 179) {
+          } else if (nind >= 185 && nind <= 199) {
            setNeetSection2((prev) => {
             let dum = { ...prev };
             dum.zoology--;
@@ -773,10 +773,10 @@ function Options() {
          if (answers[nind - 1].danswer) {
           if (
            examType.indexOf("neet") !== -1 &&
-           ((nind >= 30 && nind <= 44 && neetSection2.physics === 10) ||
-            (nind >= 75 && nind <= 89 && neetSection2.chemistry === 10) ||
-            (nind >= 120 && nind <= 134 && neetSection2.botany === 10) ||
-            (nind >= 165 && nind <= 179 && neetSection2.zoology === 10))
+           ((nind >= 35 && nind <= 49 && neetSection2.physics === 10) ||
+            (nind >= 85 && nind <= 99 && neetSection2.chemistry === 10) ||
+            (nind >= 135 && nind <= 149 && neetSection2.botany === 10) ||
+            (nind >= 185 && nind <= 199 && neetSection2.zoology === 10))
           ) {
            alert(
             "You cannot attempt more than 10 questions in section II of each subject in Neet exam. So please clear any previous question in the section II to save this question"
@@ -791,25 +791,25 @@ function Options() {
            });
 
            if (examType.indexOf("neet") !== -1) {
-            if (nind >= 30 && nind <= 44) {
+            if (nind >= 35 && nind <= 49) {
              setNeetSection2((prev) => {
               let dum = { ...prev };
               dum.physics++;
               return dum;
              });
-            } else if (nind >= 75 && nind <= 89) {
+            } else if (nind >= 85 && nind <= 99) {
              setNeetSection2((prev) => {
               let dum = { ...prev };
               dum.chemistry++;
               return dum;
              });
-            } else if (nind >= 120 && nind <= 134) {
+            } else if (nind >= 135 && nind <= 149) {
              setNeetSection2((prev) => {
               let dum = { ...prev };
               dum.botany++;
               return dum;
              });
-            } else if (nind >= 165 && nind <= 179) {
+            } else if (nind >= 185 && nind <= 199) {
              setNeetSection2((prev) => {
               let dum = { ...prev };
               dum.zoology++;

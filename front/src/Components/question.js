@@ -690,7 +690,7 @@ function Question() {
        </div>
       ) : (
        <div>
-        <label>{examType.indexOf("single") === -1 ? "Physics 45 Ques: " : "All 45 Ques: "}</label>
+        <label>{examType.indexOf("single") === -1 ? "Physics 50 Ques: " : "All 50 Ques: "}</label>
         <input
          type="file"
          name="file"
@@ -699,7 +699,7 @@ function Question() {
          onChange={(e) => {
           let img = e.target.files;
 
-          if (img.length === 45) {
+          if (img.length === 50) {
            let prog = 0;
            setProgress((prev) => {
             let dum = { ...prev };
@@ -773,7 +773,7 @@ function Question() {
             }
            }
           } else {
-           alert("please select exactly 45 images");
+           alert("please select exactly 50 images");
           }
          }}
         />
@@ -783,7 +783,7 @@ function Question() {
         <br />
         {examType.indexOf("single") === -1 ? (
          <div>
-          <label>Chemistry 45 Ques: </label>
+          <label>Chemistry 50 Ques: </label>
           <input
            type="file"
            name="file"
@@ -792,7 +792,7 @@ function Question() {
            onChange={(e) => {
             let img = e.target.files;
 
-            if (img.length === 45) {
+            if (img.length === 50) {
              let prog = 0;
              setProgress((prev) => {
               let dum = { ...prev };
@@ -811,7 +811,7 @@ function Question() {
                   found = true;
                   setQuestions((prev) => {
                    let dum = [...prev];
-                   dum[45 + key].image = img[key].lastModified;
+                   dum[50 + key].image = img[key].lastModified;
                    return dum;
                   });
                   prog = prog + 1;
@@ -831,7 +831,7 @@ function Question() {
                  axios.post("/upload", formData).then((res) => {
                   setQuestions((prev) => {
                    let dum = [...prev];
-                   dum[45 + key].image = img[key].lastModified;
+                   dum[50 + key].image = img[key].lastModified;
                    return dum;
                   });
                   prog = prog + 1;
@@ -853,7 +853,7 @@ function Question() {
                axios.post("/upload", formData).then((res) => {
                 setQuestions((prev) => {
                  let dum = [...prev];
-                 dum[45 + key].image = img[key].lastModified;
+                 dum[50 + key].image = img[key].lastModified;
                  return dum;
                 });
                 prog = prog + 1;
@@ -866,14 +866,14 @@ function Question() {
               }
              }
             } else {
-             alert("please select exactly 45 images");
+             alert("please select exactly 50 images");
             }
            }}
           />
 
           <p style={{ display: "inline-block" }}>{progress.che === 100 ? "uploading..." : `uploads: ${progress.che}`} </p>
           <br />
-          <label>Biology 90 Ques: </label>
+          <label>Biology 100 Ques: </label>
           <input
            type="file"
            name="file"
@@ -882,7 +882,7 @@ function Question() {
            onChange={(e) => {
             let img = e.target.files;
 
-            if (img.length === 90) {
+            if (img.length === 100) {
              let prog = 0;
              setProgress((prev) => {
               let dum = { ...prev };
@@ -901,7 +901,7 @@ function Question() {
                   found = true;
                   setQuestions((prev) => {
                    let dum = [...prev];
-                   dum[90 + key].image = img[key].lastModified;
+                   dum[100 + key].image = img[key].lastModified;
                    return dum;
                   });
                   prog = prog + 1;
@@ -921,7 +921,7 @@ function Question() {
                  axios.post("/upload", formData).then((res) => {
                   setQuestions((prev) => {
                    let dum = [...prev];
-                   dum[90 + key].image = img[key].lastModified;
+                   dum[100 + key].image = img[key].lastModified;
                    return dum;
                   });
                   prog = prog + 1;
@@ -943,7 +943,7 @@ function Question() {
                axios.post("/upload", formData).then((res) => {
                 setQuestions((prev) => {
                  let dum = [...prev];
-                 dum[90 + key].image = img[key].lastModified;
+                 dum[100 + key].image = img[key].lastModified;
                  return dum;
                 });
                 prog = prog + 1;
@@ -956,7 +956,7 @@ function Question() {
               }
              }
             } else {
-             alert("please select exactly 90 images");
+             alert("please select exactly 100 images");
             }
            }}
           />

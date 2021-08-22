@@ -138,7 +138,7 @@ function Correction() {
                });
               }
              } else if (texamType === "neet") {
-              for (let i = 0; i < 180; i++) {
+              for (let i = 0; i < 200; i++) {
                setQuestions((prev) => {
                 let dum = [...prev];
                 dum.push({
@@ -167,7 +167,7 @@ function Correction() {
                });
               }
              } else if (texamType === "single-neet") {
-              for (let i = 0; i < 45; i++) {
+              for (let i = 0; i < 50; i++) {
                setQuestions((prev) => {
                 let dum = [...prev];
                 dum.push({
@@ -434,9 +434,9 @@ function Correction() {
                     if (val3.answers[i].answer) {
                      if (val4.answer === val3.answers[i].answer) {
                       if (val.examtype.indexOf("single") === -1) {
-                       if (i < 45) {
+                       if (i < 50) {
                         physics = physics + Number(val4.correct);
-                       } else if (i < 90) {
+                       } else if (i < 100) {
                         chemistry = chemistry + Number(val4.correct);
                        } else {
                         maths = maths + Number(val4.correct);
@@ -450,9 +450,9 @@ function Correction() {
                       val3.answers[i].correct = val4.answer;
                      } else {
                       if (val.examtype.indexOf("single") === -1) {
-                       if (i < 45) {
+                       if (i < 50) {
                         physics = physics + Number(val4.wrong);
-                       } else if (i < 90) {
+                       } else if (i < 100) {
                         chemistry = chemistry + Number(val4.wrong);
                        } else {
                         maths = maths + Number(val4.wrong);

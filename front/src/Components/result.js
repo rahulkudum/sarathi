@@ -67,13 +67,13 @@ function Result() {
   if (time3.physics === 0) {
    if (examType === "neet") {
     answers.map((val, i) => {
-     if (i < 45) {
+     if (i < 50) {
       setTime3((prev) => {
        let dum = { ...prev };
        dum.physics = dum.physics + val.time;
        return dum;
       });
-     } else if (i < 90) {
+     } else if (i < 100) {
       setTime3((prev) => {
        let dum = { ...prev };
        dum.chemistry = dum.chemistry + val.time;
