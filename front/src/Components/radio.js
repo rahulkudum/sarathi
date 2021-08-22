@@ -54,6 +54,7 @@ function Options() {
  const [errText, setErrText] = useState("");
  const [questionType, setQuestionType] = useState("single");
  const isVisible = usePageVisibility();
+ const [neetSection2, setNeetSection2] = useState({ physics: 0, chemistry: 0, botany: 0, zoology: 0 });
 
  const useStyles = makeStyles((theme) => ({
   root1: {
@@ -73,6 +74,31 @@ function Options() {
  let review = 0;
  let answered = 0;
  let areview = 0;
+
+ useEffect(() => {
+  if (examType.indexOf("neet") !== -1) {
+   let ps2 = 0;
+   let cs2 = 0;
+   let bs2 = 0;
+   let zs2 = 0;
+
+   answers.map((val, i) => {
+    if (i >= 30 && i <= 44 && val.answer) ps2++;
+    else if (i >= 75 && i <= 89 && val.answer) cs2++;
+    else if (i >= 120 && i <= 134 && val.answer) bs2++;
+    else if (i >= 165 && i <= 179 && val.answer) zs2++;
+   });
+
+   setNeetSection2((prev) => {
+    let dum = { ...prev };
+    dum.physics = ps2;
+    dum.chemistry = cs2;
+    dum.botany = bs2;
+    dum.zoology = zs2;
+    return dum;
+   });
+  }
+ }, []);
 
  useEffect(() => {
   setImageloading(true);
@@ -126,7 +152,6 @@ function Options() {
 
   return () => {
    let htime = JSON.parse(localStorage.getItem("time3"));
-   console.log(answers[nind - 1], htime.qon, Date.now());
 
    setAnswers((prev) => {
     let dum = [...prev];
@@ -179,8 +204,6 @@ function Options() {
     return dum;
    });
   }
-
-  console.log(switches, time3, isVisible);
  }, [isVisible]);
 
  useEffect(() => {
@@ -376,7 +399,6 @@ function Options() {
       .post("/user/find", { mail: mail })
       .then((res) => {
        let exsists = false;
-       console.log(res, mail);
 
        for (let i = 0; i < res.data.exams.length; i++) {
         if (res.data.exams[i].examname === examName && res.data.exams[i].examtype === examType) exsists = true;
@@ -420,7 +442,6 @@ function Options() {
          .then((res) => {
           setAnswers(dums);
           setAnswers2(dums);
-          console.log(res);
 
           setTime3((prev) => {
            let dum = { ...prev };
@@ -459,20 +480,17 @@ function Options() {
           history.push(`/writexam/${examName}_${examType}/result/1`);
          })
          .catch((err) => {
-          console.log(err.message);
           setErrText(err.message);
           setDialog2(1);
          });
        }
       })
       .catch((err) => {
-       console.log(err.message);
        setErrText(err.message);
        setDialog2(1);
       });
     })
     .catch((err) => {
-     console.log(err.message);
      setErrText(err.message);
      setDialog2(1);
     });
@@ -522,7 +540,6 @@ function Options() {
           src={`/images/${answers[nind - 1].image}`}
           onLoad={() => {
            setImageloading(false);
-           console.log(imageloading);
           }}
          />
         </div>
@@ -541,7 +558,6 @@ function Options() {
           name="options"
           value={answers[nind - 1].danswer}
           onChange={(e) => {
-           console.log(answers);
            setAnswers((prev) => {
             let dum = [...prev];
             dum[nind - 1].danswer = e.target.value;
@@ -648,16 +664,54 @@ function Options() {
         style={{ backgroundColor: "#43d001", color: "white", fontSize: 15, marginLeft: "3px", marginRight: "15px" }}
         onClick={() => {
          if (answers[nind - 1].danswer) {
-          setAnswers((prev) => {
-           let dum = [...prev];
-           dum[nind - 1].answer =
-            examType.indexOf("advanced") !== -1 && dum[nind - 1].type.indexOf("multiple") !== -1 ? { ...dum[nind - 1].danswer } : dum[nind - 1].danswer;
+          if (
+           examType.indexOf("neet") !== -1 &&
+           ((nind >= 30 && nind <= 44 && neetSection2.physics === 10) ||
+            (nind >= 75 && nind <= 89 && neetSection2.chemistry === 10) ||
+            (nind >= 120 && nind <= 134 && neetSection2.botany === 10) ||
+            (nind >= 165 && nind <= 179 && neetSection2.zoology === 10))
+          ) {
+           alert(
+            "You cannot attempt more than 10 questions in section II of each subject in Neet exam. So please clear any previous question in the section II to save this question"
+           );
+          } else {
+           setAnswers((prev) => {
+            let dum = [...prev];
+            dum[nind - 1].answer =
+             examType.indexOf("advanced") !== -1 && dum[nind - 1].type.indexOf("multiple") !== -1 ? { ...dum[nind - 1].danswer } : dum[nind - 1].danswer;
+            return dum;
+           });
 
-           return dum;
-          });
-
-          if (nind === answers.length) history.push(`/writexam/${examName}_${examType}/paper/1`);
-          else history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+           if (examType.indexOf("neet") !== -1) {
+            if (nind >= 30 && nind <= 44) {
+             setNeetSection2((prev) => {
+              let dum = { ...prev };
+              dum.physics++;
+              return dum;
+             });
+            } else if (nind >= 75 && nind <= 89) {
+             setNeetSection2((prev) => {
+              let dum = { ...prev };
+              dum.chemistry++;
+              return dum;
+             });
+            } else if (nind >= 120 && nind <= 134) {
+             setNeetSection2((prev) => {
+              let dum = { ...prev };
+              dum.botany++;
+              return dum;
+             });
+            } else if (nind >= 165 && nind <= 179) {
+             setNeetSection2((prev) => {
+              let dum = { ...prev };
+              dum.zoology++;
+              return dum;
+             });
+            }
+           }
+           if (nind === answers.length) history.push(`/writexam/${examName}_${examType}/paper/1`);
+           else history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+          }
          } else {
           alert("Please Select a Option");
          }
@@ -679,6 +733,34 @@ function Options() {
 
           return dum;
          });
+
+         if (examType.indexOf("neet") !== -1) {
+          if (nind >= 30 && nind <= 44) {
+           setNeetSection2((prev) => {
+            let dum = { ...prev };
+            dum.physics--;
+            return dum;
+           });
+          } else if (nind >= 75 && nind <= 89) {
+           setNeetSection2((prev) => {
+            let dum = { ...prev };
+            dum.chemistry--;
+            return dum;
+           });
+          } else if (nind >= 120 && nind <= 134) {
+           setNeetSection2((prev) => {
+            let dum = { ...prev };
+            dum.botany--;
+            return dum;
+           });
+          } else if (nind >= 165 && nind <= 179) {
+           setNeetSection2((prev) => {
+            let dum = { ...prev };
+            dum.zoology--;
+            return dum;
+           });
+          }
+         }
         }}
        >
         Clear
@@ -689,17 +771,56 @@ function Options() {
         style={{ backgroundColor: "#ec971f", color: "white", fontSize: 15, margin: "5px" }}
         onClick={() => {
          if (answers[nind - 1].danswer) {
-          setAnswers((prev) => {
-           let dum = [...prev];
-           dum[nind - 1].answer =
-            examType.indexOf("advanced") !== -1 && dum[nind - 1].type.indexOf("multiple") !== -1 ? { ...dum[nind - 1].danswer } : dum[nind - 1].danswer;
+          if (
+           examType.indexOf("neet") !== -1 &&
+           ((nind >= 30 && nind <= 44 && neetSection2.physics === 10) ||
+            (nind >= 75 && nind <= 89 && neetSection2.chemistry === 10) ||
+            (nind >= 120 && nind <= 134 && neetSection2.botany === 10) ||
+            (nind >= 165 && nind <= 179 && neetSection2.zoology === 10))
+          ) {
+           alert(
+            "You cannot attempt more than 10 questions in section II of each subject in Neet exam. So please clear any previous question in the section II to save this question"
+           );
+          } else {
+           setAnswers((prev) => {
+            let dum = [...prev];
+            dum[nind - 1].answer =
+             examType.indexOf("advanced") !== -1 && dum[nind - 1].type.indexOf("multiple") !== -1 ? { ...dum[nind - 1].danswer } : dum[nind - 1].danswer;
+            dum[nind - 1].review = true;
+            return dum;
+           });
 
-           dum[nind - 1].review = true;
-           return dum;
-          });
+           if (examType.indexOf("neet") !== -1) {
+            if (nind >= 30 && nind <= 44) {
+             setNeetSection2((prev) => {
+              let dum = { ...prev };
+              dum.physics++;
+              return dum;
+             });
+            } else if (nind >= 75 && nind <= 89) {
+             setNeetSection2((prev) => {
+              let dum = { ...prev };
+              dum.chemistry++;
+              return dum;
+             });
+            } else if (nind >= 120 && nind <= 134) {
+             setNeetSection2((prev) => {
+              let dum = { ...prev };
+              dum.botany++;
+              return dum;
+             });
+            } else if (nind >= 165 && nind <= 179) {
+             setNeetSection2((prev) => {
+              let dum = { ...prev };
+              dum.zoology++;
+              return dum;
+             });
+            }
+           }
 
-          if (nind === answers.length) history.push(`/writexam/${examName}_${examType}/paper/1`);
-          else history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+           if (nind === answers.length) history.push(`/writexam/${examName}_${examType}/paper/1`);
+           else history.push(`/writexam/${examName}_${examType}/paper/${nind + 1}`);
+          }
          } else {
           alert("Please Select a Option");
          }
@@ -961,7 +1082,6 @@ function Options() {
     <DialogActions>
      <Button
       onClick={() => {
-       console.log(errText);
        setSubmit(submit + 1);
 
        setDialog2(false);
