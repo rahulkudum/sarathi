@@ -28,30 +28,6 @@ app.use(methodOverride("_method"));
 
 const uri = "mongodb+srv://rahul:xz7bpTm8ILa2Vwdb@cluster0.zkzfs.mongodb.net/trial3?retryWrites=true&w=majority";
 
-//const uri2= "mongodb+srv://rahul:<password>@cluster0.owpi4.mongodb.net/<dbname>?retryWrites=true&w=majority"
-
-// var mongodb = require("mongodb");
-
-// var client = mongodb.MongoClient;
-
-// client.connect(uri, function (err, client) {
-//  var db = client.db("trial3");
-//  var collection = db.collection("uploads.chunks");
-
-//  var query = {};
-
-//  var cursor = collection.find(query);
-
-//  cursor.forEach(
-//   function (doc) {
-//    console.log(doc);
-//   },
-//   function (err) {
-//    client.close();
-//   }
-//  );
-// });
-
 mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 const connection = mongoose.connection;
 
