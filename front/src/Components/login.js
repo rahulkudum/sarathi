@@ -93,7 +93,7 @@ function Login() {
        <p>To write {examname} please login through your G-mail</p>
       )}
       <GoogleLogin
-       clientId="526565895378-erq5sbu7kkpeonhqgjvdemgtncbpep42.apps.googleusercontent.com"
+       clientId="526565895378-hppc60g312os30ae7ct6d7pec915op77.apps.googleusercontent.com"
        buttonText="Login through Gmail"
        onSuccess={(res) => {
         setBackdrop(true);
@@ -209,7 +209,7 @@ function Login() {
       <br />
       <p>To see your Dashboard please login through your G-mail </p>
       <GoogleLogin
-       clientId="526565895378-erq5sbu7kkpeonhqgjvdemgtncbpep42.apps.googleusercontent.com"
+       clientId="526565895378-hppc60g312os30ae7ct6d7pec915op77.apps.googleusercontent.com"
        buttonText="Login through Gmail"
        onSuccess={(res) => {
         setBackdrop(true);
@@ -262,3 +262,5 @@ export default Login;
 // floating 526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com
 
 // sarathikgptest 526565895378-erq5sbu7kkpeonhqgjvdemgtncbpep42.apps.googleusercontent.com
+
+// render 526565895378-hppc60g312os30ae7ct6d7pec915op77.apps.googleusercontent.com
