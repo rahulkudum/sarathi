@@ -112,7 +112,7 @@ function Examlist() {
      <p>To see your Dashboard please login through your G-mail </p>
 
      <GoogleLogin
-      clientId="526565895378-erq5sbu7kkpeonhqgjvdemgtncbpep42.apps.googleusercontent.com"
+      clientId="526565895378-hppc60g312os30ae7ct6d7pec915op77.apps.googleusercontent.com"
       buttonText="Login through Gmail"
       onSuccess={(res) => {
        if (res.profileObj.email === ind) {
