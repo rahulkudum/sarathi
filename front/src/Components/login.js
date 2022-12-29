@@ -200,6 +200,7 @@ function Login() {
         });
        }}
        onFailure={(res) => {
+        console.log(res)
         setBackdrop(false);
        }}
        cookiePolicy={"single_host_origin"}
@@ -225,6 +226,7 @@ function Login() {
         });
        }}
        onFailure={(res) => {
+        console.log(res)
         setBackdrop(false);
         alert("You have failed to login in, Please try again");
        }}
