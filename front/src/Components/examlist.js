@@ -4,8 +4,10 @@ import axios from "axios";
 import { Route, useHistory, useParams, Switch, useRouteMatch } from "react-router-dom";
 import { Button, Backdrop, CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { GoogleLogin } from "react-google-login";
+import { GoogleLogin } from "@react-oauth/google";
+import jwt_decode from "jwt-decode";
 import "./styles.css";
+
 function Examlist() {
  let { ind } = useParams();
  let history = useHistory();
@@ -112,14 +114,13 @@ function Examlist() {
      <p>To see your Dashboard please login through your G-mail </p>
 
      <GoogleLogin
-      clientId="526565895378-hppc60g312os30ae7ct6d7pec915op77.apps.googleusercontent.com"
-      buttonText="Login through Gmail"
       onSuccess={(res) => {
-       if (res.profileObj.email === ind) {
+       let email=jwt_decode(res.credential).email 
+       if (email === ind) {
         setBackdrop(true);
-        axios.post("/user/find", { mail: res.profileObj.email }).then((resp) => {
+        axios.post("/user/find", { mail: email }).then((resp) => {
          if (resp.data) {
-          setMode(res.profileObj.email);
+          setMode(email);
           setShow(true);
           setBackdrop(false);
          } else {
@@ -131,7 +132,7 @@ function Examlist() {
         alert("Email Id does not match");
        }
       }}
-      onFailure={(res) => {
+      onError={(res) => {
        setBackdrop(false);
        alert("You have failed to login in, Please try again");
       }}
