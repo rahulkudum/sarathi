@@ -6,9 +6,11 @@ import { Answers2, ExamName2, ExamType2, ExamName, ExamType, Questions, UserName
 import { Backdrop, CircularProgress, Grid } from "@material-ui/core";
 import Options from "./radio";
 
-import { GoogleLogin } from "react-google-login";
+import { GoogleLogin } from "@react-oauth/google";
 import { makeStyles } from "@material-ui/core/styles";
 import Result from "./result";
+import jwt_decode from "jwt-decode";
+
 
 // export let equestions;
 
@@ -93,12 +95,12 @@ function Login() {
        <p>To write {examname} please login through your G-mail</p>
       )}
       <GoogleLogin
-       clientId="526565895378-hppc60g312os30ae7ct6d7pec915op77.apps.googleusercontent.com"
-       buttonText="Login through Gmail"
        onSuccess={(res) => {
+        let email=jwt_decode(res.credential).email
+        console.log(email)
         setBackdrop(true);
 
-        axios.post("/user/find", { mail: res.profileObj.email }).then((resp) => {
+        axios.post("/user/find", { mail: email }).then((resp) => {
          if (resp.data) {
           let exsists = false;
           for (let i = 0; i < resp.data.exams.length; i++) {
@@ -111,12 +113,12 @@ function Login() {
           }
 
           if (!exsists) {
-           if (examName === examname && examType === examtype && mode === res.profileObj.email) {
+           if (examName === examname && examType === examtype && mode === email) {
             setExamName2(examname);
             setExamType2(examtype);
             console.log("gv");
            } else {
-            setMode(res.profileObj.email);
+            setMode(email);
             setExamName(examname);
             setExamType(examtype);
             setExamName2(examname);
@@ -153,7 +155,7 @@ function Login() {
             });
            }
 
-           setMail(res.profileObj.email);
+           setMail(email);
 
            let exams = resp.data.exams;
 
@@ -179,7 +181,7 @@ function Login() {
            });
 
            axios
-            .post("/user/updat", { mail: res.profileObj.email, exams: exams, time: ptime })
+            .post("/user/updat", { mail: email, exams: exams, time: ptime })
             .then((res) => {
              console.log(res);
              setTime(Date.now());
@@ -199,7 +201,7 @@ function Login() {
          }
         });
        }}
-       onFailure={(res) => {
+       onError={(res) => {
         console.log(res)
         setBackdrop(false);
        }}
@@ -210,22 +212,21 @@ function Login() {
       <br />
       <p>To see your Dashboard please login through your G-mail </p>
       <GoogleLogin
-       clientId="526565895378-hppc60g312os30ae7ct6d7pec915op77.apps.googleusercontent.com"
-       buttonText="Login through Gmail"
        onSuccess={(res) => {
+        let email=jwt_decode(res.credential).email
         setBackdrop(true);
-        axios.post("/user/find", { mail: res.profileObj.email }).then((resp) => {
+        axios.post("/user/find", { mail: email }).then((resp) => {
          if (resp.data) {
-          setMode(res.profileObj.email);
+          setMode(email);
           setBackdrop(false);
-          history.push(`/studentsdashboard/${res.profileObj.email}`);
+          history.push(`/studentsdashboard/${email}`);
          } else {
           setBackdrop(false);
           alert("Sorry You are not eligible to write Exams");
          }
         });
        }}
-       onFailure={(res) => {
+       onError={(res) => {
         console.log(res)
         setBackdrop(false);
         alert("You have failed to login in, Please try again");
@@ -259,10 +260,3 @@ function Login() {
 
 export default Login;
 
-// local 526565895378-md97pueiv8m2t3c682eamv293tt4gaa6.apps.googleusercontent.com
-
-// floating 526565895378-u0tum8dtdjgvjmpp46ait2ojo8o0q2qi.apps.googleusercontent.com
-
-// sarathikgptest 526565895378-erq5sbu7kkpeonhqgjvdemgtncbpep42.apps.googleusercontent.com
-
-// render 526565895378-hppc60g312os30ae7ct6d7pec915op77.apps.googleusercontent.com
